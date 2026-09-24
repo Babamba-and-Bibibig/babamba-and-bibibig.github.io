@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="UTF-8">
+  <!-- 휴대전화에서도 화면 너비에 맞게 표시합니다. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- zola.toml에 저장한 제목과 소개를 가져옵니다. -->
+  <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+  <meta name="description" content="{{ config.description }}">
+
+  <!-- 글자 크기, 여백 등 기본적인 화면 디자인입니다. -->
+  <style>
+    body {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.8;
+      color: #222;
+      background: #fafafa;
+      overflow-wrap: anywhere;
+    }
+    header { border-bottom: 1px solid #ddd; padding-bottom: 24px; }
+    nav a { margin-right: 16px; }
+    a { color: #a13b00; text-underline-offset: 4px; }
+    main { margin-top: 32px; }
+    article { padding: 16px 0; border-bottom: 1px solid #ddd; }
+    img { max-width: 100%; height: auto; }
+    pre { padding: 16px; overflow-x: auto; background: #eee; }
+  </style>
+</head>
+<body>
+  <header>
+    <!-- 블로그 제목과 소개를 표시합니다. -->
+    <h1>{{ config.title }}</h1>
+    <p>{{ config.description }}</p>
+
+    <nav aria-label="주 메뉴">
+      <a href="{{ config.base_url }}">홈</a>
+      <a href="https://github.com/Babamba-and-Bibibig">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 개별 글 화면을 만들 때도 이 기본 틀을 재사용합니다. -->
+    {% block content %}
+      <h2>글 목록</h2>
+
+      <!-- 첫 화면에 속한 글들을 하나씩 표시합니다. -->
+      {% for post in section.pages %}
+        <article>
+          <h3><a href="{{ post.permalink }}">{{ post.title }}</a></h3>
+          {% if post.description %}
+            <p>{{ post.description }}</p>
+          {% endif %}
+        </article>
+      {% else %}
+        <p>아직 작성한 글이 없습니다.</p>
+      {% endfor %}
+    {% endblock content %}
+  </main>
+</body>
+</html>
