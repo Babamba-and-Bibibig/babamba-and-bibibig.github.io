@@ -1,0 +1,31 @@
+{% extends "index.html" %}
+{# 기존 index.html의 디자인과 상단 메뉴를 그대로 사용합니다. #}
+
+{% block title %}
+  {# 브라우저 탭에 "글 제목 | 블로그 이름"을 표시합니다. #}
+  {{ page.title }} | {{ config.title }}
+{% endblock title %}
+
+{% block content %}
+  {# 기존 글 목록 대신, 선택한 글의 제목과 본문을 표시합니다. #}
+  <article>
+    <h2>{{ page.title }}</h2>
+
+    {# 글에 날짜가 있으면 연도-월-일 형식으로 표시합니다. #}
+    {% if page.date %}
+      <p>
+        <time datetime="{{ page.date }}">
+          {{ page.date | date(format="%Y-%m-%d") }}
+        </time>
+      </p>
+    {% endif %}
+
+    {# 마크다운에서 변환된 본문 HTML을 화면에 표시합니다. #}
+    <div>
+      {{ page.content | safe }}
+    </div>
+  </article>
+
+  {# 글을 읽은 뒤 첫 화면의 글 목록으로 돌아가는 링크입니다. #}
+  <p><a href="{{ config.base_url }}">글 목록으로 돌아가기</a></p>
+{% endblock content %}
