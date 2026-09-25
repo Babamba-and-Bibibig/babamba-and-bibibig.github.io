@@ -9,11 +9,11 @@ minify_html = true
 build_search_index = false
 
 # 코드 블록의 언어별 문법 색상을 켭니다.
-# 밝은 테마와 어두운 테마에 맞는 색상을 함께 생성합니다.
+# 밝은 테마와 어두운 테마의 CSS를 생성하고 화면 전환에 맞춰 선택합니다.
 [markdown.highlighting]
 light_theme = "github-light"
 dark_theme = "github-dark"
-style = "inline"
+style = "class"
 # 언어 이름과 줄 번호 정보를 코드 상자와 코드 본문에 전달합니다.
 data_attr_position = "both"
 
