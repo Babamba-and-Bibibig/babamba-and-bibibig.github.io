@@ -13,16 +13,16 @@ build_search_index = false
 # 이전에 방문자가 저장한 밝기 설정이 있으면 그 선택이 우선할 수 있습니다.
 default_theme = "dark"
 
-# 기본 강조색입니다. 실제 밝기별 배색은 reactor-ui-v3.css에서 지정합니다.
+# 기본 강조색입니다. 실제 밝기별 배색은 reactor-ui-v4.css에서 지정합니다.
 accent_color = "#b32035"
 accent_color_dark = "#ff6a78"
 
 # 테마의 별도 번들 글꼴 대신 사용자 CSS의 Pretendard를 사용합니다.
 bundled_fonts = false
 
-# 밝은 상단 바와 제목 패널, 리액터 호버 효과를 포함한 통합 디자인입니다.
-# 이전 CSS 파일은 중복해서 읽지 않습니다.
-styles = ["reactor-ui-v3.css"]
+# 메뉴 밑줄·리액터 점을 제거하고 밝은 배경을 통일한 디자인입니다.
+# 이전 CSS 파일은 중복해서 읽지 않습니다. 기존 호버 시간과 밝기는 유지합니다.
+styles = ["reactor-ui-v4.css"]
 
 # 기존 글 읽기 기능을 유지합니다.
 show_copy_button = true
