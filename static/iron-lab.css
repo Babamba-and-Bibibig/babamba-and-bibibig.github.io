@@ -1,0 +1,128 @@
+  border-top: 0;
+  border-left: 4px solid #bf263c;
+  border-radius: 0 0 .8rem .8rem;
+  background: linear-gradient(120deg, var(--im-panel-raised), var(--im-panel));
+  padding: 0 2rem 2rem;
+  color: var(--im-muted);
+  line-height: 1.8;
+}
+#main-content small { color: var(--im-muted); }
+
+/* 6. 상단 메뉴를 과한 둥근 모양 대신 간결한 금속 패널처럼 표시합니다. */
+#site-nav {
+  width: min(100% - 2.5rem, 62rem);
+  max-width: none;
+  border: 1px solid var(--im-border);
+  border-top: 2px solid #bf263c;
+  border-radius: .65rem;
+}
+#site-nav::before {
+  border-radius: inherit;
+  background: var(--im-panel);
+  box-shadow: var(--im-shadow);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+#site-nav nav > ul { justify-content: flex-start; gap: .35rem; }
+#site-nav nav #home { margin-right: auto; }
+#site-nav nav #home a,
+#site-nav nav #home a.active {
+  color: var(--im-text);
+  background: transparent;
+  box-shadow: none;
+}
+#site-nav nav #home a .icon { color: var(--im-gold); }
+#site-nav nav a,
+#site-nav nav summary { border-radius: .4rem; line-height: 1.4; }
+#site-nav nav a.active {
+  background: var(--im-tint);
+  color: var(--im-red);
+  box-shadow: inset 0 -2px 0 #bf263c;
+}
+
+/* 7. 말풍선 형태의 글 카드를 직사각형 패널 형태로 바꿉니다. */
+#article-list { gap: 1.1rem; margin-top: 1.2rem; }
+#article-list article {
+  border: 1px solid var(--im-border);
+  border-left: 4px solid #bf263c;
+  border-radius: .7rem;
+  background: linear-gradient(115deg, var(--im-panel-raised), var(--im-panel));
+  padding: 1.8rem 2rem;
+  box-shadow: var(--im-shadow);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+#article-list article > a { border-radius: inherit; }
+#article-list article:hover {
+  border-color: var(--im-gold);
+  border-left-color: #bf263c;
+}
+#article-list article:active:not(:has(.tag:active)) { transform: none; }
+#article-list article h3 {
+  color: var(--im-text);
+  font-size: clamp(1.12rem, 2.5vw, 1.4rem);
+  font-family: var(--font-system-ui);
+  font-weight: 700;
+  line-height: 1.55;
+  letter-spacing: -.02em;
+}
+#article-list article:hover h3 { color: var(--im-gold); }
+#article-list article .details {
+  border-top-color: var(--im-border);
+  padding-top: .8rem;
+  color: var(--im-muted);
+}
+
+/* 8. 제목 끝의 호버 화살표만 제거합니다. 글 링크는 그대로 작동합니다. */
+#article-list article h3::after {
+  display: none;
+  content: none;
+}
+
+/* 9. 개별 글은 긴 문장을 읽기 편하도록 폭을 제한합니다. */
+#main-content > article { max-width: 48rem; margin-inline: auto; }
+#heading { margin: 1rem 0 2rem; text-align: left; }
+#heading h1 {
+  background: none;
+  color: var(--im-text);
+  -webkit-text-fill-color: currentColor;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+}
+#main-content article > h2 {
+  border-left: 3px solid var(--im-gold);
+  padding-left: .85rem;
+  margin-top: 2.8rem;
+}
+#main-content a.link { color: var(--im-gold); text-decoration-thickness: 1px; }
+#main-content a:focus-visible,
+#site-nav a:focus-visible,
+#site-nav button:focus-visible {
+  outline: 2px solid var(--im-gold);
+  outline-offset: 4px;
+}
+pre, code, kbd, samp {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+pre { border: 1px solid var(--im-border); border-radius: .6rem; }
+hr { border: 0; height: 1px; background: var(--im-border); }
+hr::after { display: none; }
+#paginator { margin-top: 2.5rem; }
+#site-footer:empty { display: none; }
+
+/* 10. 좁은 화면에서도 메뉴와 한글 제목이 겹치지 않도록 합니다. */
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  #main-content { margin-top: 2rem; }
+  #site-nav { margin-top: .75rem; }
+  #site-nav nav > ul { flex-wrap: wrap; }
+  #site-nav nav > ul > li:not(:has(.circle)) { flex: 0 1 auto; }
+  #site-nav nav > ul > li#home { flex: 1 0 100%; margin: 0; }
+  #site-nav nav > ul > li#home a { text-align: left; }
+  #site-nav nav .divider { display: none; }
+  #main-content > h1 { padding: 2.3rem 1.25rem .6rem; }
+  #main-content > h1::before { left: 1.25rem; }
+  #main-content > h1 + p { padding: 0 1.25rem 1.5rem; }
+  #article-list article { padding: 1.4rem 1.25rem; }
+}
+
+/* 움직임을 줄이도록 설정한 방문자의 접근성 설정을 존중합니다. */
+@media (prefers-reduced-motion: reduce) {
