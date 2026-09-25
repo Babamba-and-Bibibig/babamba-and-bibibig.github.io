@@ -1,0 +1,89 @@
+/* Reactor motion — 호버를 처음부터 켜지 않고 4.5초에 걸쳐 밝힙니다.
+   iron-lab.css 다음에 읽어야 합니다. 글·배치·기본 배색은 바꾸지 않습니다. */
+
+/* 밝은 읽기 영역에서는 더 짙은 청색, 검정 상단 바에서는 밝은 시안을 씁니다. */
+:root { --reactor-halo-rgb: 0, 145, 205; }
+:root[data-theme="dark"] { --reactor-halo-rgb: 72, 216, 255; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --reactor-halo-rgb: 72, 216, 255;
+  }
+}
+#site-nav { --reactor-halo-rgb: 72, 216, 255; }
+
+/* 빛이 꺼진 상태에서도 원래 카드 그림자와 현재 메뉴 표시는 유지합니다. */
+#site-nav nav :is(a, button, summary) {
+  --reactor-rest-shadow: 0 0 0 0 transparent;
+  transition:
+    color 4.5s ease-in-out,
+    background-color 4.5s ease-in-out,
+    text-shadow 4.5s ease-in-out,
+    box-shadow 1.5s ease-out;
+}
+#site-nav nav a.active,
+#site-nav nav #theme-switcher button.active {
+  --reactor-rest-shadow: inset 0 -2px 0 #59d6fa;
+}
+#site-nav nav #home > a,
+#site-nav nav #home > a.active {
+  --reactor-rest-shadow: 0 0 0 0 transparent;
+  text-shadow: 0 0 10px rgba(108, 222, 255, 0);
+}
+#article-list article {
+  --reactor-rest-shadow: var(--im-shadow);
+  transition:
+    border-color 4.5s ease-in-out,
+    box-shadow 1.5s ease-out;
+}
+#article-list article h3 { transition: color 4.5s ease-in-out; }
+
+/* 시작·끝의 발광은 완전한 투명 상태입니다.
+   4.5초 동안 부드럽게 밝아지고, 4.5초 동안 다시 약해집니다.
+   가까운 밝은 빛과 멀리 번지는 빛을 겹쳐 최고 밝기를 강화합니다.
+   글자 자체의 투명도와 크기는 바꾸지 않습니다. */
+@keyframes reactor-slow-breathe {
+  0%, 100% {
+    box-shadow:
+      var(--reactor-rest-shadow),
+      0 0 0 1px transparent,
+      0 0 12px rgba(var(--reactor-halo-rgb), 0),
+      0 0 30px rgba(var(--reactor-halo-rgb), 0),
+      0 0 60px rgba(var(--reactor-halo-rgb), 0),
+      inset 0 0 14px rgba(var(--reactor-halo-rgb), 0);
+  }
+  50% {
+    box-shadow:
+      var(--reactor-rest-shadow),
+      0 0 0 1px var(--im-arc-edge),
+      0 0 12px rgba(var(--reactor-halo-rgb), .85),
+      0 0 30px rgba(var(--reactor-halo-rgb), .58),
+      0 0 60px rgba(var(--reactor-halo-rgb), .28),
+      inset 0 0 14px rgba(var(--reactor-halo-rgb), .20);
+  }
+}
+
+/* 이전 3초 애니메이션 대신 9초 호흡을 사용합니다.
+   첫 프레임부터 파란 테두리가 켜지는 현상도 제거합니다. */
+@media (prefers-reduced-motion: no-preference) {
+  #site-nav nav :is(a, button, summary):focus-visible,
+  #article-list article:focus-within {
+    animation: reactor-slow-breathe 9s ease-in-out infinite both;
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  #site-nav nav :is(a, button, summary):hover,
+  #article-list article:hover {
+    animation: reactor-slow-breathe 9s ease-in-out infinite both;
+  }
+}
+
+/* 움직임 줄이기 설정에서는 호흡을 생략합니다.
+   키보드 포커스 테두리는 기존처럼 즉시 표시해서 위치를 알 수 있게 합니다. */
+@media (prefers-reduced-motion: reduce) {
+  #site-nav nav :is(a, button, summary),
+  #article-list article,
+  #article-list article h3 {
+    animation: none;
+    transition: none;
+  }
+}
