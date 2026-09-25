@@ -1,6 +1,6 @@
 +++
 # 홈 화면의 글 목록 위에 표시할 제목입니다.
-title = "공부 기록"
+title = "Notes"
 
 # 이 페이지를 설명하는 짧은 소개입니다.
 description = "Rust, Python, AI와 딥러닝 학습 및 프로젝트 제작 기록"
