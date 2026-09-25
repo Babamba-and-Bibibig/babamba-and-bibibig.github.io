@@ -20,8 +20,8 @@ accent_color_dark = "#ff6a78"
 # 테마의 별도 번들 글꼴 대신 사용자 CSS의 Pretendard를 사용합니다.
 bundled_fonts = false
 
-# static/iron-lab.css를 불러옵니다. 파일 이름이 정확히 일치해야 합니다.
-styles = ["iron-lab.css"]
+# 기본 디자인 다음에 느린 리액터 호흡 효과를 적용합니다. 순서를 유지합니다.
+styles = ["iron-lab.css", "reactor-motion.css"]
 
 # 기존 글 읽기 기능을 유지합니다.
 show_copy_button = true
