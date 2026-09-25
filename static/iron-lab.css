@@ -1,3 +1,131 @@
+/* Iron Lab — Duckquill 전용 사용자 스타일.
+   원본 테마와 글은 수정하지 않습니다. 이 파일을 static/iron-lab.css에 저장하세요. */
+
+/* Pretendard 공식 웹폰트: 필요한 글자 묶음만 받는 가변 글꼴입니다.
+   외부 글꼴 서버에 연결하지 못하면 뒤에 지정한 시스템 글꼴을 사용합니다. */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+/* 1. 실버 계열의 밝은 화면. 기본 어두운 화면은 zola.toml에서 선택합니다. */
+html:root {
+  --im-bg: #edf0f3;
+  --im-panel: #fafbfc;
+  --im-panel-raised: #ffffff;
+  --im-text: #202631;
+  --im-muted: #586371;
+  --im-border: #cbd1d9;
+  --im-red: #b32035;
+  --im-gold: #826019;
+  --im-tint: rgba(179, 32, 53, .08);
+  --im-shadow: 0 12px 32px rgba(21, 29, 41, .08);
+  color-scheme: light;
+}
+
+/* 2. 검정·실버·레드·골드 조합의 어두운 화면. */
+html:root[data-theme="dark"] {
+  --im-bg: #0d1015;
+  --im-panel: #171c24;
+  --im-panel-raised: #1e2530;
+  --im-text: #e7eaf0;
+  --im-muted: #a6afbc;
+  --im-border: #343d4b;
+  --im-red: #ff6a78;
+  --im-gold: #d5b66f;
+  --im-tint: rgba(214, 50, 72, .12);
+  --im-shadow: 0 16px 44px rgba(0, 0, 0, .22);
+  color-scheme: dark;
+}
+
+/* 시스템 설정을 선택했을 때도 어두운 화면의 색상을 맞춥니다. */
+@media (prefers-color-scheme: dark) {
+  html:root:not([data-theme="light"]) {
+    --im-bg: #0d1015;
+    --im-panel: #171c24;
+    --im-panel-raised: #1e2530;
+    --im-text: #e7eaf0;
+    --im-muted: #a6afbc;
+    --im-border: #343d4b;
+    --im-red: #ff6a78;
+    --im-gold: #d5b66f;
+    --im-tint: rgba(214, 50, 72, .12);
+    --im-shadow: 0 16px 44px rgba(0, 0, 0, .22);
+    color-scheme: dark;
+  }
+}
+
+/* 3. Duckquill의 색상·글꼴 변수를 새 디자인에 연결합니다. */
+html:root,
+html:root[data-theme],
+html:root:not([data-theme]) {
+  --accent-color: var(--im-red);
+  --accent-color-alpha: var(--im-tint);
+  --bg-color: var(--im-bg);
+  --fg-color: var(--im-text);
+  --fg-muted-4: var(--im-muted);
+  --fg-muted-5: var(--im-muted);
+  --glass-bg: var(--im-panel);
+  --container-width: 62rem;
+  --rounded-corner: .75rem;
+  --rounded-corner-small: .4rem;
+  --font-system-ui: "Pretendard Variable", "Pretendard", -apple-system,
+    BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans CJK KR", sans-serif;
+  --font-antique: var(--font-system-ui);
+}
+
+/* 4. 본문과 제목을 같은 글꼴 체계로 정리합니다. 코드 글꼴은 바꾸지 않습니다. */
+body {
+  background: radial-gradient(ellipse at 100% 0%, var(--im-tint), transparent 42rem),
+    var(--im-bg);
+  color: var(--im-text);
+  font-family: var(--font-system-ui);
+  font-size: 17px;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font-family: inherit; }
+h1, h2, h3, h4, h5, h6 {
+  color: var(--im-text);
+  font-family: var(--font-system-ui);
+  font-weight: 750;
+  letter-spacing: -.025em;
+  line-height: 1.4;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+p { word-break: keep-all; overflow-wrap: anywhere; }
+
+/* 5. 내용이 적어도 제목·소개·글 목록의 영역이 구분되도록 배치합니다. */
+#main-content {
+  box-sizing: border-box;
+  width: min(100% - 2.5rem, 62rem);
+  max-width: none;
+  margin: 3.5rem auto 5rem;
+  padding: 0;
+  align-self: start;
+}
+#main-content > h1 {
+  position: relative;
+  margin: 0;
+  border: 1px solid var(--im-border);
+  border-bottom: 0;
+  border-left: 4px solid #bf263c;
+  border-radius: .8rem .8rem 0 0;
+  background: linear-gradient(120deg, var(--im-panel-raised), var(--im-panel));
+  padding: 2.4rem 2rem .8rem;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  text-align: left;
+}
+#main-content > h1::before {
+  position: absolute;
+  top: 1.25rem;
+  left: 2rem;
+  width: 2.75rem;
+  height: 3px;
+  background: var(--im-gold);
+  content: "";
+}
+#main-content > h1 + p {
+  margin: 0 0 2rem;
+  border: 1px solid var(--im-border);
   border-top: 0;
   border-left: 4px solid #bf263c;
   border-radius: 0 0 .8rem .8rem;
@@ -126,3 +254,5 @@ hr::after { display: none; }
 
 /* 움직임을 줄이도록 설정한 방문자의 접근성 설정을 존중합니다. */
 @media (prefers-reduced-motion: reduce) {
+  #article-list article, #site-nav * { animation: none; transition: none; }
+}
