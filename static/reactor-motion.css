@@ -1,4 +1,4 @@
-/* Reactor motion — 호버를 처음부터 켜지 않고 4.5초에 걸쳐 밝힙니다.
+/* Reactor motion — 1초에 최대 밝기, 2초에 한 번의 호흡을 완료합니다.
    iron-lab.css 다음에 읽어야 합니다. 글·배치·기본 배색은 바꾸지 않습니다. */
 
 /* 밝은 읽기 영역에서는 더 짙은 청색, 검정 상단 바에서는 밝은 시안을 씁니다. */
@@ -11,14 +11,14 @@
 }
 #site-nav { --reactor-halo-rgb: 72, 216, 255; }
 
-/* 빛이 꺼진 상태에서도 원래 카드 그림자와 현재 메뉴 표시는 유지합니다. */
+/* 색상 변화는 1초, 마우스를 뗀 뒤 그림자 전환은 0.4초로 끝냅니다. */
 #site-nav nav :is(a, button, summary) {
   --reactor-rest-shadow: 0 0 0 0 transparent;
   transition:
-    color 4.5s ease-in-out,
-    background-color 4.5s ease-in-out,
-    text-shadow 4.5s ease-in-out,
-    box-shadow 1.5s ease-out;
+    color 1s ease-in-out,
+    background-color 1s ease-in-out,
+    text-shadow 1s ease-in-out,
+    box-shadow .4s ease-out;
 }
 #site-nav nav a.active,
 #site-nav nav #theme-switcher button.active {
@@ -32,16 +32,16 @@
 #article-list article {
   --reactor-rest-shadow: var(--im-shadow);
   transition:
-    border-color 4.5s ease-in-out,
-    box-shadow 1.5s ease-out;
+    border-color 1s ease-in-out,
+    box-shadow .4s ease-out;
 }
-#article-list article h3 { transition: color 4.5s ease-in-out; }
+#article-list article h3 { transition: color 1s ease-in-out; }
 
-/* 시작·끝의 발광은 완전한 투명 상태입니다.
-   4.5초 동안 부드럽게 밝아지고, 4.5초 동안 다시 약해집니다.
-   가까운 밝은 빛과 멀리 번지는 빛을 겹쳐 최고 밝기를 강화합니다.
+/* 시작·끝의 추가 발광은 투명하게 유지합니다.
+   1초 동안 부드럽게 밝아지고, 다음 1초 동안 다시 약해집니다.
+   기존의 강한 최고 밝기와 빛의 퍼짐은 그대로 유지합니다.
    글자 자체의 투명도와 크기는 바꾸지 않습니다. */
-@keyframes reactor-slow-breathe {
+@keyframes reactor-two-second-breathe {
   0%, 100% {
     box-shadow:
       var(--reactor-rest-shadow),
@@ -62,18 +62,17 @@
   }
 }
 
-/* 이전 3초 애니메이션 대신 9초 호흡을 사용합니다.
-   첫 프레임부터 파란 테두리가 켜지는 현상도 제거합니다. */
+/* 지연 없이 시작하며, 호버·키보드 선택 중에는 2초 주기로 반복합니다. */
 @media (prefers-reduced-motion: no-preference) {
   #site-nav nav :is(a, button, summary):focus-visible,
   #article-list article:focus-within {
-    animation: reactor-slow-breathe 9s ease-in-out infinite both;
+    animation: reactor-two-second-breathe 2s ease-in-out infinite both;
   }
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   #site-nav nav :is(a, button, summary):hover,
   #article-list article:hover {
-    animation: reactor-slow-breathe 9s ease-in-out infinite both;
+    animation: reactor-two-second-breathe 2s ease-in-out infinite both;
   }
 }
 
