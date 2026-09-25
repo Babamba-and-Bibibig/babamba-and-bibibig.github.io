@@ -1,6 +1,6 @@
-# 기존 주소·제목·글은 그대로 유지합니다.
+# 기존 주소와 글은 그대로 유지합니다.
 base_url = "https://babamba-and-bibibig.github.io/"
-title = "학습 블로그 입니다."
+title = "Learning AI"
 description = "Rust와 AI를 공부하며 직접 만든 것과 해결한 문제를 기록합니다."
 default_language = "ko"
 theme = "duckquill"
@@ -32,6 +32,6 @@ show_reading_time = true
 show_theme_switcher = true
 show_feed = false
 links = [
-    { url = "@/_index.md", name = "공부 기록" },
+    { url = "@/_index.md", name = "Notes" },
     { url = "https://github.com/Babamba-and-Bibibig", name = "GitHub" }
 ]
