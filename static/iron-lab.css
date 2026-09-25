@@ -1,65 +1,88 @@
-/* Iron Lab — Duckquill 전용 사용자 스타일.
-   원본 테마와 글은 수정하지 않습니다. 이 파일을 static/iron-lab.css에 저장하세요. */
-
-/* Pretendard 공식 웹폰트: 필요한 글자 묶음만 받는 가변 글꼴입니다.
-   외부 글꼴 서버에 연결하지 못하면 뒤에 지정한 시스템 글꼴을 사용합니다. */
+/* Iron Lab / Reactor — Duckquill 사용자 스타일.
+   검정·실버·레드·골드는 기본 배색, 리액터 블루는 상호작용 색상입니다.
+   테마 원본, 글 내용, 링크 주소는 바꾸지 않습니다. */
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
 
-/* 1. 실버 계열의 밝은 화면. 기본 어두운 화면은 zola.toml에서 선택합니다. */
+/* 1. 밝은 화면: 붉은 배경 번짐 대신 실버 바탕과 선명한 읽기 영역. */
 html:root {
-  --im-bg: #edf0f3;
-  --im-panel: #fafbfc;
-  --im-panel-raised: #ffffff;
-  --im-text: #202631;
-  --im-muted: #586371;
-  --im-border: #cbd1d9;
-  --im-red: #b32035;
-  --im-gold: #826019;
-  --im-tint: rgba(179, 32, 53, .08);
-  --im-shadow: 0 12px 32px rgba(21, 29, 41, .08);
+  --im-bg: #edf0f4;
+  --im-panel: #ffffff;
+  --im-panel-raised: #f8fafc;
+  --im-text: #192430;
+  --im-muted: #536173;
+  --im-border: #ccd5df;
+  --im-red: #a91f35;
+  --im-armor: #ac2338;
+  --im-gold: #806016;
+  --im-arc: #00657f;
+  --im-arc-edge: #168ca8;
+  --im-arc-tint: #e6f3f8;
+  --im-glow-low: rgba(0, 149, 190, .10);
+  --im-glow-high: rgba(0, 149, 190, .25);
+  --im-shadow: 0 6px 20px rgba(24, 40, 60, .055);
+  --im-fg-soft: rgba(25, 36, 48, .05);
+  --im-fg-line: rgba(25, 36, 48, .13);
+  --im-contrast: #ffffff;
   color-scheme: light;
 }
 
-/* 2. 검정·실버·레드·골드 조합의 어두운 화면. */
+/* 2. 어두운 화면: 흰색·실버 글자를 유지하고 반응할 때만 블루를 강조합니다. */
 html:root[data-theme="dark"] {
-  --im-bg: #0d1015;
-  --im-panel: #171c24;
-  --im-panel-raised: #1e2530;
-  --im-text: #e7eaf0;
-  --im-muted: #a6afbc;
-  --im-border: #343d4b;
-  --im-red: #ff6a78;
-  --im-gold: #d5b66f;
-  --im-tint: rgba(214, 50, 72, .12);
-  --im-shadow: 0 16px 44px rgba(0, 0, 0, .22);
+  --im-bg: #0b0f14;
+  --im-panel: #161d26;
+  --im-panel-raised: #1c2531;
+  --im-text: #f0f3f8;
+  --im-muted: #adb9c9;
+  --im-border: #354153;
+  --im-red: #f2838e;
+  --im-armor: #b92c43;
+  --im-gold: #dbc080;
+  --im-arc: #83e5ff;
+  --im-arc-edge: #59d6fa;
+  --im-arc-tint: #15303e;
+  --im-glow-low: rgba(77, 213, 255, .12);
+  --im-glow-high: rgba(77, 213, 255, .34);
+  --im-shadow: 0 12px 32px rgba(0, 0, 0, .20);
+  --im-fg-soft: rgba(240, 243, 248, .05);
+  --im-fg-line: rgba(240, 243, 248, .13);
+  --im-contrast: #08151d;
   color-scheme: dark;
 }
-
-/* 시스템 설정을 선택했을 때도 어두운 화면의 색상을 맞춥니다. */
 @media (prefers-color-scheme: dark) {
-  html:root:not([data-theme="light"]) {
-    --im-bg: #0d1015;
-    --im-panel: #171c24;
-    --im-panel-raised: #1e2530;
-    --im-text: #e7eaf0;
-    --im-muted: #a6afbc;
-    --im-border: #343d4b;
-    --im-red: #ff6a78;
-    --im-gold: #d5b66f;
-    --im-tint: rgba(214, 50, 72, .12);
-    --im-shadow: 0 16px 44px rgba(0, 0, 0, .22);
+  html:root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --im-bg: #0b0f14;
+    --im-panel: #161d26;
+    --im-panel-raised: #1c2531;
+    --im-text: #f0f3f8;
+    --im-muted: #adb9c9;
+    --im-border: #354153;
+    --im-red: #f2838e;
+    --im-armor: #b92c43;
+    --im-gold: #dbc080;
+    --im-arc: #83e5ff;
+    --im-arc-edge: #59d6fa;
+    --im-arc-tint: #15303e;
+    --im-glow-low: rgba(77, 213, 255, .12);
+    --im-glow-high: rgba(77, 213, 255, .34);
+    --im-shadow: 0 12px 32px rgba(0, 0, 0, .20);
+    --im-fg-soft: rgba(240, 243, 248, .05);
+    --im-fg-line: rgba(240, 243, 248, .13);
+    --im-contrast: #08151d;
     color-scheme: dark;
   }
 }
 
-/* 3. Duckquill의 색상·글꼴 변수를 새 디자인에 연결합니다. */
-html:root,
-html:root[data-theme],
-html:root:not([data-theme]) {
-  --accent-color: var(--im-red);
-  --accent-color-alpha: var(--im-tint);
+/* 3. Duckquill에서 사용되는 색상과 글꼴도 같은 값으로 연결합니다. */
+html:root, html:root[data-theme], html:root:not([data-theme]) {
+  --accent-color: var(--im-arc);
+  --accent-color-alpha: var(--im-arc-tint);
+  --contrast-color: var(--im-contrast);
   --bg-color: var(--im-bg);
   --fg-color: var(--im-text);
+  --fg-contrast: var(--im-panel);
+  --fg-muted-1: var(--im-fg-soft);
+  --fg-muted-2: var(--im-fg-line);
+  --fg-muted-3: var(--im-border);
   --fg-muted-4: var(--im-muted);
   --fg-muted-5: var(--im-muted);
   --glass-bg: var(--im-panel);
@@ -70,15 +93,12 @@ html:root:not([data-theme]) {
     BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans CJK KR", sans-serif;
   --font-antique: var(--font-system-ui);
 }
-
-/* 4. 본문과 제목을 같은 글꼴 체계로 정리합니다. 코드 글꼴은 바꾸지 않습니다. */
 body {
-  background: radial-gradient(ellipse at 100% 0%, var(--im-tint), transparent 42rem),
-    var(--im-bg);
+  background: var(--im-bg);
   color: var(--im-text);
   font-family: var(--font-system-ui);
   font-size: 17px;
-  line-height: 1.8;
+  line-height: 1.85;
   -webkit-font-smoothing: antialiased;
 }
 button, input, select, textarea { font-family: inherit; }
@@ -92,167 +112,279 @@ h1, h2, h3, h4, h5, h6 {
   overflow-wrap: anywhere;
 }
 p { word-break: keep-all; overflow-wrap: anywhere; }
+::selection { background: var(--im-arc); color: var(--im-contrast); }
+a:hover { text-decoration-style: solid; }
 
-/* 5. 내용이 적어도 제목·소개·글 목록의 영역이 구분되도록 배치합니다. */
+/* 4. 홈의 제목 영역: 두 모드 모두 검정 패널과 흰 제목으로 대비를 확보합니다. */
 #main-content {
   box-sizing: border-box;
   width: min(100% - 2.5rem, 62rem);
   max-width: none;
-  margin: 3.5rem auto 5rem;
+  margin: 3rem auto 5rem;
   padding: 0;
   align-self: start;
 }
 #main-content > h1 {
   position: relative;
   margin: 0;
-  border: 1px solid var(--im-border);
+  border: 1px solid #354153;
   border-bottom: 0;
-  border-left: 4px solid #bf263c;
+  border-left: 4px solid var(--im-armor);
   border-radius: .8rem .8rem 0 0;
-  background: linear-gradient(120deg, var(--im-panel-raised), var(--im-panel));
-  padding: 2.4rem 2rem .8rem;
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  background: #161d26;
+  padding: 2.7rem 2.25rem .7rem;
+  color: #f0f3f8;
+  font-size: clamp(2rem, 5vw, 3rem);
   text-align: left;
 }
 #main-content > h1::before {
   position: absolute;
-  top: 1.25rem;
-  left: 2rem;
-  width: 2.75rem;
+  top: 1.35rem;
+  left: 2.25rem;
+  width: 4.25rem;
   height: 3px;
-  background: var(--im-gold);
+  background: linear-gradient(90deg, #dbc080 0 63%, transparent 63% 73%, #83e5ff 73%);
   content: "";
 }
 #main-content > h1 + p {
-  margin: 0 0 2rem;
-  border: 1px solid var(--im-border);
+  margin: 0 0 1.9rem;
+  border: 1px solid #354153;
   border-top: 0;
-  border-left: 4px solid #bf263c;
+  border-left: 4px solid var(--im-armor);
   border-radius: 0 0 .8rem .8rem;
-  background: linear-gradient(120deg, var(--im-panel-raised), var(--im-panel));
-  padding: 0 2rem 2rem;
-  color: var(--im-muted);
-  line-height: 1.8;
+  background: #161d26;
+  padding: 0 2.25rem 2.35rem;
+  color: #b8c4d3;
 }
 #main-content small { color: var(--im-muted); }
 
-/* 6. 상단 메뉴를 과한 둥근 모양 대신 간결한 금속 패널처럼 표시합니다. */
+/* 5. 상단 바는 두 테마 모두 어두운 바탕을 사용합니다.
+   hover/active/focus의 글자와 배경을 함께 지정해 대비 역전을 막습니다. */
 #site-nav {
+  --im-glow-low: rgba(77, 213, 255, .12);
+  --im-glow-high: rgba(77, 213, 255, .34);
+  --im-arc-edge: #59d6fa;
+  box-sizing: border-box;
   width: min(100% - 2.5rem, 62rem);
   max-width: none;
-  border: 1px solid var(--im-border);
-  border-top: 2px solid #bf263c;
+  border: 1px solid #354153;
+  border-top: 2px solid #b92c43;
   border-radius: .65rem;
+  background: #121921;
+  color: #eef3f9;
+  color-scheme: dark;
 }
 #site-nav::before {
   border-radius: inherit;
-  background: var(--im-panel);
-  box-shadow: var(--im-shadow);
+  background: #121921;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
-#site-nav nav > ul { justify-content: flex-start; gap: .35rem; }
+#site-nav nav > ul { justify-content: flex-start; gap: .4rem; }
 #site-nav nav #home { margin-right: auto; }
-#site-nav nav #home a,
-#site-nav nav #home a.active {
-  color: var(--im-text);
+#site-nav nav :is(a, button, summary) {
+  border-radius: .4rem;
+  transition: color .16s ease, background-color .16s ease;
+  text-decoration: none;
+}
+#site-nav nav a { line-height: 1.45; }
+#site-nav nav a,
+#site-nav nav #theme-switcher :is(button, summary) {
   background: transparent;
+  color: #c4cedb;
+  -webkit-text-fill-color: currentColor;
   box-shadow: none;
 }
-#site-nav nav #home a .icon { color: var(--im-gold); }
-#site-nav nav a,
-#site-nav nav summary { border-radius: .4rem; line-height: 1.4; }
-#site-nav nav a.active {
-  background: var(--im-tint);
-  color: var(--im-red);
-  box-shadow: inset 0 -2px 0 #bf263c;
+#site-nav nav a.active,
+#site-nav nav #theme-switcher button.active {
+  background: #17303f;
+  color: #a0eaff;
+  box-shadow: inset 0 -2px 0 #59d6fa;
+}
+#site-nav nav a:is(:hover, :focus-visible, :active),
+#site-nav nav a.active:is(:hover, :focus-visible, :active),
+#site-nav nav #theme-switcher :is(button, summary):is(:hover, :focus-visible, :active),
+#site-nav nav #theme-switcher button.active:is(:hover, :focus-visible, :active) {
+  background: #17303f;
+  color: #c1f3ff;
+  -webkit-text-fill-color: currentColor;
+  box-shadow: 0 0 0 1px #59d6fa, 0 0 12px var(--im-glow-low);
+  transform: none;
+}
+/* #home a.active:hover보다 우선하는 규칙으로 제목이 사라지는 오류를 수정합니다. */
+#site-nav nav #home > a,
+#site-nav nav #home > a.active {
+  background: transparent;
+  color: #f0f3f8;
+  -webkit-text-fill-color: currentColor;
+  box-shadow: none;
+  font-weight: 750;
+}
+#site-nav nav #home > a:is(:hover, :focus-visible, :active),
+#site-nav nav #home > a.active:is(:hover, :focus-visible, :active) {
+  background: #17303f;
+  color: #c1f3ff;
+  -webkit-text-fill-color: currentColor;
+  text-shadow: 0 0 10px rgba(108, 222, 255, .22);
+  box-shadow: 0 0 0 1px #59d6fa, 0 0 12px var(--im-glow-low);
+  transform: none;
+}
+/* 집 모양 아이콘 대신 작은 리액터 링. 글 제목 뒤에는 장식을 붙이지 않습니다. */
+#site-nav nav #home > a .icon {
+  box-sizing: border-box;
+  width: 1em;
+  height: 1em;
+  margin-inline-end: .55rem;
+  border: 1px solid #83e5ff;
+  border-radius: 50%;
+  background: radial-gradient(circle, #dafaff 0 20%, #59d6fa 21% 34%, transparent 35% 52%, #276780 53% 65%, transparent 66%);
+  color: #83e5ff;
+  -webkit-mask-image: none;
+  mask-image: none;
+  box-shadow: 0 0 7px rgba(89, 214, 250, .3);
+}
+#site-nav nav .divider { background: #414d5d; }
+#site-nav nav details ul {
+  border: 1px solid #425469;
+  background: #121921;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+#site-nav nav #theme-switcher ul { left: auto; right: 0; transform: none; border-radius: .6rem; }
+#site-nav nav > a:focus {
+  opacity: 1;
+  background: #17303f;
+  color: #c1f3ff;
+  pointer-events: auto;
+}
+#site-nav nav :is(a, button, summary):focus-visible {
+  outline: 2px solid #83e5ff;
+  outline-offset: 3px;
 }
 
-/* 7. 말풍선 형태의 글 카드를 직사각형 패널 형태로 바꿉니다. */
-#article-list { gap: 1.1rem; margin-top: 1.2rem; }
+/* 6. 글 카드: 평소에는 실버/흰 글자, 반응할 때는 리액터 블루. */
+#article-list { gap: 1.15rem; margin-top: 1.2rem; }
 #article-list article {
   border: 1px solid var(--im-border);
-  border-left: 4px solid #bf263c;
+  border-left: 3px solid var(--im-armor);
   border-radius: .7rem;
-  background: linear-gradient(115deg, var(--im-panel-raised), var(--im-panel));
+  background: var(--im-panel);
   padding: 1.8rem 2rem;
   box-shadow: var(--im-shadow);
-  transition: border-color .18s ease, box-shadow .18s ease;
+  transition: border-color .2s ease;
 }
 #article-list article > a { border-radius: inherit; }
-#article-list article:hover {
-  border-color: var(--im-gold);
-  border-left-color: #bf263c;
+#article-list article:is(:hover, :focus-within) {
+  border-color: var(--im-arc-edge);
+  border-left-color: var(--im-arc-edge);
+  box-shadow: 0 0 0 1px var(--im-arc-edge), 0 0 12px var(--im-glow-low);
 }
+#article-list article:active,
 #article-list article:active:not(:has(.tag:active)) { transform: none; }
 #article-list article h3 {
   color: var(--im-text);
   font-size: clamp(1.12rem, 2.5vw, 1.4rem);
   font-family: var(--font-system-ui);
   font-weight: 700;
-  line-height: 1.55;
+  line-height: 1.6;
   letter-spacing: -.02em;
 }
-#article-list article:hover h3 { color: var(--im-gold); }
+#article-list article:is(:hover, :focus-within) h3 { color: var(--im-arc); }
+#article-list article h3 a,
+#article-list article h3 a:is(:hover, :focus-visible, :active, :visited) {
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
+  text-decoration: none;
+}
 #article-list article .details {
-  border-top-color: var(--im-border);
-  padding-top: .8rem;
+  border-top: 1px solid var(--im-border);
+  padding-top: .85rem;
   color: var(--im-muted);
 }
+/* 호버 화살표는 계속 숨깁니다. */
+#article-list article h3::after { display: none; content: none; }
 
-/* 8. 제목 끝의 호버 화살표만 제거합니다. 글 링크는 그대로 작동합니다. */
-#article-list article h3::after {
-  display: none;
-  content: none;
+/* 7. 본문은 밝기별 읽기 패널을 사용하고 골드는 소제목 구분에만 씁니다. */
+#main-content > article {
+  box-sizing: border-box;
+  max-width: 52rem;
+  margin-inline: auto;
+  border: 1px solid var(--im-border);
+  border-top: 3px solid var(--im-gold);
+  border-radius: .7rem;
+  background: var(--im-panel);
+  padding: clamp(1.25rem, 4vw, 2.75rem);
+  box-shadow: var(--im-shadow);
 }
-
-/* 9. 개별 글은 긴 문장을 읽기 편하도록 폭을 제한합니다. */
-#main-content > article { max-width: 48rem; margin-inline: auto; }
-#heading { margin: 1rem 0 2rem; text-align: left; }
+#heading { margin: 0 0 2rem; text-align: left; }
 #heading h1 {
   background: none;
   color: var(--im-text);
   -webkit-text-fill-color: currentColor;
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
 }
 #main-content article > h2 {
+  margin-top: 2.6rem;
   border-left: 3px solid var(--im-gold);
   padding-left: .85rem;
-  margin-top: 2.8rem;
 }
-#main-content a.link { color: var(--im-gold); text-decoration-thickness: 1px; }
-#main-content a:focus-visible,
-#site-nav a:focus-visible,
-#site-nav button:focus-visible {
-  outline: 2px solid var(--im-gold);
-  outline-offset: 4px;
+#main-content a.link { color: var(--im-arc); text-decoration-thickness: 1px; }
+#main-content :is(a, button, summary):focus-visible {
+  outline: 2px solid var(--im-arc-edge);
+  outline-offset: 3px;
 }
-pre, code, kbd, samp {
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-}
+pre, code, kbd, samp { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
 pre { border: 1px solid var(--im-border); border-radius: .6rem; }
 hr { border: 0; height: 1px; background: var(--im-border); }
 hr::after { display: none; }
 #paginator { margin-top: 2.5rem; }
+#paginator:not(:has(a)) { display: none; }
 #site-footer:empty { display: none; }
 
-/* 10. 좁은 화면에서도 메뉴와 한글 제목이 겹치지 않도록 합니다. */
+/* 8. 리액터의 빛만 약 3초 주기로 변화합니다. 글자 투명도/크기는 바꾸지 않습니다.
+   가만히 읽을 때는 재생하지 않고 호버 또는 키보드 포커스에서만 재생합니다. */
+@keyframes reactor-breathe {
+  0%, 100% {
+    box-shadow: 0 0 0 1px var(--im-arc-edge), 0 0 5px var(--im-glow-low), inset 0 0 3px var(--im-glow-low);
+  }
+  50% {
+    box-shadow: 0 0 0 1px var(--im-arc-edge), 0 0 20px var(--im-glow-high), inset 0 0 7px var(--im-glow-low);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #site-nav nav :is(a, button, summary):focus-visible,
+  #article-list article:focus-within {
+    animation: reactor-breathe 3s ease-in-out infinite;
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  #site-nav nav :is(a, button, summary):hover,
+  #article-list article:hover {
+    animation: reactor-breathe 3s ease-in-out infinite;
+  }
+}
+
+/* 9. 휴대전화: 제목과 메뉴를 두 줄로 배치하고 드롭다운의 가로 넘침을 막습니다. */
 @media (max-width: 640px) {
   body { font-size: 16px; }
+  #main-content, #site-nav { width: calc(100% - 2rem); }
   #main-content { margin-top: 2rem; }
   #site-nav { margin-top: .75rem; }
   #site-nav nav > ul { flex-wrap: wrap; }
-  #site-nav nav > ul > li:not(:has(.circle)) { flex: 0 1 auto; }
+  #site-nav nav > ul > li:not(#home) { flex: 0 0 auto; width: auto; }
   #site-nav nav > ul > li#home { flex: 1 0 100%; margin: 0; }
-  #site-nav nav > ul > li#home a { text-align: left; }
+  #site-nav nav > ul > li#home > a { text-align: left; }
   #site-nav nav .divider { display: none; }
-  #main-content > h1 { padding: 2.3rem 1.25rem .6rem; }
+  #site-nav nav #theme-switcher { margin-left: auto; }
+  #main-content > h1 { padding: 2.6rem 1.25rem .7rem; }
   #main-content > h1::before { left: 1.25rem; }
-  #main-content > h1 + p { padding: 0 1.25rem 1.5rem; }
+  #main-content > h1 + p { padding: 0 1.25rem 1.8rem; }
   #article-list article { padding: 1.4rem 1.25rem; }
 }
-
-/* 움직임을 줄이도록 설정한 방문자의 접근성 설정을 존중합니다. */
+/* 움직임 줄이기를 선택한 방문자에게는 정적인 블루 테두리만 표시합니다. */
 @media (prefers-reduced-motion: reduce) {
-  #article-list article, #site-nav * { animation: none; transition: none; }
+  #site-nav nav :is(a, button, summary),
+  #article-list article { animation: none; transition: none; }
 }
