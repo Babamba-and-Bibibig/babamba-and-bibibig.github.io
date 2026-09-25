@@ -3,7 +3,25 @@
 (() => {
   "use strict";
 
+  // 코드 색상도 OS 설정이 아니라 방문자가 선택한 사이트 테마를 따릅니다.
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+  function synchronizeCodeTheme() {
+    const chosen = document.documentElement.dataset.theme;
+    const dark = chosen === "dark" || (chosen !== "light" && systemDark.matches);
+    document.querySelectorAll('link[rel="stylesheet"][href]').forEach((link) => {
+      const path = new URL(link.href, document.baseURI).pathname;
+      if (path.endsWith("/giallo-light.css")) link.media = dark ? "not all" : "all";
+      if (path.endsWith("/giallo-dark.css")) link.media = dark ? "all" : "not all";
+    });
+  }
+  synchronizeCodeTheme();
+  new MutationObserver(synchronizeCodeTheme).observe(document.documentElement, {
+    attributes: true, attributeFilter: ["data-theme"]
+  });
+  systemDark.addEventListener("change", synchronizeCodeTheme);
+
   function initializeCodeBlocks() {
+    synchronizeCodeTheme();
     const languages = {
       python: "Python", py: "Python", rust: "Rust", rs: "Rust",
       javascript: "JavaScript", js: "JavaScript", typescript: "TypeScript",
