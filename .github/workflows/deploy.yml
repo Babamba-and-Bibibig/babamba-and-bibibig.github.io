@@ -1,63 +1,74 @@
-# GitHub의 Actions 화면에 표시할 자동화 작업 이름입니다.
+# Actions 화면에 표시할 자동화 작업 이름입니다.
 name: Deploy Zola blog
 
-# main에 변경 내용이 저장되면 자동으로 실행합니다.
+# main에 변경 내용을 저장하면 자동으로 실행합니다.
 on:
   push:
     branches: ["main"]
 
-  # 필요할 때 Actions 화면에서 수동으로 실행할 수도 있습니다.
+  # Actions 화면에서 수동으로 실행하는 기능도 유지합니다.
   workflow_dispatch:
 
-# 기본적으로 저장소 파일을 읽는 권한만 부여합니다.
+# 저장소 파일을 읽을 수 있도록 허용합니다.
 permissions:
   contents: read
 
-# 블로그 공개 작업이 동시에 실행되지 않도록 합니다.
+# 공개 작업이 동시에 실행되지 않도록 합니다.
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  # 첫 번째 작업: 글과 디자인으로 웹페이지를 만듭니다.
   build:
-    # 네 PC가 아니라 GitHub가 제공하는 Ubuntu 환경에서 실행합니다.
+    # 네 컴퓨터가 아니라 GitHub의 기본 Ubuntu 환경입니다.
     runs-on: ubuntu-latest
 
     steps:
-      # 저장소에 있는 글, 디자인, 설정 파일을 가져옵니다.
+      # 1. 네 저장소의 글과 설정 파일을 가져옵니다.
       - name: Read repository files
         uses: actions/checkout@v6
         with:
-          # 파일을 가져온 뒤 인증 정보를 작업 폴더에 남기지 않습니다.
           persist-credentials: false
 
-      # Zola 공식 도구로 웹페이지를 만들고 공개용 파일을 전달합니다.
-      # @ 뒤의 긴 문자열은 사용할 도구의 버전을 고정하는 값입니다.
+      # 2. Duckquill 테마를 GitHub의 작업용 폴더에 가져옵니다.
+      - name: Download Duckquill theme
+        shell: bash
+        run: |
+          # 명령 실행 중 오류가 발생하면 이후 작업을 중단합니다.
+          set -euo pipefail
+
+          # 테마를 받을 폴더를 준비합니다.
+          mkdir -p themes/duckquill
+          git -C themes/duckquill init
+
+          # Duckquill의 공식 원본 저장소를 연결합니다.
+          git -C themes/duckquill remote add origin https://codeberg.org/daudix/duckquill.git
+
+          # 사용할 버전을 고정해서 가져옵니다.
+          git -C themes/duckquill fetch --depth=1 origin 5b0c3fca2481b4a074fc9b8cc2cffc649de9e182
+          git -C themes/duckquill checkout --detach FETCH_HEAD
+
+      # 3. 기존과 동일하게 Zola로 웹페이지를 생성합니다.
       - name: Build blog with Zola
         uses: getzola/github-pages@066755243e69f508fd1a74739fbf1a65f656c790
         with:
-          # 블로그를 생성할 Zola 버전입니다.
           zola_version: "v0.23.6"
 
-  # 두 번째 작업: 완성된 웹페이지를 인터넷에 공개합니다.
   deploy:
-    # 앞의 build 작업이 성공했을 때만 실행합니다.
+    # 웹페이지 생성에 성공했을 때만 공개합니다.
     needs: build
     runs-on: ubuntu-latest
 
-    # 공개 작업에 필요한 권한만 추가로 부여합니다.
     permissions:
       pages: write
       id-token: write
 
-    # GitHub Pages에 공개하며, 실행 결과에 사이트 주소를 표시합니다.
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      # GitHub 공식 도구로 완성된 블로그를 공개합니다.
+      # 4. 완성된 웹페이지를 GitHub Pages에 공개합니다.
       - name: Publish blog
         id: deployment
         uses: actions/deploy-pages@v4
