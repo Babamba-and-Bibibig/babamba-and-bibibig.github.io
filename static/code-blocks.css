@@ -1,4 +1,7 @@
 /* 기술 글의 코드 표시만 꾸밉니다. 사이트 배색·메뉴·호버 효과는 변경하지 않습니다. */
+/* 긴 코드가 바깥 페이지 전체를 넓히지 않도록 합니다. */
+#main-content { min-width: 0; }
+
 #main-content .pre-container {
   max-width: 100%;
   min-width: 0;
@@ -97,7 +100,7 @@
   text-align: left;
   direction: ltr;
   tab-size: 4;
-  /* Zola의 light-dark() 색상을 방문자가 선택한 사이트 밝기에 맞춥니다. */
+  /* 코드 영역의 스크롤바도 방문자가 선택한 테마 밝기를 따릅니다. */
   color-scheme: inherit !important;
   font-size: .875rem;
   line-height: 1.8;
