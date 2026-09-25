@@ -60,7 +60,8 @@ AI가 코드 작성을 도와주고 전문 지식을 알아보는 데도 도움�
 datetime.datetime을 상속받아 새로운 기능을 추가하거나 행동을 바꿀 수 있다.
 
 
-pythonfrom datetime import datetime
+```python,linenos
+from datetime import datetime
 class CustomDateTime(datetime):
     def to_kr_string(self):
         # 원하는 형식으로 커스텀 출력 메서드 추가
@@ -68,6 +69,7 @@ class CustomDateTime(datetime):
 
 now = CustomDateTime.now()
 print(now.to_kr_string())
+```
 
 
 ### 내 답변
@@ -118,11 +120,14 @@ print(now.to_kr_string())
 ### 리서치 메모
 
 NumPy 라이브러리로 반복문 사용하기
+
+```python,linenos
 import numpy as np
 
 arr = np.array([1, 2, 3, 4])
 for x in arr:
     print(x)
+```
     
 ### 내 답변
 
