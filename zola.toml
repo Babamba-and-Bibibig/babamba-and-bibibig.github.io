@@ -8,6 +8,15 @@ compile_sass = true
 minify_html = true
 build_search_index = false
 
+# 코드 블록의 언어별 문법 색상을 켭니다.
+# 밝은 테마와 어두운 테마에 맞는 색상을 함께 생성합니다.
+[markdown.highlighting]
+light_theme = "github-light"
+dark_theme = "github-dark"
+style = "inline"
+# 언어 이름과 줄 번호 정보를 코드 상자와 코드 본문에 전달합니다.
+data_attr_position = "both"
+
 [extra]
 # 첫 방문 시 어두운 화면으로 시작합니다.
 # 이전에 방문자가 저장한 밝기 설정이 있으면 그 선택이 우선할 수 있습니다.
@@ -20,9 +29,8 @@ accent_color_dark = "#ff6a78"
 # 테마의 별도 번들 글꼴 대신 사용자 CSS의 Pretendard를 사용합니다.
 bundled_fonts = false
 
-# 메뉴 밑줄·리액터 점을 제거하고 밝은 배경을 통일한 디자인입니다.
-# 이전 CSS 파일은 중복해서 읽지 않습니다. 기존 호버 시간과 밝기는 유지합니다.
-styles = ["reactor-ui-v4.css"]
+# 기존 디자인은 유지하고 코드 표시 전용 스타일만 추가합니다.
+styles = ["reactor-ui-v4.css", "code-blocks.css"]
 
 # 기존 글 읽기 기능을 유지합니다.
 show_copy_button = true
