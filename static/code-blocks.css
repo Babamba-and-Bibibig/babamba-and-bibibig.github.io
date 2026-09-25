@@ -1,0 +1,159 @@
+/* 기술 글의 코드 표시만 꾸밉니다. 사이트 배색·메뉴·호버 효과는 변경하지 않습니다. */
+#main-content .pre-container {
+  max-width: 100%;
+  min-width: 0;
+  margin: 1.4rem 0 1.8rem;
+  border: 1px solid var(--im-border);
+  border-radius: .65rem;
+  background: var(--im-panel);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+/* 언어 이름과 복사 버튼이 있는 코드 편집기 형태의 상단 줄입니다. */
+#main-content .pre-container > .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  box-sizing: border-box;
+  min-height: 2.75rem;
+  height: auto;
+  padding: .5rem .85rem;
+  border: 0;
+  border-bottom: 1px solid var(--im-border);
+  border-radius: 0;
+  background: var(--im-panel-raised);
+  background-image: none;
+  animation: none;
+  color: var(--im-muted);
+  font-family: var(--font-system-ui);
+}
+#main-content .pre-container > .header > .code-language {
+  margin: 0;
+  padding-left: .65rem;
+  border-left: 2px solid var(--im-gold);
+  color: var(--im-text);
+  font-size: .8rem;
+  font-weight: 650;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+#main-content .pre-container > .header button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  flex: 0 0 auto;
+  min-height: 2rem;
+  padding: .35rem .6rem;
+  border: 1px solid var(--im-border);
+  border-radius: .35rem;
+  background: var(--im-panel);
+  color: var(--im-muted);
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  transform: none;
+  box-shadow: none;
+  cursor: pointer;
+}
+#main-content .pre-container > .header button:is(:hover, :focus-visible) {
+  border-color: var(--im-arc-edge);
+  background: var(--im-arc-tint);
+  color: var(--im-arc);
+  transform: none;
+}
+#main-content .pre-container > .header button:disabled {
+  opacity: 1;
+  color: var(--im-arc);
+  cursor: default;
+}
+#main-content .pre-container > .header button span {
+  margin: 0;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+#main-content .pre-container .code-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* 긴 코드는 줄을 꺾지 않고 코드 영역 안에서만 가로로 스크롤합니다. */
+#main-content pre {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 1.1rem 1.15rem;
+  border: 1px solid var(--im-border);
+  border-radius: .6rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  text-align: left;
+  direction: ltr;
+  tab-size: 4;
+  /* Zola의 light-dark() 색상을 방문자가 선택한 사이트 밝기에 맞춥니다. */
+  color-scheme: inherit !important;
+  font-size: .875rem;
+  line-height: 1.8;
+  box-shadow: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--im-border) transparent;
+}
+#main-content .pre-container > pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+#main-content pre > code {
+  display: block;
+  min-width: max-content;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas,
+    "Liberation Mono", "Pretendard Variable", monospace;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+/* linenos로 표시한 줄 번호입니다. 복사할 때는 JS에서 따로 제외합니다. */
+#main-content pre .giallo-l {
+  display: inline-block;
+  min-height: 1lh;
+  width: 100%;
+}
+#main-content pre .giallo-ln {
+  display: inline-block;
+  box-sizing: content-box;
+  min-width: 2ch;
+  margin-right: 1rem;
+  padding: 0 .85rem 0 0;
+  border-right: 1px solid var(--im-border);
+  color: var(--im-muted);
+  font-weight: 400;
+  line-height: inherit;
+  text-align: right;
+  user-select: none;
+  opacity: .8;
+}
+#main-content :not(pre) > code {
+  background: var(--im-fg-soft);
+  color: var(--im-arc);
+  overflow-wrap: anywhere;
+}
+@media (max-width: 640px) {
+  #main-content pre { padding: .85rem .75rem; font-size: .8125rem; }
+  #main-content pre .giallo-ln { margin-right: .7rem; padding-right: .6rem; }
+  #main-content .pre-container > .header { padding: .4rem .65rem; }
+}
