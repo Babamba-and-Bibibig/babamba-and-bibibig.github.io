@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>행과 컬럼이 바뀌는 과정 — Pandas 테이블 실험</title>
+<style>
+/* 이 문서 안에서만 적용한다. 블로그의 스타일과 스크립트는 변경하지 않는다. */
+:root{color-scheme:dark;--bg:#14171d;--panel:#1c212b;--text:#edf1f7;--muted:#b1bac9;--line:#465164;--soft:#2a3240;--food:#f0c16b;--electronics:#91c4ff;--clothing:#f2a9c5;--id:#94d8cd}
+:root[data-light]{color-scheme:light;--bg:#f6f7fa;--panel:#fff;--text:#202938;--muted:#4f5c6e;--line:#b3becc;--soft:#e9edf3;--food:#885500;--electronics:#175ba6;--clothing:#96335a;--id:#17685c}
+*{box-sizing:border-box}body{margin:0;background:transparent;color:var(--text);font:15px/1.65 system-ui,-apple-system,"Noto Sans KR",sans-serif}main{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:22px;overflow:hidden}h1{font-size:23px;line-height:1.45;margin:4px 0 10px;letter-spacing:-.7px}.eyebrow{font-size:11px;letter-spacing:1.8px;font-weight:700;color:var(--muted)}p{margin:8px 0}.intro{color:var(--muted);max-width:70ch}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:18px 0 12px}button,select{font:inherit;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);padding:8px 11px;cursor:pointer}button[aria-pressed=true]{border-color:var(--id);background:var(--soft);box-shadow:inset 0 -2px var(--id)}button:hover{background:var(--soft)}button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--electronics);outline-offset:3px}.purpose{padding:12px 15px;border-left:3px solid var(--id);background:var(--panel);margin:14px 0;min-height:92px}.purpose b{display:block;font-size:17px}.purpose span{color:var(--muted)}.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}svg{display:block;width:100%;min-width:900px;height:auto}.hint{font-size:12px;color:var(--muted)}.controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:15px 0 9px}.timeline{display:flex;align-items:center;gap:12px}.timeline label{flex-shrink:0;white-space:nowrap}input[type=range]{width:100%;accent-color:var(--id);cursor:pointer}output{min-width:40px;text-align:right;font-variant-numeric:tabular-nums}.explanation{background:var(--panel);padding:14px 16px;border-radius:10px;min-height:136px;margin-top:14px}.explanation b{color:var(--id);display:block;margin-bottom:5px}.foot{font-size:13px;color:var(--muted);margin:13px 0 0}details{margin-top:12px}summary{cursor:pointer;color:var(--muted)}.static{overflow:auto}table{border-collapse:collapse;min-width:420px;font-size:13px;margin:10px 0 18px}td,th{border:1px solid var(--line);padding:7px 10px;text-align:left}caption{text-align:left;font-weight:700;padding:8px 0}.theme{margin-left:auto;font-size:12px}.legend{display:flex;gap:15px;flex-wrap:wrap;font-size:12px;margin-top:10px}.legend span:nth-child(1){color:var(--food)}.legend span:nth-child(2){color:var(--electronics)}.legend span:nth-child(3){color:var(--clothing)}@media(max-width:540px){main{padding:14px;border-radius:12px}h1{font-size:21px}.tabs button{font-size:13px;padding:8px}.purpose{min-height:125px}.explanation{min-height:180px}.theme{margin-left:0}}
+</style>
+</head>
+<body>
+<main id="lab">
+<div class="eyebrow">INTERACTIVE NOTE / ROWS × COLUMNS</div>
+<h1>값이 컬럼 이름이 되면 무엇이 달라질까?</h1>
+<p class="intro">버튼을 누르면 왼쪽 표의 값이 오른쪽 표로 이동한다. 숫자의 이동과 카테고리 이름의 이동을 따로 보자. 슬라이더를 움직이면 중간에서 멈출 수 있다.</p>
+<nav class="tabs" aria-label="데이터 변환 선택">
+<button type="button" data-mode="group">① agg · 기록 합치기</button>
+<button type="button" data-mode="pivot">② pivot · 값 → 컬럼</button>
+<button type="button" data-mode="melt">③ melt · 컬럼 → 값</button>
+<button type="button" data-mode="stats">고객별 지표 만들기</button>
+<button type="button" data-mode="swap">비교 대상 바꾸기</button>
+</nav>
+<div class="purpose"><b id="question"></b><span id="purpose"></span></div>
+<div class="scroll" tabindex="0" aria-label="변환 그림. 좁은 화면에서는 가로로 스크롤할 수 있습니다."><svg id="board" viewBox="0 0 960 418" role="img" aria-labelledby="svg-title svg-desc"></svg></div>
+<p class="hint">왼쪽은 변환 전, 오른쪽은 변환 후다. 좁은 화면에서는 그림을 좌우로 밀어 볼 수 있다. 이동 중인 조각은 출처를 보여주는 표시이며, 새 거래가 아니다.</p>
+<div class="legend"><span>food · 식품</span><span>electronics · 전자제품</span><span>clothing · 의류</span></div>
+<div class="controls">
+<button id="play" type="button">재생</button><button id="replay" type="button">처음부터</button>
+<label for="speed">속도</label><select id="speed"><option value="0.7">느리게</option><option value="1" selected>보통</option><option value="1.6">빠르게</option></select>
+<button type="button" class="theme" id="theme">그림 밝기 전환</button>
+</div>
+<div class="timeline"><label for="progress">진행</label><input id="progress" type="range" min="0" max="1000" value="0" aria-label="변환 진행 위치"><output id="percent" for="progress">0%</output></div>
+<div class="explanation" aria-live="polite"><b id="phase"></b><span id="explain"></span></div>
+<p class="foot" id="result"></p>
+<details><summary>애니메이션 대신 변환 전·후 표 읽기</summary><div class="static" id="static"></div></details>
+<noscript><p>움직이는 그림은 JavaScript가 필요하다. 본문에 같은 데이터의 표와 설명을 함께 적어 두었다.</p></noscript>
+</main>
+<script>
+(() => {
+'use strict';
+// 외부 라이브러리·통신 없이 가상의 예제 데이터만 사용한다.
+const $ = id => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+const raw = {headers:['record_id','customer_id','category','amount'],widths:[84,108,128,100],rows:[['r1','101','food','10,000'],['r2','101','food','5,000'],['r3','101','electronics','30,000'],['r4','101','clothing','5,000'],['r5','102','food','7,000'],['r6','102','clothing','20,000']]};
+const pairs = {headers:['customer_id','category','total_amount'],widths:[116,151,153],rows:[['101','food','15,000'],['101','electronics','30,000'],['101','clothing','5,000'],['102','food','7,000'],['102','clothing','20,000']]};
+const wide = {headers:['customer_id','food','electronics','clothing'],widths:[114,95,116,95],rows:[['101','15,000','30,000','5,000'],['102','7,000','0','20,000']]};
+const long = {headers:['customer_id','category','total_amount'],widths:[116,151,153],rows:[['101','food','15,000'],['102','food','7,000'],['101','electronics','30,000'],['102','electronics','0'],['101','clothing','5,000'],['102','clothing','20,000']]};
+const stats = {headers:['customer_id','total','mean','max'],widths:[114,102,102,102],rows:[['101','50,000','12,500','30,000'],['102','27,000','13,500','20,000']]};
+const flipped = {headers:['category','101','102'],widths:[160,130,130],rows:[['food','15,000','7,000'],['electronics','30,000','0'],['clothing','5,000','20,000']]};
+const modes = {
+ group:{src:raw,dst:pairs,left:'한 행 = 금액 기록 하나',right:'한 행 = 고객 × 카테고리',question:'같은 고객이 같은 종류에 쓴 돈을 합치려면?',purpose:'구분 기준은 customer_id + category. 여러 기록을 한 합계로 바꾼다.',phases:[['묶을 기준을 정한다','101번 고객의 food 두 기록은 같은 그룹이다. record_id가 다르므로 원본에서는 서로 다른 기록이다.'],['같은 그룹의 금액이 한 칸으로 모인다','10,000원과 5,000원을 더해 15,000원을 만든다. 이 단계는 위치만 바꾸는 것이 아니라 계산하는 단계다.'],['개별 기록 대신 합계가 남는다','101 × food의 15,000원만으로 원래 두 금액을 되찾을 수 없다. record_id와 개별 금액은 이 결과에서 사라졌다.']],result:'기록 6행 → 관측된 고객·카테고리 5행. 전체 금액 77,000원은 같지만 기록의 세부 내역은 요약된다.'},
+ pivot:{src:pairs,dst:wide,left:'한 행 = 고객 × 카테고리',right:'한 행 = 고객 한 명',question:'고객마다 소비 구성을 나란히 비교하려면?',purpose:'category의 값은 컬럼 이름으로, total_amount는 고객·카테고리가 만나는 칸으로 이동한다.',phases:[['category 안에 종류가 들어 있다','food는 아직 한 셀의 값이다. 101번 고객의 식품 합계는 고객 ID, 카테고리, 금액 세 값으로 읽는다.'],['종류 값은 제목으로, 금액은 해당 칸으로 이동한다','food가 오른쪽 컬럼 이름이 된다. 15,000원은 101 행 × food 컬럼의 칸으로 이동한다. category라는 정보가 없어지는 것이 아니다.'],['같은 사실을 고객 한 행에 모았다','101 × food = 15,000원이라는 뜻은 그대로다. 새로 만든 102 × electronics 칸의 0은 미구매라는 전제로 채운 값이지, 관측된 거래가 아니다.']],result:'여기서는 먼저 집계한 표를 pivot으로 재배치한다. 원본에 pivot_table(aggfunc="sum")을 적용하면 ①의 집계와 ②의 배치를 함께 처리한다.'},
+ melt:{src:wide,dst:long,left:'한 행 = 고객 한 명',right:'한 행 = 고객 × 카테고리',question:'카테고리라는 하나의 기준으로 필터·그룹화를 하려면?',purpose:'여러 컬럼 이름을 category 값으로 풀고, 각 셀의 금액을 total_amount에 모은다.',phases:[['컬럼 이름에도 정보가 들어 있다','food 컬럼의 15,000원은 종류 이름과 금액이 떨어져 저장된 상태다. 고객 ID도 함께 보존해야 한다.'],['컬럼 이름과 금액을 다시 한 행에 담는다','food라는 제목은 두 고객의 category 값으로 반복된다. 101과 15,000원, 102와 7,000원의 연결은 그대로 유지한다.'],['행은 늘어도 고객과 원본 기록은 늘지 않는다','2명 × 3카테고리 = 6행이다. 15,000원은 여전히 합계이며 10,000원과 5,000원으로 분해되지 않는다. 채운 0도 한 행으로 나온다.']],result:'2행 × 3개 금액 컬럼 → 6행 × 금액 컬럼 1개. 카테고리 정보는 컬럼 이름에서 category 값으로 이동한다. 고객 수는 계속 2명이다.'},
+ stats:{src:raw,dst:stats,left:'원본: 한 행 = 금액 기록 하나',right:'한 행 = 고객 한 명',question:'종류 구분 없이 고객의 총액·평균·최댓값이 필요하다면?',purpose:'고객만 묶고 amount에 서로 다른 계산을 적용한다. 오른쪽 이름은 카테고리가 아니라 계산 지표다.',phases:[['고객만 구분 기준에 남긴다','101번 고객의 네 기록은 카테고리가 달라도 같은 그룹으로 계산한다.'],['같은 기록으로 서로 다른 지표를 만든다','네 금액에서 합계 50,000원, 기록당 평균 12,500원, 최댓값 30,000원을 각각 계산한다.'],['계산 지표는 서로 다른 질문에 답한다','total, mean, max는 원본 category의 값이 아니다. 이 지표들을 서로 더한 값은 총소비액이 아니다.']],result:'이 결과에는 종류별 구분이 없다. 총액·평균·최댓값만 가지고 식품 합계 15,000원을 다시 알아낼 수는 없다.'},
+ swap:{src:wide,dst:flipped,left:'행 = 고객 / 컬럼 = 카테고리',right:'행 = 카테고리 / 컬럼 = 고객',question:'이번에는 카테고리별로 두 고객을 비교하려면?',purpose:'고객과 카테고리를 반대 축에 배치한다. 비교 대상이 바뀌지만 각 조합의 금액은 바뀌지 않는다.',phases:[['행의 비교 대상부터 고른다','왼쪽은 고객마다 한 행이다. 이번에는 카테고리마다 한 행으로 보고 싶다.'],['식별 기준과 분류 기준의 위치를 바꾼다','food는 행의 기준으로 내려가고 101은 컬럼 이름으로 이동한다. 15,000원은 food 행 × 101 컬럼으로 이동한다.'],['표 방향은 달라도 같은 금액이다','여전히 101번 고객의 식품 합계는 15,000원이다. 총액·단위·집계 기간은 이 위치 이동만으로 바뀌지 않는다.']],result:'현재 금액 표의 두 축을 교환한 결과다. 모든 종류의 피벗이 단순 전치인 것은 아니다. 실제 목적에 따라 index와 columns를 선택한다.'}
+};
+function node(tag,attrs={},text){const e=document.createElementNS(NS,tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e;}
+function color(text){return ['food','electronics','clothing'].includes(text)?`var(--${text})`:'var(--text)';}
+function position(table,side,row,col){const x=(side?522:18)+table.widths.slice(0,col).reduce((a,b)=>a+b,0)+table.widths[col]/2;return{x,y:90+(row+1)*38};}
+let mode='pivot',progress=0,playing=false,last=0,raf=0,flights=[],destCells=[],phase=-1;
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+function drawTable(table,side,title){const svg=$('board'),x=side?522:18;svg.append(node('text',{x,y:29,fill:'var(--text)','font-size':16,'font-weight':650},title));svg.append(node('text',{x,y:52,fill:'var(--muted)','font-size':12},side?'변환 후 · 같은 사실을 어떤 단위로 읽는가?':'변환 전 · 원래 정보의 위치를 확인한다'));
+ for(let r=-1;r<table.rows.length;r++)for(let c=0;c<table.headers.length;c++){const p=position(table,side,r,c),value=r<0?table.headers[c]:table.rows[r][c];svg.append(node('rect',{x:p.x-table.widths[c]/2,y:p.y-19,width:table.widths[c],height:38,fill:r<0?'var(--soft)':'var(--panel)',stroke:'var(--line)','stroke-width':.65}));const text=node('text',{x:p.x,y:p.y+4,'text-anchor':'middle',fill:color(value),'font-size':value.length>12?11:12.5,'font-family':'ui-monospace,monospace','font-weight':r<0?700:500},value);svg.append(text);if(side)destCells.push(text);}
+}
+function flight(sr,sc,dr,dc,label,tint,delay=0){const m=modes[mode],a=position(m.src,0,sr,sc),b=position(m.dst,1,dr,dc),g=node('g'),w=Math.max(62,label.length*7.2+16);g.append(node('rect',{x:-w/2,y:-15,width:w,height:30,rx:7,fill:'var(--bg)',stroke:tint||color(label),'stroke-width':1.8}));g.append(node('text',{'text-anchor':'middle',y:4,fill:tint||color(label),'font-size':12.5,'font-family':'ui-monospace,monospace','font-weight':700},label));$('board').append(g);flights.push({g,a,b,delay});}
+function makeFlights(){const m=modes[mode];if(mode==='group'){const maps=[0,0,1,2,3,4];maps.forEach((r,i)=>flight(i,3,r,2,m.src.rows[i][3],color(m.src.rows[i][2]),i*.023));[0,2,3,4,5].forEach((i,r)=>flight(i,2,r,1,m.src.rows[i][2],null,r*.025));}
+ if(mode==='pivot'){const cols={food:1,electronics:2,clothing:3};m.src.rows.forEach((r,i)=>{const c=cols[r[1]],dr=r[0]==='101'?0:1;flight(i,1,-1,c,r[1],null,i*.02);flight(i,2,dr,c,r[2],color(r[1]),.18+i*.018);});[0,3].forEach((i,r)=>flight(i,0,r,0,m.src.rows[i][0],'var(--id)',.1));}
+ if(mode==='melt'){m.dst.rows.forEach((r,i)=>{const sr=r[0]==='101'?0:1,sc={food:1,electronics:2,clothing:3}[r[1]];flight(-1,sc,i,1,r[1],null,i*.015);flight(sr,sc,i,2,r[2],color(r[1]),.16+i*.015);flight(sr,0,i,0,r[0],'var(--id)',.08+i*.01);});}
+ if(mode==='stats'){m.src.rows.forEach((r,i)=>{const dr=r[1]==='101'?0:1;[1,2,3].forEach((c)=>flight(i,3,dr,c,r[3],color(r[2]),.015*i+.04*c));});}
+ if(mode==='swap'){for(let c=1;c<4;c++){flight(-1,c,c-1,0,m.src.headers[c],null,c*.025);for(let r=0;r<2;r++)flight(r,c,c-1,r+1,m.src.rows[r][c],color(m.src.headers[c]),.17+c*.02);}for(let r=0;r<2;r++)flight(r,0,-1,r+1,m.src.rows[r][0],'var(--id)',.09);}}
+function staticTables(){const box=$('static');box.replaceChildren();[['변환 전',modes[mode].src],['변환 후',modes[mode].dst]].forEach(([label,t])=>{const table=document.createElement('table');const cap=table.createCaption();cap.textContent=label;const head=table.createTHead().insertRow();t.headers.forEach(h=>{const th=document.createElement('th');th.scope='col';th.textContent=h;head.append(th);});const body=table.createTBody();t.rows.forEach(r=>{const row=body.insertRow();r.forEach(v=>{row.insertCell().textContent=v;});});box.append(table);});}
+function paint(){progress=Math.max(0,Math.min(1,progress));$('progress').value=Math.round(progress*1000);$('percent').value=Math.round(progress*100)+'%';const show=Math.max(0,Math.min(1,(progress-.72)/.16));destCells.forEach(e=>e.setAttribute('opacity',.13+.87*show));for(const f of flights){const t=Math.max(0,Math.min(1,(progress-.08-f.delay*.55)/.47)),ease=t*t*(3-2*t),x=f.a.x+(f.b.x-f.a.x)*ease,y=f.a.y+(f.b.y-f.a.y)*ease-45*Math.sin(Math.PI*t);f.g.setAttribute('transform',`translate(${x} ${y})`);f.g.setAttribute('opacity',t<=0||progress>=.88?0:Math.min(1,t*12,Math.max(0,(.88-progress)*12)));}const current=progress<.19?0:progress<.81?1:2;if(current!==phase){phase=current;$('phase').textContent=modes[mode].phases[current][0];$('explain').textContent=modes[mode].phases[current][1];}}
+function pause(){playing=false;cancelAnimationFrame(raf);$('play').textContent='재생';}
+function tick(now){if(!playing)return;progress+=(now-last)/6500*Number($('speed').value);last=now;paint();if(progress>=1)pause();else raf=requestAnimationFrame(tick);}
+function play(){if(progress>=1)progress=0;playing=true;last=performance.now();$('play').textContent='일시정지';raf=requestAnimationFrame(tick);}
+function select(next,auto=true){pause();mode=next;progress=0;phase=-1;flights=[];destCells=[];const m=modes[mode];$('board').replaceChildren(node('title',{id:'svg-title'},m.question),node('desc',{id:'svg-desc'},m.purpose));drawTable(m.src,0,m.left);drawTable(m.dst,1,m.right);$('board').append(node('text',{x:480,y:220,'text-anchor':'middle',fill:'var(--id)','font-size':28},'→'));makeFlights();$('question').textContent=m.question;$('purpose').textContent=m.purpose;$('result').textContent=m.result;document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));staticTables();if(reduce.matches)progress=1;paint();if(auto&&!reduce.matches)play();}
+// 사용자가 직접 재생하거나 진행 위치를 바꿀 수 있다. 자동 반복은 하지 않는다.
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>select(b.dataset.mode)));
+$('play').addEventListener('click',()=>playing?pause():play());$('replay').addEventListener('click',()=>{pause();progress=0;paint();play();});$('progress').addEventListener('input',()=>{pause();progress=Number($('progress').value)/1000;paint();});$('theme').addEventListener('click',()=>document.documentElement.toggleAttribute('data-light'));
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
+// 프레임 높이만 내용에 맞춘다. 부모 문서의 CSS·테마·DOM에는 손대지 않는다.
+function resize(){try{if(window.frameElement)window.frameElement.style.height=Math.ceil($('lab').getBoundingClientRect().height+2)+'px';}catch(_){}}
+new ResizeObserver(resize).observe($('lab'));select('pivot',false);let first=true;new IntersectionObserver(entries=>{if(entries[0].isIntersecting){if(first&&!reduce.matches){first=false;play();}}else pause();},{threshold:.15}).observe($('lab'));
+})();
+</script>
+</body>
+</html>
