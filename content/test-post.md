@@ -3,6 +3,8 @@ title = "Pandas agg(), pivot_table(), melt(): 행과 컬럼을 분석 목적에 
 description = "컬럼의 값이 컬럼 이름으로 올라가고 다시 행의 값으로 내려올 때, 무엇이 유지되고 무엇이 달라질까? 움직이는 표로 분석 단위, 집계, 재배치와 평균의 의미를 연결한다."
 date = 2026-09-29
 updated = 2026-09-29
+slug = "pandas-agg-pivot-table-melt"
+aliases = ["/test-post/"]
 +++
 
 `agg()`는 집계하고, `pivot_table()`은 펼치고, `melt()`는 길게 만든다고 외울 수 있다. 하지만 이 설명만으로는 **왜 지금 이 표를 바꿔야 하는지, 바꾼 표에서 무엇을 계산해도 되는지** 판단하기 어렵다.
