@@ -3,7 +3,8 @@ title = "Weekly Paper 02 평균과 테이블 병합"
 description = "평균 구매 금액을 해석할 때의 주의점과 두 팀의 고객 데이터를 합치는 순서를 정리했다."
 date = 2026-10-03
 updated = 2026-10-03
-slug = "test-gradient-descent"
+slug = "weekly-paper-02"
+aliases = ["/test-gradient-descent/"]
 +++
 
 <style>
