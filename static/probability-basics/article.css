@@ -1,0 +1,33 @@
+/* 이 글에만 불러오는 수식·그림 표시 설정입니다. */
+#main-content .probability-math {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: .2rem .1rem;
+}
+
+#main-content .probability-math .katex-display {
+  margin: .65rem 0;
+}
+
+#main-content article .katex {
+  font-size: 1.06em;
+}
+
+#main-content article img[src*="/probability-basics/"] {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 1.4rem auto;
+  border-radius: .8rem;
+}
+
+#main-content article img[src$="/overview.svg"] {
+  max-width: 480px;
+}
+
+@media (max-width: 640px) {
+  #main-content article .katex {
+    font-size: 1em;
+  }
+}
