@@ -1,0 +1,23 @@
+/* Article-local sizing for formulas, data tables, and self-contained figures. */
+.supervised-math {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.2rem 0;
+  margin: 1rem 0;
+}
+.supervised-math .katex-display { margin: 0.4rem 0; }
+article img[src*="/supervised-learning-basics/"] {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 1.75rem auto;
+  border-radius: 0.75rem;
+}
+article img[src$="/workflow-ko.svg"],
+article img[src$="/workflow-en.svg"] { max-width: 480px; }
+article .katex { font-size: 1.06em; }
+article table { font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) {
+  article .katex { font-size: 1em; }
+}
