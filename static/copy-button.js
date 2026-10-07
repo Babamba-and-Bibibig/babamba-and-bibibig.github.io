@@ -3,6 +3,18 @@
 (() => {
   "use strict";
 
+  // 버튼과 접근성 안내는 현재 문서의 언어를 따릅니다.
+  const english = document.documentElement.lang === "en";
+  const copyLabels = english ? {
+    title: "Copy code", copy: "Copy", copied: "Copied", failed: "Copy failed",
+    success: "Code copied.",
+    failure: "The clipboard could not be accessed. Select the code and copy it manually."
+  } : {
+    title: "코드 복사", copy: "복사", copied: "복사됨", failed: "복사 실패",
+    success: "코드를 복사했습니다.",
+    failure: "클립보드에 접근하지 못했습니다. 코드를 선택해 직접 복사해 주세요."
+  };
+
   // 코드 색상도 OS 설정이 아니라 방문자가 선택한 사이트 테마를 따릅니다.
   const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
   function synchronizeCodeTheme() {
@@ -43,13 +55,13 @@
 
       const button = document.createElement("button");
       button.type = "button";
-      button.title = "코드 복사";
-      button.setAttribute("aria-label", `${title.textContent} 코드 복사`);
+      button.title = copyLabels.title;
+      button.setAttribute("aria-label", english ? `Copy ${title.textContent} code` : `${title.textContent} 코드 복사`);
       const icon = document.createElement("i");
       icon.className = "icon";
       icon.setAttribute("aria-hidden", "true");
       const label = document.createElement("span");
-      label.textContent = "복사";
+      label.textContent = copyLabels.copy;
       button.append(icon, label);
 
       const status = document.createElement("span");
@@ -66,7 +78,7 @@
 
       // 키보드로도 긴 코드 영역에 진입해 좌우로 스크롤할 수 있습니다.
       block.tabIndex = 0;
-      block.setAttribute("aria-label", `${title.textContent} 코드`);
+      block.setAttribute("aria-label", english ? `${title.textContent} code` : `${title.textContent} 코드`);
 
       button.addEventListener("click", async () => {
         // 줄 번호는 화면에만 표시하고 실제로 복사하는 코드에서 제외합니다.
@@ -77,15 +89,15 @@
         try {
           if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
           await navigator.clipboard.writeText(text);
-          label.textContent = "복사됨";
-          status.textContent = "코드를 복사했습니다.";
+          label.textContent = copyLabels.copied;
+          status.textContent = copyLabels.success;
         } catch (_) {
-          label.textContent = "복사 실패";
-          status.textContent = "클립보드에 접근하지 못했습니다. 코드를 선택해 직접 복사해 주세요.";
+          label.textContent = copyLabels.failed;
+          status.textContent = copyLabels.failure;
         } finally {
           window.setTimeout(() => {
             button.disabled = false;
-            label.textContent = "복사";
+            label.textContent = copyLabels.copy;
           }, 1600);
         }
       });

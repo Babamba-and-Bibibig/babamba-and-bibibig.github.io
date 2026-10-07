@@ -1,0 +1,69 @@
+/* Each link opens the same article in the selected language, without JavaScript. */
+#main-content .content-language-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .65rem;
+  margin: 1rem 0;
+  color: var(--im-muted);
+  font-size: .875rem;
+  line-height: 1.4;
+}
+
+#main-content .language-caption { font-weight: 600; }
+
+#main-content .language-options {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .2rem;
+  padding: .2rem;
+  border: 1px solid var(--im-border);
+  border-radius: .65rem;
+  background: var(--im-panel-raised);
+}
+
+#main-content .language-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 2.75rem;
+  padding: .5rem .9rem;
+  border: 1px solid transparent;
+  border-radius: .4rem;
+  background: transparent;
+  color: var(--im-muted);
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+#main-content .language-option[aria-current="page"] {
+  border-color: var(--im-arc-edge);
+  background: var(--im-arc-tint);
+  color: var(--im-arc);
+}
+
+#main-content .language-option:is(:hover, :focus-visible) {
+  border-color: var(--im-arc-edge);
+  background: var(--im-arc-tint);
+  color: var(--im-arc);
+  text-decoration: none;
+}
+
+#main-content .language-option:focus-visible {
+  outline: 2px solid var(--im-arc-edge);
+  outline-offset: 3px;
+}
+
+#main-content .list-language-bar .content-language-switcher {
+  justify-content: flex-end;
+  margin-top: 0;
+}
+
+#site-nav nav #language-switcher ul {
+  left: auto;
+  right: 0;
+  transform: none;
+  border-radius: .6rem;
+}

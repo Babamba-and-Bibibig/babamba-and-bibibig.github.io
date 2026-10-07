@@ -1,0 +1,17 @@
+{# Link only to translations that Zola has actually built for this page or section. #}
+{%- set content_translations = page?.translations or section?.translations or [] -%}
+{%- if content_translations | length > 1 -%}
+<nav class="content-language-switcher" aria-label="{% if lang == 'ko' %}읽을 언어 선택{% else %}Choose a reading language{% endif %}">
+    <span class="language-caption">{% if lang == "ko" %}언어{% else %}Language{% endif %}</span>
+    <div class="language-options">
+    {%- for language_code in ["ko", "en"] -%}
+        {%- for translation in content_translations -%}
+            {%- set translation_lang = translation.lang or config.default_language -%}
+            {%- if translation_lang == language_code -%}
+                <a class="language-option" href="{{ translation.permalink }}" lang="{{ translation_lang }}" hreflang="{{ translation_lang }}"{% if translation_lang == lang %} aria-current="page"{% else %} rel="alternate"{% endif %}>{% if translation_lang == "ko" %}한국어{% else %}English{% endif %}</a>
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endfor -%}
+    </div>
+</nav>
+{%- endif -%}

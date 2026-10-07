@@ -1,0 +1,19 @@
+{# Use real translation permalinks instead of replacing pieces of the current URL. #}
+{%- set content_translations = page?.translations or section?.translations or [] -%}
+{%- if content_translations | length > 1 -%}
+<li id="language-switcher">
+    <details class="closable">
+        <summary class="circle" title="{% if lang == 'ko' %}언어 선택{% else %}Choose language{% endif %}">
+            <i class="icon" aria-hidden="true"></i>
+        </summary>
+        <ul>
+        {%- for translation in content_translations -%}
+            {%- set translation_lang = translation.lang or config.default_language -%}
+            {%- if translation_lang != lang -%}
+            <li><a href="{{ translation.permalink }}" lang="{{ translation_lang }}" hreflang="{{ translation_lang }}" rel="alternate">{% if translation_lang == "ko" %}한국어{% else %}English{% endif %}</a></li>
+            {%- endif -%}
+        {%- endfor -%}
+        </ul>
+    </details>
+</li>
+{%- endif -%}

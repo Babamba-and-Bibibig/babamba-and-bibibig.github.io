@@ -22,7 +22,8 @@
   border-radius: .8rem;
 }
 
-#main-content article img[src$="/overview.svg"] {
+#main-content article img[src$="/overview.svg"],
+#main-content article img[src$="/overview-en.svg"] {
   max-width: 480px;
 }
 

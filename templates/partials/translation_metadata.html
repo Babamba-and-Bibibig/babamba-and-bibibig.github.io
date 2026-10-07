@@ -1,0 +1,8 @@
+{%- set content_translations = page?.translations or section?.translations or [] -%}
+{%- for translation in content_translations -%}
+    {%- set translation_lang = translation.lang or config.default_language -%}
+    <link rel="alternate" hreflang="{{ translation_lang }}" href="{{ translation.permalink }}" />
+    {%- if translation_lang == config.default_language -%}
+    <link rel="alternate" hreflang="x-default" href="{{ translation.permalink }}" />
+    {%- endif -%}
+{%- endfor -%}
