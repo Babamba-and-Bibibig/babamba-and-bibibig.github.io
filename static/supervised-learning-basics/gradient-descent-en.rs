@@ -1,7 +1,7 @@
-// Compute gradient descent on the same four-row dataset without external packages.
-// Save this file as main.rs in a Rust binary project to run it.
+// Learn fees for four deliveries with gradient descent and no external packages.
+// Each row is [1 for the base fee, additional distance (km), special packaging (no=0, yes=1)].
+// Fees are in thousand won. Save this as main.rs and run it in a Rust project.
 fn main() {
-    // Each row is [1 for the intercept, x1, x2]. f64 is a 64-bit floating-point type.
     let xb: [[f64; 3]; 4] = [
         [1.0, 0.0, 0.0],
         [1.0, 1.0, 0.0],
@@ -9,13 +9,14 @@ fn main() {
         [1.0, 1.0, 1.0],
     ];
     let y: [f64; 4] = [1.0, 3.0, 4.0, 6.0];
-    let mut theta = [0.0_f64; 3]; // mut: a variable that can be updated, [b, w1, w2]
+    let mut theta = [0.0_f64; 3]; // [base fee b, fee per km w_u, special packaging fee w_v]
     let lr = 0.2;
-    let n = y.len() as f64;       // Convert the array length for floating-point calculations
+    let n = y.len() as f64;
 
-    for _ in 0..2000 {           // The upper bound 2000 is excluded, giving 2000 iterations
+    for _ in 0..2000 {
         let mut gradient = [0.0_f64; 3];
         for i in 0..y.len() {
+            // Add the base fee, distance fee, and packaging fee for one delivery.
             let mut prediction = 0.0;
             for j in 0..theta.len() {
                 prediction += xb[i][j] * theta[j];
@@ -25,7 +26,7 @@ fn main() {
                 gradient[j] += xb[i][j] * error / n;
             }
         }
-        // Compute gradients for all rows at the existing coefficients, then update them together.
+        // Calculate derivatives for all deliveries at the old coefficients, then update all three fees.
         for j in 0..theta.len() {
             theta[j] -= lr * gradient[j];
         }
@@ -35,11 +36,13 @@ fn main() {
     for j in 0..theta.len() {
         assert!((theta[j] - expected[j]).abs() < 1e-8);
     }
-    let new_input = [1.0, 3.0, 4.0];
+    // Predict a delivery with 3 additional km and special packaging.
+    let new_input = [1.0, 3.0, 1.0];
     let mut new_prediction = 0.0;
     for j in 0..theta.len() {
         new_prediction += new_input[j] * theta[j];
     }
-    println!("Coefficients [b, w1, w2]: {:?}", theta);
-    println!("Prediction for the new input: {:.6}", new_prediction);
+    assert!((new_prediction - 10.0).abs() < 1e-8);
+    println!("Coefficients [b, w_u, w_v]: {:?}", theta);
+    println!("Predicted delivery fee (thousand won): {:.6}", new_prediction);
 }

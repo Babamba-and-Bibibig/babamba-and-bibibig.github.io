@@ -1,8 +1,8 @@
 +++
 title = "Supervised Learning: Core Concepts and Basic Coding"
-description = "Start with inputs and targets, then explore MSE, derivatives, gradient descent, NumPy arrays, and training/test splits through small numerical examples and Python and Rust code."
+description = "Follow a small delivery-fee prediction problem to understand supervised learning, errors and loss, derivatives, and gradient descent, then check the calculations with NumPy and scikit-learn."
 date = 2026-10-07
-updated = 2026-10-07
+updated = 2026-10-08
 slug = "supervised-learning-basics"
 
 [extra]
@@ -11,63 +11,68 @@ toc = true
 styles = ["supervised-learning-basics/article.css"]
 +++
 
-When you first study machine learning, unfamiliar words such as `fit`, `MSE`, `gradient`, and `shape` arrive all at once. Even when the code runs, it is easy to lose track of what went in, what changed, and what the numbers in the output mean.
+Imagine building a program that gives customers an estimated delivery fee when they place an order. The program needs to estimate the fee before the delivery is complete. The information we have comes from completed orders: their delivery distances and the fees actually charged.
 
-This article follows **the process of learning a prediction rule from data with inputs and targets** from the beginning. To understand the calculations, we use small datasets that we can work through by hand. To assess prediction performance, we use separate data that did not take part in training. No prior knowledge of derivatives or matrices is assumed. Mathematical symbols and the values returned by the code are explained where they are needed.
+To find a prediction rule in these records, we need to answer three questions. **What information will we give the program? How will we judge how far its predictions are from the recorded fees? Which parts of the rule should we change, and how, to improve the predictions?**
 
-The complete Python code is collected in section 17. You can first read what each part of the code means, then run it from beginning to end. Section 18 also contains a short Rust version of the same gradient descent calculation.
+This article works through those questions using one delivery-fee example. Derivatives and gradient descent will arise as we need them. We will first adjust the base fee or the per-kilometer fee in our prediction rule by a small amount and observe how the predicted fees and the loss change. We will then express those changes mathematically and put the same calculations into code.
 
-## 1. What does supervised learning learn?
+## 1. Using past delivery records to predict the fee for a new order
 
-**Supervised learning** uses inputs together with their corresponding targets to learn a rule for predicting the target of a new input. Here, “supervised” means that the training data includes the answers. It does not mean that a person gives an instruction every time the computer performs a calculation.
+The following **fictional training records** were created to help us work through the calculations. They are not a real delivery company's price list.
 
-For example, suppose we have records of the weight, size, and shipping cost of various items. We can use weight and size as the inputs and shipping cost as the target. After training, we can enter the weight and size of an item whose shipping cost is not yet known and predict its cost.
+Here, the distance is **the additional distance beyond the distance included in the base fee**, rather than the total delivery distance. An order completed within the included distance has an additional distance of 0 km. To keep the numbers simple, we express delivery fees in thousands of Korean won.
 
-Two common types of problem are distinguished by the nature of the target.
+| Order | Additional distance | Actual delivery fee |
+|---|---:|---:|
+| A | 0 km | 1 thousand won |
+| B | 1 km | 3 thousand won |
+| C | 2 km | 5 thousand won |
 
-| Problem | What we want to predict | Examples |
-| --- | --- | --- |
-| Regression | A numerical quantity whose size and differences are meaningful | Shipping cost, temperature, a measured indicator |
-| Classification | A predefined type or category | Spam/legitimate email, cat/dog |
+Now suppose a new order has an additional distance of 3 km. We want to use the past records to predict this order's delivery fee.
 
-Classification targets can also be stored as numbers such as `0` and `1`. Storing them as numbers does not make the problem regression. If `0=legitimate` and `1=spam`, the numbers stand in for category names. We need to consider both what is being predicted and how the predictions are evaluated.
+For this problem, we give the program the order's **additional distance**. Information used to make a prediction is called an **input**. An individual item of input information is also called a **feature**. For now, we have one feature: additional distance.
 
-The coding examples in this article use **regression to predict a single numerical value**. The overall learning process is shown below.[^sklearn-start]
+The **actual delivery fee** for a past order is the value against which we compare the program's prediction. A value supplied as the answer to predict in training data is called a **target**, or **target value**.
 
-![Inputs and targets are split into training and test data; the training data is used to build a model, and predictions for the test inputs are compared with the test targets.](/supervised-learning-basics/workflow-en.svg)
+**Supervised learning** uses data containing both inputs and targets to find a rule for predicting the target from the input. One piece of training data containing an input and a target, such as a single order in the table, is called a **sample**.[^sklearn-start]
 
-Training uses both inputs and targets. Prediction uses inputs and the model that has already been trained. Evaluation compares those predictions with the targets that were set aside. First, remember that **these three stages use different information**.
+A supervised learning problem that predicts a numerical value, such as a delivery fee, is called **regression**. A problem that predicts a category, such as whether an email is spam or legitimate, is called **classification**. This article focuses on regression.
 
-## 2. Reading inputs `X` and targets `y` from a table
+![Prepare inputs and targets, repeatedly adjust the prediction rule, then check it using data that was not used for training.](/supervised-learning-basics/learning-cycle-en.svg)
 
-When data is arranged in a table, each row represents one case. This case is called a **sample**, or observation. Each input item used for prediction is called a **feature**. In the shipping example, one item is a sample, while weight and size are its features.
+Once training is complete, we give the program the additional distance for a new order. The actual fee for that order is not yet known when we make the prediction. If we can obtain the actual fee later, we can use it to evaluate how accurate the prediction was.
 
-To work through rows and columns, we will use the deliberately simple dataset below. The two features are practice numbers; they do not represent particular physical quantities.
+## 2. Building a prediction rule from a base fee and a fee per kilometer
 
-| Sample | First feature $x_1$ | Second feature $x_2$ | Target $y$ |
-| --- | ---: | ---: | ---: |
-| First | 0 | 0 | 1 |
-| Second | 1 | 0 | 3 |
-| Third | 0 | 1 | 4 |
-| Fourth | 1 | 1 | 6 |
+Let us predict the delivery fee as the sum of two parts:
 
-By convention, an array containing only the input columns is called **`X`**, and an array containing the targets is called **`y`**. Python treats uppercase and lowercase letters as different names. `X` and `x` are different names, too.
+- A **base fee** applied to every order.
+- A **fee per additional kilometer**, which adds more to the total as the additional distance increases.
 
-| Name | Contents | Layout |
-| --- | --- | --- |
-| `X` | `[[0, 0], [1, 0], [0, 1], [1, 1]]` | 4 samples × 2 features |
-| `y` | `[1, 3, 4, 6]` | 1 target per sample, 4 in total |
-| `pred` | Predictions calculated by the model | 1 prediction per sample, 4 in total |
+If the base fee is 1 thousand won and the fee per additional kilometer is 2 thousand won, an order with an additional distance of 3 km has the following predicted fee:
 
-**The input and target at the same position must form a pair.** If the second input row is accidentally paired with the third target value, the model learns from the wrong case. We must preserve this pairing when we split the data later.
+<div class="supervised-math">
+$$
+1+2\times 3=7
+$$
+</div>
 
-In mathematical notation, the target is written as $y$ and the prediction as $\hat y$. We read $\hat y$ as “y hat”; the small hat marks it as a predicted value. In code, `pred` is short for prediction. The answer we want to predict is called the **target**, and especially in classification, it is also called a **label**.
+The result, 7, is also in thousands of won, so the predicted delivery fee is 7 thousand won.
 
-## 3. Models and coefficients: distinguishing given values from values we change
+We will give each value a name so that we can use the same calculation with other fees and distances.
 
-A **function** maps inputs to outputs according to a defined rule. If a function doubles an input $x$ and adds 1, then for $x=3$ its output is $1+2\times3=7$.
+| Symbol | What it represents in this example | Unit |
+|---|---|---|
+| $x$ | The order's additional distance | km |
+| $y$ | The actual delivery fee in the record | Thousands of won |
+| $\hat y$ | The delivery fee predicted by the rule | Thousands of won |
+| $b$ | The base fee used by the rule | Thousands of won |
+| $w$ | The fee per additional kilometer used by the rule | Thousands of won/km |
 
-A **model** represents a prediction rule of this kind. In this article, we use a **linear model**, which multiplies inputs by numbers and adds the results. With one input, it looks like this:
+We read $\hat y$ as “y hat.” The hat above $y$ marks it as **a predicted value**, rather than the value in the actual record.
+
+With these symbols, we can write our prediction rule as follows:
 
 <div class="supervised-math">
 $$
@@ -75,35 +80,31 @@ $$
 $$
 </div>
 
-$wx$ is a shorter way to write $w\times x$. Code cannot omit the multiplication symbol, so we write `b + w * x`.
+$wx$ is a shorter way to write $w\times x$. We multiply the fee per kilometer by the distance, then add the base fee to obtain the delivery fee.
 
-| Symbol | Name | Role |
-| --- | --- | --- |
-| $x$ | Input feature value | A value provided by the sample |
-| $w$ | Weight | A coefficient that determines how much to multiply the input by |
-| $b$ | Intercept or bias | A base term that is added even when the input is 0 |
-| $\hat y$ | Prediction | The result calculated from the current coefficients and input |
-| $y$ | Target | The value against which the prediction is compared |
+A rule that takes an input and produces a prediction is called a **model**. In this model, $b$ and $w$ are the numbers we adjust. Such numbers are called **coefficients** or **parameters**.
 
-A **coefficient** is a number that multiplies a term. Values such as $w$ and $b$ that are determined through training are called the model's **parameters**. The word “bias” has several meanings in other fields; here it refers to the intercept added to the expression.
+Predicting a number by multiplying each input by a fixed coefficient and adding a base value is the basic form of **linear regression**. In machine learning, $b$ is also called the **bias**, and $w$ the **weight**. On a graph, the predicted value at $x=0$ is $b$, so $b$ is also the **intercept**.
 
-The training data provides $x$ and $y$. During training, we change $w$ and $b$, then recalculate predictions using the new coefficients. **We change the coefficients that produce the predictions, rather than editing each predicted value independently.**
+The key is that **we apply the same $b$ and $w$ to every order**. The distance $x$ varies between orders. Each order also has its own actual fee $y$, but we do not change those records. The values we change to improve the predictions are $b$ and $w$.
 
-With two inputs, the expression expands as follows:
+To examine the learning process, we will deliberately start with coefficients that do not fit well: $b=0$, $w=1$.
 
-<div class="supervised-math">
-$$
-\hat y=b+w_1x_1+w_2x_2
-$$
-</div>
+| Order | Additional distance $x$ | Actual fee $y$ | Calculation with the current rule | Predicted fee $\hat y$ |
+|---|---:|---:|---|---:|
+| A | 0 | 1 | $0+1\times0$ | 0 |
+| B | 1 | 3 | $0+1\times1$ | 1 |
+| C | 2 | 5 | $0+1\times2$ | 2 |
 
-$w_1$ is the weight multiplying the first feature, and $w_2$ is the weight multiplying the second. The small numbers written below the letters identify the features; they are not powers. The earlier four-row dataset was constructed so that $b=1$, $w_1=2$, and $w_2=3$ match every target. Later, we will start all the coefficients at 0 and check whether they approach these values.
+This rule predicts a fee below the actual fee for all three orders. How should we change it to make the predictions more accurate?
 
-Here, “linear” refers to this form of multiplying coefficients and inputs and adding the results. Not every real relationship can be represented exactly in this way. Also, holding the other features fixed, increasing $x_1$ by 1 changes **this model's prediction** by $w_1$. This does not establish a causal relationship guaranteeing that changing the feature in the real world will change the outcome by that amount.
+With this small table, we can see that $b=1$, $w=2$ would match all three records exactly. But when there are many records and several input features, choosing coefficients by inspection becomes difficult. The calculations that follow will let the computer **evaluate its current predictions and adjust the coefficients**.
 
-## 4. How wrong are the predictions? SSE, MSE, MAE, and RMSE
+## 3. Comparing prediction rules with a numerical score
 
-To improve the coefficients, we need a number that measures how wrong the current predictions are. First, let us define the **error** for one sample. In our training calculations, we subtract in the following order:
+### How far is each prediction off, and in which direction?
+
+First, we will subtract the actual delivery fee from the predicted fee. In this article, we call the result the **error** and write it as $e$.
 
 <div class="supervised-math">
 $$
@@ -111,357 +112,752 @@ e=\hat y-y
 $$
 </div>
 
-In other words, **subtract the target from the prediction.** The error is negative when the prediction is below the target and positive when it is above the target. The following three predictions form a separate example just for calculating errors.
+| Order | Predicted fee | Actual fee | Error $e$ | Interpretation |
+|---|---:|---:|---:|---|
+| A | 0 | 1 | −1 | The prediction is 1 thousand won below the actual fee. |
+| B | 1 | 3 | −2 | The prediction is 2 thousand won below the actual fee. |
+| C | 2 | 5 | −3 | The prediction is 3 thousand won below the actual fee. |
 
-| Target $y$ | Prediction $\hat y$ | Error $e$ | Squared error $e^2$ | Absolute error $\lvert e\rvert$ |
-| ---: | ---: | ---: | ---: | ---: |
-| 10 | 9 | −1 | 1 | 1 |
-| 20 | 18 | −2 | 4 | 2 |
-| 30 | 27 | −3 | 9 | 3 |
+The sign of the error tells us the direction. With our definition, a negative error means an underprediction, and a positive error means an overprediction. Other sources may subtract in the opposite order, so check the subtraction order before interpreting an expression.
 
-To **square** a number is to multiply it by itself. For example, $(-2)^2=(-2)\times(-2)=4$. The **absolute value** is its magnitude without the sign, so $\lvert-2\rvert=2$.
+### Why not just add the errors?
 
-If we simply add the errors, positive and negative values can cancel out. For example, $-3$ and $+3$ add up to 0, even though neither prediction was correct. Squaring the errors or taking their absolute values prevents this cancellation.
+Suppose a rule predicts one order's fee 2 thousand won too high and another order's fee 2 thousand won too low. Adding the errors gives $2+(-2)=0$. But both predictions were wrong. We cannot call them perfect predictions just because their errors add up to 0.
 
-### Square the errors, add them, and divide by the count
+To prevent errors in opposite directions from canceling, we will use **the square of each error**. Squaring a number means multiplying it by itself. Since $(-2)^2=(-2)\times(-2)=4$, a squared error is nonnegative whether the original error was positive or negative.
 
-**SSE (sum of squared errors)** is the sum of the squared errors. In the table above, it is $1+4+9=14$.
+The current errors for our three orders are −1, −2, and −3. Their squares are 1, 4, and 9, which add up to 14. This total is called the **sum of squared errors**, or **SSE**.
 
-**MSE (mean squared error)** divides this sum by the number of samples. To calculate a mean, add all the values and divide by how many values there are. The table has 3 samples, so its MSE is $14/3\approx4.666667$.[^mse]
-
-The symbol $\approx$ means “approximately equal”: the two sides are close, but not exactly equal. We have rounded the decimal value to keep it short.
-
-For $n$ samples, the same calculation can be written mathematically as follows. Here, $n$ is the number of samples and $i$ is a sample number. $e_i$ is the error for the $i$th sample. **$\sum$ is the summation symbol: it tells us to add all the specified terms.**
+To make comparisons on a per-order basis even when datasets contain different numbers of orders, we divide that total by the number of orders, which is 3. Adding values and dividing by their count gives their **mean**.
 
 <div class="supervised-math">
 $$
-\mathrm{SSE}=\sum_{i=1}^{n}e_i^2,
+\text{MSE}=\frac{(-1)^2+(-2)^2+(-3)^2}{3}
+=\frac{14}{3}\approx4.666667
+$$
+</div>
+
+This value is the **mean squared error**, or **MSE**. The symbol $\approx$ means that the values are close but not exactly equal because we shortened the decimal representation. When we compare two models predicting the same orders, the model with the smaller MSE produces smaller squared errors on average.[^mse]
+
+Squaring gives a larger error more weight in the score. When the error magnitude triples from 1 to 3, its square increases ninefold, from 1 to 9. As a result, training that reduces MSE is strongly influenced by orders with large prediction errors.
+
+### The loss we will use when adjusting the coefficients
+
+The score we try to reduce when training a model is called the **loss**. In this article, we will use half the MSE as our loss and call its value $J$.
+
+The symbols $e_1$, $e_2$, and $e_3$ are the errors for the first, second, and third orders, respectively. The small numbers below the letters indicate the order number.
+
+<div class="supervised-math">
+$$
+J=\frac{\text{MSE}}{2}
+=\frac{e_1^2+e_2^2+e_3^2}{2\times3}
+$$
+</div>
+
+Why is it acceptable to halve the score? If two models have MSE values of 2 and 6, their $J$ values are 1 and 3. Dividing every model's score by the same positive number, 2, does not change which score is smaller. The coefficients that make MSE smallest therefore also make $J$ smallest. Later, when we expand the change in the loss, a factor of 2 from the square cancels the 2 in the denominator, simplifying the calculation.
+
+The current loss is $J=14/6=7/3\approx2.333333$. To check the calculation one order at a time, think of assigning each order a loss of $e^2/2$, then taking the mean of those three losses.
+
+| Order | Error | Loss for that order, $e^2/2$ |
+|---|---:|---:|
+| A | −1 | 0.5 |
+| B | −2 | 2 |
+| C | −3 | 4.5 |
+
+The mean of these three values is $(0.5+2+4.5)/3=7/3$.
+
+Neither $J$ nor MSE is an actual delivery fee. Each is a score used to evaluate predictions. If the fee is measured in thousands of won, squared error is measured in “thousands of won, squared.” An MSE of 4 does not mean that the average prediction is off by 4 thousand won.
+
+<details>
+<summary>Two ways to express errors in thousands of won: MAE and RMSE</summary>
+
+**Mean absolute error (MAE)** averages the error magnitudes with their signs removed. The vertical bars denoting an absolute value mean that we take only the magnitude of the number. For example, $|-2|=2$. In our current example, MAE is $(1+2+3)/3=2$, so the average error magnitude per order is 2 thousand won.
+
+**Root mean squared error (RMSE)** is the square root of MSE. Here, taking a square root means finding the nonnegative number that gives the specified value when squared. The current RMSE is $\sqrt{14/3}\approx2.160247$ thousand won.
+
+Both MAE and RMSE can be expressed in the same unit as the delivery fee, but they use different calculations. RMSE squares the errors first, making it more sensitive to large errors. In a practical task, you can examine both measures according to how much ordinary errors matter and how serious unusually large errors are.
+
+</details>
+
+## 4. What happens to the predictions if we raise the base fee by 100 won?
+
+The current rule uses $b=0$, $w=1$. Let us raise only the base fee $b$, from 0 to 0.1. Because our monetary unit is a thousand won, adding 0.1 means **raising the base fee by 100 won**. We leave the per-kilometer fee $w$ and the order records unchanged.
+
+Every order has the same base fee, so each predicted delivery fee increases by 0.1. The actual fees do not change. Each error, calculated as “predicted fee minus actual fee,” therefore also increases by 0.1. In this case, the negative errors move closer to 0, as when −1 becomes −0.9. The magnitude of each prediction error therefore decreases.
+
+![A calculation showing how predicted fees and errors change when the base fee changes from 0 to 0.1.](/supervised-learning-basics/intercept-change-en.svg)
+
+We can check whether this was a useful change by calculating the loss.
+
+| Order | Error before the change | Error after the change | Loss before the change | Loss after the change | Change in loss |
+|---|---:|---:|---:|---:|---:|
+| A | −1 | −0.9 | 0.5 | 0.405 | −0.095 |
+| B | −2 | −1.9 | 2 | 1.805 | −0.195 |
+| C | −3 | −2.9 | 4.5 | 4.205 | −0.295 |
+
+The last column is “loss after the change minus loss before the change.” For example, order B now has a loss of $(-1.9)^2/2=1.805$, so its loss changed by $1.805-2=-0.195$. The negative value means that the loss decreased.
+
+Taking the mean of the three orders' losses, the overall loss decreased from approximately 2.333333 to 2.138333. The change in the overall loss is −0.195. Raising the base fee by 100 won improved the predictions on these records.
+
+But how much would the loss change if we raised the fee by just 10 won or 1 won instead of 100 won? A 100-won adjustment and a 10-won adjustment start with different changes to the fee, so the decrease in loss alone is difficult to compare. We will **divide the change in loss by the change in the base fee** to examine how strongly the loss responds to each adjustment.
+
+<div class="supervised-math">
+$$
+\text{Rate of change of the loss}
+=\frac{\text{Loss after the change}-\text{Loss before the change}}{\text{Change in the base fee}}
+$$
+</div>
+
+For the 100-won adjustment, this ratio is $-0.195/0.1=-1.95$. This is the rate of change over the interval in which the base fee moves from 0 to 0.1. It does not mean that raising the base fee by a thousand won would decrease the loss by exactly 1.95. To examine **the change very close to the current base fee**, we need to make the adjustment smaller.
+
+Now return to the original $b=0$, $w=1$ before each calculation, and change only the base fee by each of the following amounts. These adjustments are not applied cumulatively.
+
+| Change in the base fee | Change in the overall loss | Change in loss ÷ change in the base fee |
+|---:|---:|---:|
+| 0.1 | −0.195 | −1.95 |
+| 0.01 | −0.01995 | −1.995 |
+| 0.001 | −0.0019995 | −1.9995 |
+| −0.001 | 0.0020005 | −2.0005 |
+| −0.01 | 0.02005 | −2.005 |
+
+As we make the increases and decreases in the base fee very small, the values in the last column approach −2 from both sides. This value tells us **how sensitively the loss responds near the current base fee**.
+
+If the rate of change approaches a particular value as the size of the adjustment approaches 0, we call that value the **derivative at the current point**. **Differentiation** is the calculation used to find this rate of change.[^derivative]
+
+We do not set the adjustment to 0 at the start, because we cannot divide by 0. Instead, we divide by small, nonzero adjustments and examine which value the results approach.
+
+In this example, the negative derivative tells us that increasing the current base fee slightly decreases the loss. That agrees with our situation: we are raising predicted fees that were too low. In the next section, we will find out why the derivative is −2 and derive a calculation we can also use at other coefficient values.
+
+## 5. Calculating how the loss changes with the base fee
+
+### Giving the change in the base fee a name
+
+Earlier, we changed the base fee by 0.1, 0.01, and 0.001. To express all these adjustments together, **we will write the amount added to the base fee as $h$**. An adjustment of $h=0.1$ raises the base fee by 100 won, while $h=-0.1$ lowers it by 100 won.
+
+If the current base fee is $b$, the adjusted base fee is $b+h$. Again, we hold the per-kilometer fee $w$, the order's distance $x$, and its actual fee $y$ fixed.
+
+First, let us calculate how the error changes for one order. If its error before the adjustment is $e$, then $e=b+wx-y$. To find the error after the adjustment, **replace $b$ in the existing expression with $b+h$**.
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+\text{Error after the change}
+&=(b+h)+wx-y\\
+&=(b+wx-y)+h\\
+&=e+h
+\end{aligned}
+$$
+</div>
+
+On the second line, we rearranged the terms being added and subtracted. On the third line, we replaced $b+wx-y$ with the original error, $e$. This is the same result we observed earlier: raising the base fee by 100 won also increases the error by 100 won. Throughout the following expansion, $e$ continues to mean **the error before the adjustment**.
+
+### How much does one order's loss change?
+
+The loss for one order is its error squared and then divided by 2. Its original loss is $e^2/2$, and its loss after the adjustment is $(e+h)^2/2$. To find the difference, we first need to expand $(e+h)^2$.
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+(e+h)^2
+&=(e+h)(e+h)\\
+&=e\times e+e\times h+h\times e+h\times h\\
+&=e^2+2eh+h^2
+\end{aligned}
+$$
+</div>
+
+The two middle terms, $eh$ and $he$, have the same value, so we combined them as $2eh$. Now subtract the original loss from the new loss.
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+\text{Change in one order's loss}
+&=\frac{(e+h)^2}{2}-\frac{e^2}{2}\\
+&=\frac{e^2+2eh+h^2-e^2}{2}\\
+&=eh+\frac{h^2}{2}
+\end{aligned}
+$$
+</div>
+
+The original $e^2$ terms cancel, and dividing $2eh$ by 2 leaves $eh$.
+
+We can check the result with order B's original error, $e=-2$, and a base-fee adjustment of $h=0.1$.
+
+<div class="supervised-math">
+$$
+(-2)\times0.1+\frac{0.1^2}{2}
+=-0.2+0.005
+=-0.195
+$$
+</div>
+
+This matches the result from the previous section, where the loss changed from 2 to 1.805, a change of −0.195.
+
+### What do we add when evaluating all three orders?
+
+The value $J$ that we want to reduce is the mean of the three orders' losses. Let us write the overall loss before adjusting the base fee as $J$ and the overall loss after the adjustment as $J_{\text{new}}$. The subscript “new” marks the new value after the adjustment.
+
+First, check the difference in the overall loss using the numbers.
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+J_{\text{new}}-J
+&=\frac{0.405+1.805+4.205}{3}
+-\frac{0.5+2+4.5}{3}\\
+&=\frac{(0.405-0.5)+(1.805-2)+(4.205-4.5)}{3}\\
+&=\frac{-0.095-0.195-0.295}{3}\\
+&=-0.195
+\end{aligned}
+$$
+</div>
+
+**To find the change in the overall loss, we add the changes in the individual orders' losses and divide by 3.** The expression above shows why this works by combining two fractions with the same denominator.
+
+Now write the same calculation using $h$. The first order's loss changes by $e_1h+h^2/2$. For the second and third orders, we put each order's own error into the same expression.
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+J_{\text{new}}-J
+&=\frac{
+(e_1h+h^2/2)+(e_2h+h^2/2)+(e_3h+h^2/2)
+}{3}\\
+&=\frac{h(e_1+e_2+e_3)+3h^2/2}{3}\\
+&=h\frac{e_1+e_2+e_3}{3}+\frac{h^2}{2}
+\end{aligned}
+$$
+</div>
+
+On the second line, we took the common factor $h$ outside the brackets. The term $h^2/2$ also appears three times, giving $3h^2/2$. Dividing by the number of orders, 3, gives the last line.
+
+This expression is not yet a derivative. It calculates the **actual change in the loss** exactly when we change the base fee by $h$.
+
+### Divide by the change in the base fee, then make that change smaller
+
+To obtain the rate of change from the previous section, divide the change in loss by the change in the base fee, $h$. When $h$ is not 0, the expression simplifies as follows:
+
+<div class="supervised-math">
+$$
+\frac{J_{\text{new}}-J}{h}
+=\frac{e_1+e_2+e_3}{3}+\frac{h}{2}
+$$
+</div>
+
+The first term on the right is **the mean of the three original errors**. The second term is $h/2$. As the adjustment $h$ approaches 0, $h/2$ also approaches 0. The rate of change of the overall loss therefore approaches the mean of the three original errors.
+
+Therefore, **the derivative of the overall loss with respect to the current base fee equals the mean of the errors produced by the current model**. We arrived at this result by calculating how each order's loss changed, adding those changes, and dividing by the number of orders.
+
+Substituting the current errors, −1, −2, and −3, gives:
+
+<div class="supervised-math">
+$$
+\frac{-1-2-3}{3}=-2
+$$
+</div>
+
+The algebra now explains why the rates of change in our experiment approached −2 as we made smaller adjustments.
+
+In the program, we will store the result of this calculation under the name `db`. **`db` is the rate at which the loss changes when we change the base fee $b$. It is neither a new base fee nor an amount to add directly to the base fee.** We will decide how much to adjust the coefficient in a later step.
+
+<details>
+<summary>Notation for more than three orders</summary>
+
+If we write the total number of orders as $n$, the same calculation replaces the order count 3 with $n$. We use $i$ for an order number and $e_i$ for the error of the $i$th order.
+
+Adding all the errors gives $e_1+e_2+\cdots+e_n$. The dots indicate that we continue adding the intervening terms in the same way up to the final term. We can shorten this long sum to $\sum_{i=1}^{n}e_i$. The symbol $\sum$, called “sigma,” means a sum, and the $i=1$ below it together with the $n$ above it specifies the range: add from the first order through the $n$th order.
+
+For $n$ orders, the derivative of the loss with respect to the base fee is therefore:
+
+<div class="supervised-math">
+$$
+\frac{1}{n}\sum_{i=1}^{n}e_i
+=\frac{e_1+e_2+\cdots+e_n}{n}
+$$
+</div>
+
+Even with more data, the calculation is the same: add the errors for all the orders, then divide by the number of orders.
+
+</details>
+
+## 6. Why do we multiply the error by distance when adjusting the per-kilometer fee?
+
+### Unlike a change in the base fee, the effect is larger for more distant orders
+
+Return once more to the original $b=0$, $w=1$. This time, hold the base fee fixed and raise $w$, the fee per additional kilometer, from 1 to 1.1. This means **adding 100 won to the fee for each additional kilometer**.
+
+| Order | Additional distance | Prediction before the adjustment | Prediction after the adjustment | Increase in the prediction |
+|---|---:|---:|---:|---:|
+| A | 0 km | 0 | 0 | 0 |
+| B | 1 km | 1 | 1.1 | 0.1 |
+| C | 2 km | 2 | 2.2 | 0.2 |
+
+Order A has no additional distance, so raising the per-kilometer fee adds nothing to its predicted total. Order B's predicted fee increases by 100 won, while order C's increases by 200 won. **The effect of a change in the per-kilometer fee is proportional to the order's additional distance.**
+
+The errors after the adjustment are −1, −1.9, and −2.8. The loss is:
+
+<div class="supervised-math">
+$$
+J_{\text{new}}
+=\frac{(-1)^2+(-1.9)^2+(-2.8)^2}{2\times3}
+=\frac{12.45}{6}
+=2.075
+$$
+</div>
+
+The loss decreased by approximately 0.258333 from its original value of $7/3$. We changed the per-kilometer fee by 0.1, so the rate of change is approximately −2.583333. Returning to the original coefficients each time and reducing the adjustment to 0.01 and 0.001 gives rates of approximately −2.658333 and −2.665833, respectively. These values approach $-8/3\approx-2.666667$.
+
+### Putting the change in the per-kilometer fee into the expression
+
+This time, we will use $h$ for **the amount added to the per-kilometer fee**. This is a separate calculation from the previous section's experiment with the base fee. If the current per-kilometer fee is $w$, the adjusted value is $w+h$. We hold the base fee $b$, distance $x$, and actual fee $y$ fixed.
+
+Write the original error as $e=b+wx-y$, and replace $w$ in that expression with $w+h$.
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+\text{Error after the change}
+&=b+(w+h)x-y\\
+&=b+wx+hx-y\\
+&=(b+wx-y)+hx\\
+&=e+hx
+\end{aligned}
+$$
+</div>
+
+When we changed the base fee, we added $h$ to the error. When we change the per-kilometer fee, we add **$h$ multiplied by the order's distance $x$**. For order C, $h=0.1$ and $x=2$, so the error increases by 0.2.
+
+Let us calculate the change in the loss for one order.
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+\text{Change in one order's loss}
+&=\frac{(e+hx)^2-e^2}{2}\\
+&=\frac{e^2+2ehx+h^2x^2-e^2}{2}\\
+&=ehx+\frac{h^2x^2}{2}
+\end{aligned}
+$$
+</div>
+
+We expand $(e+hx)^2$ in the same way as in the previous section. The two cross terms are $ehx$ and $hxe$, which add up to $2ehx$. The last term is $(hx)(hx)=h^2x^2$.
+
+### Substitute the numbers for the same three orders
+
+We will now put the errors and distances for A, B, and C into the change in one order's loss, $ehx+h^2x^2/2$.
+
+| Order | Original error $e$ | Additional distance $x$ | Change in that order's loss |
+|---|---:|---:|---|
+| A | −1 | 0 | $0$ |
+| B | −2 | 1 | $-2h+h^2/2$ |
+| C | −3 | 2 | $-6h+2h^2$ |
+
+For example, the calculation for order C is:
+
+<div class="supervised-math">
+$$
+(-3)\times h\times2+\frac{h^2\times2^2}{2}
+=-6h+2h^2
+$$
+</div>
+
+Order A has an additional distance of 0, so changing the per-kilometer fee does not change its loss. Adding the changes in the losses for B and C, then dividing by the total number of orders, 3, gives the change in the overall loss.
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+J_{\text{new}}-J
+&=\frac{0+(-2h+h^2/2)+(-6h+2h^2)}{3}\\
+&=\frac{-8h+(1/2+2)h^2}{3}\\
+&=-\frac{8h}{3}+\frac{5h^2}{6}
+\end{aligned}
+$$
+</div>
+
+The terms containing $h$ combine as $-2h-6h=-8h$. The terms containing $h^2$ give $(1/2+2)h^2=(5/2)h^2$. Dividing that result by 3 gives $5h^2/6$.
+
+To find the rate of change in the loss, we divide by $h$, the change in the per-kilometer fee. When $h$ is not 0, the expression simplifies to:
+
+<div class="supervised-math">
+$$
+\frac{J_{\text{new}}-J}{h}
+=-\frac83+\frac{5h}{6}
+$$
+</div>
+
+As $h$ approaches 0, $5h/6$ also approaches 0, so the rate of change approaches $-8/3$. This is the same value we found in our earlier numerical experiment.
+
+### Where did −8 come from?
+
+In the calculation above, −8 came from adding **each order's error multiplied by that order's distance**.
+
+<div class="supervised-math">
+$$
+(-1)\times0+(-2)\times1+(-3)\times2
+=0-2-6=-8
+$$
+</div>
+
+Dividing this sum by the number of orders, 3, gives the derivative we found. The same expansion works with other error and distance values. Let $x_1$, $x_2$, and $x_3$ be the distances of the first, second, and third orders. Just as in the error symbols, these subscripts are **order numbers**. The result is:
+
+<div class="supervised-math">
+$$
+\text{Derivative of the loss with respect to the per-kilometer fee}
+=\frac{e_1x_1+e_2x_2+e_3x_3}{3}
+$$
+</div>
+
+In the program, we will store the result of this calculation under the name `dw`. **To calculate `dw`, multiply each order's error by that order's distance, then take the mean of those products.**
+
+To understand why we multiply by distance, return to the delivery example. To change the prediction for order A, we must change the base fee. Its additional distance is 0, so no adjustment to the per-kilometer fee can change that order's prediction. In contrast, an adjustment to the per-kilometer fee changes order C's prediction twice as much as order B's.
+
+When calculating which way to adjust the per-kilometer fee, we must therefore **account for both the size of the error and how strongly that coefficient affects the prediction for the order**. In this model, that effect is represented by the distance $x$.
+
+<details>
+<summary>Check that the same result follows when errors and distances are written as symbols</summary>
+
+The change in one order's loss was $ehx+h^2x^2/2$. This expression does not require the current error or distance to be a particular number. We can substitute each order's own error and distance.
+
+| Order | Change in that order's loss |
+|---|---|
+| First | $h e_1x_1+(h^2/2)x_1^2$ |
+| Second | $h e_2x_2+(h^2/2)x_2^2$ |
+| Third | $h e_3x_3+(h^2/2)x_3^2$ |
+
+When adding the three changes, we group the terms multiplied by $h$ and the terms multiplied by $h^2/2$, then divide by the number of orders, 3.
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+J_{\text{new}}-J
+&=h\frac{e_1x_1+e_2x_2+e_3x_3}{3}\\
+&\quad+h^2\frac{x_1^2+x_2^2+x_3^2}{6}
+\end{aligned}
+$$
+</div>
+
+The denominator in the second term is 6 because we multiply the 2 in each individual loss by the number of orders, 3. Dividing the change in the overall loss by $h$ gives:
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+\frac{J_{\text{new}}-J}{h}
+&=\frac{e_1x_1+e_2x_2+e_3x_3}{3}\\
+&\quad+h\frac{x_1^2+x_2^2+x_3^2}{6}
+\end{aligned}
+$$
+</div>
+
+The distances are fixed values in the data, while $h$ approaches 0. The second term therefore approaches 0, and the overall rate of change approaches the first term: the mean of each error multiplied by its corresponding distance.
+
+</details>
+
+## 7. Using the rates of change of the loss to adjust both fees
+
+### Naming the two values we have calculated
+
+We performed one calculation in which only the base fee $b$ changed, and a separate calculation in which only the per-kilometer fee $w$ changed. Differentiating with respect to one coefficient while holding the other coefficients fixed is called **partial differentiation**.[^gradient]
+
+The symbol $\partial$ is used to write a partial derivative. We can now attach mathematical notation to the values we have calculated.
+
+| What we calculated | Mathematical notation | Name used to store it in the code | Current value |
+|---|---|---|---:|
+| Rate of change of the overall loss when only $b$ changes | $\partial J/\partial b$ | `db` | −2 |
+| Rate of change of the overall loss when only $w$ changes | $\partial J/\partial w$ | `dw` | $-8/3$ |
+
+We read $\partial J/\partial b$ as “the partial derivative of J with respect to b.” It is not an instruction to divide the symbols above and below the line as though they were numbers. The notation tells us whose change we calculated and which coefficient we changed to calculate it.
+
+Collecting these partial derivative values in the same order as the coefficients gives the **gradient**. If we arrange the coefficients in the order $b$, $w$, the current gradient is $[-2,-8/3]$.
+
+If you encounter the word “slope” here, keep track of the quantities involved. The coefficient $w$ describes **how much the predicted delivery fee increases as distance increases**. In contrast, `dw` describes **how much the loss changes when we change the per-kilometer fee $w$**. These are rates of change for different relationships.
+
+### Choosing the direction and size of an adjustment
+
+The current `db` and `dw` are both negative. Near the current coefficients, increasing either the base fee or the per-kilometer fee slightly therefore decreases the loss.
+
+To turn this direction into a calculation, subtract **the derivative value multiplied by a fixed positive number** from the existing coefficient. Subtracting a negative derivative increases the coefficient, while subtracting a positive derivative decreases it.
+
+We call the positive multiplier the **learning rate**. In code, we will write it as `lr`; in formulas, we will use the Greek letter $\alpha$, pronounced “alpha.” The learning rate controls how strongly we use the rate of change of the loss to adjust the coefficients. It serves a different purpose from $h$, the adjustment we used while finding the derivative.
+
+We calculate the new coefficients as follows:
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+b_{\text{new}}&=b-\alpha\,\texttt{db}\\
+w_{\text{new}}&=w-\alpha\,\texttt{dw}
+\end{aligned}
+$$
+</div>
+
+Set the learning rate to 0.1 and substitute the current values.
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+b_{\text{new}}
+&=0-0.1\times(-2)=0.2\\
+w_{\text{new}}
+&=1-0.1\times(-8/3)\\
+&=1+4/15\approx1.266667
+\end{aligned}
+$$
+</div>
+
+The base fee has increased by 200 won, and the fee per additional kilometer has increased by approximately 266.67 won. A learning rate of 0.1 does not mean that we changed each coefficient by 0.1. **The change added to each coefficient is “−learning rate × derivative of the loss with respect to that coefficient.”** For the base fee, this gives $-0.1\times(-2)=+0.2$.
+
+Calculate both `db` and `dw` using **the same model before the adjustment**. Changing one coefficient before calculating the derivative for the other would produce a different calculation from the simultaneous adjustment defined above.
+
+### Checking whether the adjusted rule actually improved
+
+Use the new rule to predict the fees for the three orders again.
+
+| Order | Distance | New predicted fee | New error |
+|---|---:|---:|---:|
+| A | 0 | 0.2 | −0.8 |
+| B | 1 | About 1.466667 | About −1.533333 |
+| C | 2 | About 2.733333 | About −2.266667 |
+
+The new loss is shown below. The displayed decimals are rounded; the actual calculation uses the values before rounding.
+
+<div class="supervised-math">
+$$
+J_{\text{new}}
+\approx\frac{(-0.8)^2+(-1.533333)^2+(-2.266667)^2}{6}
+\approx1.354815
+$$
+</div>
+
+This is smaller than the original loss of 2.333333. The predictions still differ from the targets, so we can calculate the derivative values again using the new errors and adjust the coefficients again. Repeating this process is the method called **gradient descent**.[^gradient-descent]
+
+We do not reuse the initial values of −2 and $-8/3$ for the next adjustment. Substituting the new errors gives `db` of approximately −1.533333 and `dw` of approximately −2.022222. **Changing the model also changes its predictions and errors. At each step, we therefore calculate the rates of change of the loss again using the new errors, then use those results to determine the next adjustments.**
+
+We used small adjustments $h$ to explain derivatives, but the actual training code does not need to approximate derivatives by repeatedly shrinking $h$. It calculates the current derivative values directly from the expressions we derived: the mean of the errors, and the mean of each error multiplied by its order's distance.
+
+<details>
+<summary>What connection does the chain rule describe in this calculation?</summary>
+
+Changing the base fee or the per-kilometer fee changes the prediction. Since the actual fee is fixed, that changes the error, which in turn changes the loss. The **chain rule** is a rule of differentiation that calculates rates of change along this sequence.[^chain-rule]
+
+We can check it using the result we have already derived for one order. When the error is $e$ and we add a small amount to it, the change in loss consists of “original error × amount added” plus “half the square of the amount added.” Dividing by the amount added and then letting that amount approach 0 leaves $e$. In other words, **the derivative of one order's loss with respect to its error is $e$**.
+
+Raising the base fee by $h$ increases the error by $h$. The rate of change of the error with respect to the base fee is therefore 1. Multiplying the rates for the two stages gives $e\times1=e$, the derivative of one order's loss with respect to the base fee.
+
+Raising the per-kilometer fee by $h$ increases the error by $hx$. The rate of change of the error with respect to the per-kilometer fee is therefore $x$. Multiplying the rates for the two stages gives $e\times x=ex$.
+
+The chain rule is not a trick that produces a different answer from the earlier expansion. It lets us calculate more briefly the same connection that we checked by directly expanding the changes in the error and the loss.
+
+</details>
+
+
+
+## 8. Calculate all three orders at once with NumPy
+
+We will now translate the calculations we performed one order at a time into Python. Python is a programming language in which we can write and run a sequence of calculations. **NumPy** is a tool that lets us group numbers together and calculate with them.
+
+The complete runnable code appears later in the article. First, we will look at how each line corresponds to the delivery-fee calculations we have already worked through. We use short names such as `x` and `y` in this explanation. The complete code adds `_one`, as in `x_one` and `y_one`, to distinguish these records from the four-order dataset introduced later.
+
+The first line, `import numpy as np`, loads NumPy and lets us refer to it by the name `np`. The name `np.array` refers to a function that creates an **array**. A function is a piece of code that takes inputs and performs a defined task. We put the values it should work with inside the parentheses. Writing `np.array([0, 1, 2])` creates an array that stores those three numbers in that order.
+
+| Code | What it stores or calculates |
+|---|---|
+| `x = np.array([0, 1, 2], dtype=float)` | Stores the additional distances for orders A, B, and C, in that order. |
+| `y = np.array([1, 3, 5], dtype=float)` | Stores the actual delivery fees in the same order. |
+| `b, w = 0.0, 1.0` | Sets the current base fee and per-kilometer fee. |
+| `pred = b + w * x` | Calculates the predicted delivery fees `[0, 1, 2]` for the three orders. |
+| `e = pred - y` | Calculates each order's error: `[-1, -2, -3]`. |
+| `loss = np.mean(e ** 2) / 2` | Squares the errors, takes their mean, and divides by 2 to calculate $J$. |
+| `db = np.mean(e)` | Calculates the mean of the errors, which is −2. |
+| `dw = np.mean(e * x)` | Calculates the mean of `[0, -2, -6]`, which is $-8/3$. |
+
+Here, `=` is an assignment sign: it stores the result on the right under the name on the left. A name under which we keep a value for use in calculations is called a **variable**. The option `dtype=float` creates an array using a numerical type that can represent decimal values. The operator `*` means multiplication, and `** 2` squares a value. The function `np.mean(...)` calculates the mean of the values supplied inside the parentheses.
+
+When we multiply or subtract arrays of the same shape, NumPy calculates with **the values in matching positions**. The expression `e * x` does not mix all the errors with all the distances. It multiplies A's error by A's distance, B's error by B's distance, and C's error by C's distance. These are the same calculations we performed row by row in the earlier table.
+
+There is no need to memorize the loss calculation as a single unexplained line. The array `e` contains `[-1, -2, -3]`, so `e ** 2` contains `[1, 4, 9]`. Their mean is $14/3$. Dividing that result by 2 gives $J=7/3$, exactly as in our calculation by hand.
+
+### Arrays need matching shapes so that we compare the same orders
+
+A NumPy array's `shape` tells us how its numbers are arranged. Our current `pred` and `y` are both **one-dimensional arrays**, each containing a sequence of three numbers. They are not stored as tables that use both row and column indices. Both have the shape `(3,)`. The comma in this notation indicates that the array has just one dimension, with a size of 3.
+
+If we instead store three numbers as a table with 3 rows and 1 column, we have a **two-dimensional array** with the shape `(3, 1)`. It still contains three values, but its shape is different.
+
+That difference can cause a real calculation error. If the prediction array has shape `(3,)` and the target array has shape `(3, 1)`, subtraction produces the following 3-by-3 result, rather than comparing just three pairs.
+
+| Target being subtracted | Prediction A: 0 | Prediction B: 1 | Prediction C: 2 |
+|---|---:|---:|---:|
+| Target A: 1 | **−1** | 0 | 1 |
+| Target B: 3 | −3 | **−2** | −1 |
+| Target C: 5 | −5 | −4 | **−3** |
+
+The three bold values compare predictions and targets for the same order. Those are the values we want. Every other value compares a prediction for one order with a target for a different order. Even if NumPy reports no error, calculating the loss from this entire array would give us the wrong evaluation.
+
+NumPy's ability to combine arrays of different shapes according to a set of rules is called **broadcasting**. It is useful when, for example, we add one number to every value in an array. However, it also permits unintended calculations like this one.[^broadcasting]
+
+Before calculating errors in this example, we therefore check `pred.shape == y.shape`. The operator `==` asks whether two values are equal. **We need to check both that the shapes match and that matching positions refer to the same order.** If we shuffle the orders differently in the two arrays, their shapes can still match while the comparisons are wrong.
+
+<details>
+<summary>Why does subtracting arrays of shape (3,) and (3, 1) produce (3, 3)?</summary>
+
+Broadcasting compares shapes starting from the right. Along each dimension, the two sizes must either be equal or one of them must be 1. Values along a dimension of size 1 can be reused to match the other array's size.
+
+When comparing `(3,)` and `(3, 1)`, NumPy treats the missing leftmost dimension of the first array as size 1. It therefore compares `(1, 3)` with `(3, 1)`. On the right, the sizes 3 and 1 can match at 3. On the left, the sizes 1 and 3 can also match at 3. That is why the result has shape `(3, 3)`.
+
+The runnable code uses `y[:, None]` to reproduce this situation by turning the target array into 3 rows and 1 column. Inside the brackets, `:` selects all the existing values, while `None` adds a new dimension of size 1. The three values stay the same, but the shape changes from `(3,)` to `(3, 1)`.[^indexing]
+
+In this case, `y.reshape(3, 1)` can produce the same shape. The `reshape` method changes an array's shape while keeping the same number of values.
+
+</details>
+
+## 9. Matrices organize the same calculations
+
+As we add more inputs, we can organize the numbers into a table instead of writing an ever longer prediction expression in our code. A rectangular table of numbers like this is called a **matrix**. Rows run horizontally, and columns run vertically.
+
+Before introducing any new data, we will calculate with the same three orders using a matrix.
+
+### Include the base fee in the multiplication
+
+Our prediction for one order is $b+wx$. Multiplying $b$ by 1 leaves its value unchanged, so we can also write the prediction as $1\times b+x\times w$. Each order then supplies the numbers `[1, additional distance]`, while the coefficients shared by all orders are `[base fee, per-kilometer fee]`.
+
+We will use the name $X_b$ for the input matrix that includes the extra 1s for the base fee. We will use $\theta$, pronounced “theta,” for the array that collects the two coefficients in a fixed order. A collection of numbers arranged along one direction is also called a **vector**. For our three orders, these arrays are:
+
+<div class="supervised-math">
+$$
+X_b=
+\begin{bmatrix}
+1&0\\
+1&1\\
+1&2
+\end{bmatrix},
 \qquad
-\mathrm{MSE}=\frac{1}{n}\sum_{i=1}^{n}e_i^2
+\theta=
+\begin{bmatrix}
+b\\
+w
+\end{bmatrix}
 $$
 </div>
 
-In Python, `e ** 2` squares each error, `np.sum(e ** 2)` calculates SSE, and `np.mean(e ** 2)` calculates MSE. `np` is the short name we will use for NumPy, a numerical computing tool introduced below.
+In the formula, we wrote the two coefficients vertically. In code, we store them in a one-dimensional array, as in `theta = np.array([b, w])`, with shape `(2,)`. We need to distinguish the vertical mathematical notation from the shape of the array actually stored in NumPy.
 
-As we collect more samples with similar error sizes, SSE generally grows. Dividing by the number of samples makes MSE **the average squared error per sample**. This does not mean that MSE values from different problems or targets with different units can be compared without any conditions.
-
-### The training loss in this article is half the MSE
-
-A **loss function** calculates how wrong predictions are. Training usually changes the coefficients to make this value smaller. In this article, we call our training loss $J$ and define it as follows:
+We multiply the first column of $X_b$ by $b$ and the second column by $w$. Adding those two products within one row gives the prediction for that order.
 
 <div class="supervised-math">
 $$
-J=\frac{\mathrm{MSE}}{2}
-=\frac{1}{2n}\sum_{i=1}^{n}e_i^2
+X_b\theta=
+\begin{bmatrix}
+1b+0w\\
+1b+1w\\
+1b+2w
+\end{bmatrix}
 $$
 </div>
 
-In the earlier example, $J=7/3\approx2.333333$. **Dividing by 2 is not part of the definition of MSE.** We choose this constant for the training objective in this article because it conveniently cancels the 2 that appears when differentiating.
+With $b=0$ and $w=1$, the result is again $[0,1,2]$. This calculation is a **matrix–vector product**, which we write as `Xb @ theta` in NumPy. The `@` operator performs matrix multiplication.[^matmul]
 
-For the same data, the coefficients that minimize MSE also minimize half the MSE. Every loss value has simply been multiplied by the same positive number, $1/2$. However, the slope calculated later is also halved, so using the same learning rate does not produce the same step size.
+The matrix needs two columns and the coefficient array needs two values so that we can pair each column with its coefficient. The shapes in this calculation are therefore `(3, 2) @ (2,) → (3,)`. Each of the three input rows produces one prediction.
 
-### How do MAE and RMSE differ?
+### Organize the same sums to calculate the gradient
 
-| Measure | Calculation | Value for the table above | How to interpret it |
-| --- | --- | ---: | --- |
-| SSE | Sum of squared errors | 14 | Total magnitude of the squared errors |
-| MSE | Mean of squared errors | About 4.666667 | Average squared error per sample |
-| $J$ | In this article, MSE divided by 2 | About 2.333333 | The objective value used to update the coefficients |
-| MAE | Mean of absolute errors | 2 | Average error magnitude per sample |
-| RMSE | Square root of MSE | About 2.160247 | A measure based on squared errors, converted back to the original unit |
+The derivative of the loss with respect to the base fee was the mean of the three errors. If we write out the multiplications as well, this is $(1e_1+1e_2+1e_3)/3$. The derivative with respect to the per-kilometer fee was $(x_1e_1+x_2e_2+x_3e_3)/3$.
 
-A **square root** of a number is a value that gives that number when squared. For example, because 3 squared is 9, the nonnegative square root of 9 is 3. `np.sqrt(mse)` calculates this square root.
-
-If the target is measured in Korean won, the error, MAE, and RMSE are also measured in won, while MSE is measured in won squared. RMSE is not the same calculation as MAE. Squaring turns an error of 1 into 1 but an error of 3 into 9, giving larger errors more weight.
-
-## 5. Python and NumPy: looking at both array values and shapes
-
-A Python **variable** is a name attached to a value or object. In `w = 1.0`, `=` performs **assignment**: it associates the value on the right with the name on the left. It is not a mathematical proof of equality. Code uses `==` to compare whether two values are equal.
-
-A **list** is a Python data type that holds multiple values in order, such as `[1, 2, 3]`. An **array** also holds multiple values, but the NumPy arrays used here perform numerical calculations with a defined shape and data type. `np.array([1.0, 2.0, 3.0])` turns a list into a NumPy array. The decimal points indicate values to be used in floating-point calculations.
-
-An **element** is one value inside an array. When two NumPy arrays have the same shape, `+`, `-`, `*`, and `**` normally operate element by element at corresponding positions. For example, multiplying arrays made from `[1, 2, 3]` and `[10, 20, 30]` gives `[10, 40, 90]`. The `*` operator on Python lists does not perform the same operation, so we need to distinguish lists from NumPy arrays.
-
-### `shape` tells us how many values there are along each direction
-
-A direction used to locate values in an array is called an **axis**. A two-dimensional table has two axes: one for selecting rows and another for selecting columns. `shape` gives the size along each axis, and `ndim` gives the number of axes.
-
-| Example array | `shape` | `ndim` | Meaning |
-| --- | --- | ---: | --- |
-| `[1, 3, 5]` | `(3,)` | 1 | A one-dimensional array of length 3 |
-| `[[1], [3], [5]]` | `(3, 1)` | 2 | 3 rows and 1 column |
-| `[[1, 3, 5]]` | `(1, 3)` | 2 | 1 row and 3 columns |
-| Our earlier `X` | `(4, 2)` | 2 | 4 rows and 2 columns |
-
-The result of `shape` is displayed as a Python data type called a **tuple**. A tuple groups values in order, and its entries cannot be replaced after it is created. A tuple with one element includes a comma, as in `(3,)`. This comma does not mean that an empty second axis exists. `(3,)` means there is one axis; `(3, 1)` means there are two.
-
-Strictly calling a one-dimensional array of shape `(3,)` “3 rows and 1 column” leads to confusion in later calculations. Even with the same three numbers, `(3,)`, `(3, 1)`, and `(1, 3)` can behave differently. When the code behaves unexpectedly, **print and inspect the `shape` as well as the numbers**.
-
-## 6. Indexing: choosing values by position
-
-Selecting part of an array is called **indexing**. An **index** is a number identifying a position. In Python, the first position is `0`, the second is `1`, and the third is `2`.
-
-Consider the following array with 3 rows and 3 columns. The row and column numbers shown below are indices.
-
-| Row index | Column 0 | Column 1 | Column 2 |
-| --- | ---: | ---: | ---: |
-| 0 | 10 | 11 | 12 |
-| 1 | 20 | 21 | 22 |
-| 2 | 30 | 31 | 32 |
-
-Call this array `A`. We can select along both axes within one pair of square brackets, using `A[row selection, column selection]`. Here, `:` means to select every position along that axis.[^indexing]
-
-| Code | Actual result | Resulting `shape` |
-| --- | --- | --- |
-| `A[1]` | `[20, 21, 22]` | `(3,)` |
-| `A[[1]]` | `[[20, 21, 22]]` | `(1, 3)` |
-| `A[:, 2]` | `[12, 22, 32]` | `(3,)` |
-| `A[:, [2]]` | `[[12], [22], [32]]` | `(3, 1)` |
-| `A[1, 2]` | `22` | `()` — a value with no axes |
-
-Selecting one row with the integer `1` removes the axis used to select that row. In contrast, `[1]` is a list of length 1 containing a row index to select, so the result remains two-dimensional with one row. The difference between `2` and `[2]` when selecting a column works the same way. Later, this distinction lets us preserve `(number of samples, 1)` when passing just one feature to scikit-learn.
-
-### Two pairs of brackets perform two operations
-
-`A[1][2]` first uses `A[1]` to obtain `[20, 21, 22]`, then selects index 2 of **that result**, giving 22.
-
-Do not memorize “the first brackets select rows, and the second brackets select columns” as a universal rule. With `row_ids = [0, 2]`, `A[row_ids]` produces the new selection `[[10, 11, 12], [30, 31, 32]]`. Applying `[1]` to it, as in `A[row_ids][1]`, selects the second row of that result: `[30, 31, 32]`.
-
-To select column 2 from those two rows while keeping a two-dimensional result, write `A[row_ids][:, [2]]`. The result is `[[12], [32]]`, with shape `(2, 1)`.
-
-Also distinguish the case where two lists appear inside one pair of brackets. In this example, `A[[0, 2], [1, 2]]` pairs the indices to select `A[0, 1]` and `A[2, 2]`, giving `[11, 32]`. It does not select every combination of the two rows and two columns to form a table. Performing the selections separately with `A[[0, 2]][:, [1, 2]]` gives `[[11, 12], [31, 32]]`.
-
-## 7. `None`, `reshape`, and broadcasting: the same numbers can have different shapes
-
-Suppose `v` is a one-dimensional NumPy array containing `[1, 3, 5]`. In indexing, `None` **adds a new axis of length 1** at that position. It does not insert the number 0 or a missing value.
-
-| Code | Result | `shape` |
-| --- | --- | --- |
-| `v` | `[1, 3, 5]` | `(3,)` |
-| `v[:, None]` | `[[1], [3], [5]]` | `(3, 1)` |
-| `v[None, :]` | `[[1, 3, 5]]` | `(1, 3)` |
-| `v.reshape(-1, 1)` | `[[1], [3], [5]]` | `(3, 1)` |
-| `v.T` | `[1, 3, 5]` | `(3,)` |
-
-`reshape` changes an array's shape while preserving the number of elements. In `reshape(-1, 1)`, `1` sets the number of columns to 1, and `-1` asks NumPy to calculate the remaining size from the total number of elements. With 3 elements, the number of rows becomes 3. It does not create a negative number of rows.
-
-For a two-dimensional array, `.T` performs a **transpose**, swapping rows and columns. But `v` has only one axis, so there is no second axis to swap with. `v.T` therefore still has shape `(3,)`. To give a one-dimensional array a column layout, add an axis or use `reshape`.
-
-### An incorrect error array can be created without an error message
-
-**Broadcasting** is a NumPy feature that allows arrays of different shapes to be used together when certain rules are satisfied. It compares each `shape` starting from the rightmost axis. An axis is compatible if the sizes are equal or one of the sizes is 1. Missing leading axes are treated as having size 1.[^broadcasting]
-
-If predictions `p = [0, 2, 4]` and targets `v = [1, 3, 5]` both have shape `(3,)`, then `p - v` gives `[-1, -1, -1]`. These are three errors, each comparing values from the same sample.
-
-But if we change only the targets to `v[:, None]`, the operation becomes `(3,) - (3, 1)`. NumPy treats the predictions as having shape `(1, 3)` and produces the following **3-by-3 result comparing every prediction with every target**.
-
-| Target being subtracted | Prediction 0 | Prediction 2 | Prediction 4 |
-| --- | ---: | ---: | ---: |
-| Target 1 | −1 | 1 | 3 |
-| Target 3 | −3 | −1 | 1 |
-| Target 5 | −5 | −3 | −1 |
-
-We wanted one error per sample, or 3 in total. Instead, we obtained 9 values without an error message. Taking the mean of this result still produces a normal-looking single number, so the mistake is easy to miss.
-
-For code like ours, which predicts one target and uses one-dimensional predictions, **first check that both predictions and targets have shape `(number of samples,)`**. The expression `assert pred.shape == y.shape` checks whether the two shapes match. Section 13 explains `assert` in more detail.
-
-## 8. Derivatives and gradients: which way does the loss change?
-
-After calculating the loss, the next question is: “If we change a coefficient slightly, will the loss decrease?” **Differentiation** helps us answer this question.
-
-### Divide the change in the output by the change in the input
-
-First, consider a simple function $f(t)=t^2/2$ with one numerical input, $t$. Here, $f$ is the function's name, and $f(t)$ is its output when the input is $t$.
-
-Changing $t$ from 3 to 3.1 increases the input by 0.1. The function value changes from $4.5$ to $4.805$, an increase of 0.305. The output change per unit of input change is $0.305/0.1=3.05$.
-
-Writing the input change as $h$, we get the following calculation. **At this stage, $h$ is a nonzero value.**
+We can calculate both sums together by putting the 1s in one row and the distances in another row. Moving the columns of $X_b$ into rows gives us exactly that arrangement. Swapping rows and columns is called **transposing** a matrix, and we write it as `Xb.T` in NumPy.
 
 <div class="supervised-math">
 $$
-\frac{f(t+h)-f(t)}{h}
-=\frac{(t+h)^2-t^2}{2h}
-=\frac{2th+h^2}{2h}
-=t+\frac{h}{2}
+X_b^{\mathsf T}=
+\begin{bmatrix}
+1&1&1\\
+0&1&2
+\end{bmatrix}
 $$
 </div>
 
-As we bring $h$ closer and closer to 0, this value approaches $t$. **Differentiation finds the rate of change at the current position when the input moves by a very small amount.** The expression above does not divide by 0. We simplify it with a nonzero $h$, then examine which value it approaches as $h$ approaches 0.[^derivative]
-
-On a function's graph, this rate of change at the current position is called the **slope**.
-
-| Concept | Expression in this example | Meaning |
-| --- | --- | --- |
-| Original function | $f(t)=t^2/2$ | A rule that calculates the function value from the input |
-| Derivative function | $f'(t)=t$ | A rule that calculates the slope at the input position |
-| Function value at $t=3$ | $f(3)=4.5$ | The height of the function at that position |
-| Derivative value at $t=3$ | $f'(3)=3$ | The rate of change at that position |
-
-The **derivative function** is the whole function obtained by differentiating. A **derivative value** is the number obtained by evaluating it at a particular position. The small mark in $f'$ is read as “prime.” **The loss value and the derivative value are different numbers.**
-
-### With several coefficients, vary one at a time
-
-The regression loss $J$ depends on $w$ and $b$. We can hold $b$ fixed and change only $w$ slightly to calculate how much the loss changes. We can also hold $w$ fixed and change only $b$. Differentiating with respect to just one of several inputs in this way gives a **partial derivative**.
-
-| Expression | Meaning |
-| --- | --- |
-| $\partial J/\partial w$ | The rate of change of loss $J$ when $w$ changes while the other coefficients are held fixed |
-| $\partial J/\partial b$ | The rate of change of loss $J$ when $b$ changes while the other coefficients are held fixed |
-
-$\partial$ is the symbol used for partial derivatives. Although the expression looks like a fraction, for now read it as a single notation indicating “which function is being differentiated with respect to which variable.”
-
-The **gradient** is the collection of partial derivative values for the coefficients, arranged in a fixed order. It is a **vector**, which here can be understood as several numbers grouped in order. If the coefficient order is `[b, w1, w2]`, the gradient has three values in that same order.[^gradient]
-
-## 9. Why are `db = mean(e)` and `dw = mean(e * x)`?
-
-Before memorizing a formula, start with one sample. Its prediction is $b+wx$ and its target is $y$, so its error is $e=b+wx-y$. Let the loss for this one sample be $\ell=e^2/2$. The symbol $\ell$ is a lowercase “ell,” used to distinguish this single-sample loss from the average loss $J$ over several samples.
-
-### Changing the intercept changes the error by the same amount
-
-If we change $b$ to $b+h$, the new error is $e+h$. Subtracting the old loss from the new loss gives:
+Here, $e$ will represent the vector containing the three orders' errors, $[-1,-2,-3]$. In the earlier calculations for one order, $e$ was a single number. Now that we are calculating for several orders together, we collect their errors in an array. Multiplying by this error vector and dividing by the number of orders gives:
 
 <div class="supervised-math">
 $$
-\frac{(e+h)^2}{2}-\frac{e^2}{2}
-=\frac{e^2+2eh+h^2-e^2}{2}
-=eh+\frac{h^2}{2}
+\begin{aligned}
+\frac{X_b^{\mathsf T}e}{3}
+&=\frac{1}{3}
+\begin{bmatrix}
+1(-1)+1(-2)+1(-3)\\
+0(-1)+1(-2)+2(-3)
+\end{bmatrix}\\
+&=\frac{1}{3}
+\begin{bmatrix}
+-6\\
+-8
+\end{bmatrix}
+=\begin{bmatrix}
+-2\\
+-8/3
+\end{bmatrix}
+\end{aligned}
 $$
 </div>
 
-Dividing this by $h$, the change in $b$, gives $e+h/2$. As $h$ approaches 0, the remaining value is $e$, so $\partial\ell/\partial b=e$.
+The first value in the result is `db`, and the second is `dw`. In the code, we also store the three orders' error array under the name `e`.
 
-### Changing the weight also multiplies the change by the input
+If we store the number of orders as `n`, the code is `gradient = Xb.T @ e / n`. The name `gradient` stores the gradient. Transposing and multiplying matrices have not replaced the work of differentiation. **We have arranged the arrays so that they calculate the two sums we already derived, together and in the same order.**
 
-If we change $w$ to $w+h$, the $wx$ part of the prediction becomes $(w+h)x=wx+hx$. The new error is therefore $e+hx$.
+| Value | Shape in this example | Meaning of its positions |
+|---|---|---|
+| `Xb` | `(3, 2)` | Three orders, each with a 1 for the base fee and a distance |
+| `theta` | `(2,)` | Base fee, then per-kilometer fee |
+| `pred`, `e` | `(3,)` | One prediction and one error per order |
+| `Xb.T` | `(2, 3)` | The three orders' inputs to multiply for each coefficient |
+| `gradient` | `(2,)` | Rates of change in loss with respect to the base fee and the per-kilometer fee |
+
+## 10. Add special packaging as an input
+
+Suppose delivery fees depend on special packaging as well as distance. We will use **four new fictional records with two inputs**.
+
+In the table, $u$ is the same additional distance we used earlier, and $v$ indicates whether an order needs special packaging. We record $v=0$ when there is no special packaging and $v=1$ when there is. The numbers 0 and 1 distinguish the two possibilities.
+
+| Order | Additional distance $u$ (km) | Special packaging $v$ | Actual delivery fee $y$ (thousands of won) |
+|---|---:|---:|---:|
+| D | 0 | 0 | 1 |
+| E | 1 | 0 | 3 |
+| F | 0 | 1 | 4 |
+| G | 1 | 1 | 6 |
+
+The base fee is still $b$. We will call the fee per additional kilometer $w_u$ and the special-packaging fee $w_v$. Our prediction rule is now:
 
 <div class="supervised-math">
 $$
-\frac{(e+hx)^2}{2}-\frac{e^2}{2}
-=\frac{e^2+2ehx+h^2x^2-e^2}{2}
-=ehx+\frac{h^2x^2}{2}
+\hat y=b+w_u u+w_v v
 $$
 </div>
 
-Dividing by $h$, the change in $w$, gives $ex+hx^2/2$, which approaches $ex$ as $h$ approaches 0. Thus, $\partial\ell/\partial w=ex$. **The input $x$ appears in the derivative with respect to the weight because changing the weight by $h$ changes the prediction by $hx$.**
+We multiply $w_u$ by the distance $u$ and $w_v$ by the packaging indicator $v$. When an order does not need special packaging, $v=0$, so no packaging fee is added. When it does, $v=1$, so we add the packaging fee $w_v$ once.
 
-The **chain rule** gives another way to express the same result. A change in a coefficient changes the error, and a change in the error changes the loss. We multiply the rates of change for these two stages.[^chain-rule]
+The coefficients that match these fictional records exactly are $b=1$, $w_u=2$, and $w_v=3$. For example, order G has a fee of $1+2\times1+3\times1=6$ thousand won.
+
+As in the previous section, we add a column of 1s for the base fee and collect the coefficients in the same order as the columns:
 
 <div class="supervised-math">
 $$
-\frac{\partial\ell}{\partial w}
-=\frac{\partial\ell}{\partial e}\frac{\partial e}{\partial w}
-=e\cdot x,
+X_b=
+\begin{bmatrix}
+1&0&0\\
+1&1&0\\
+1&0&1\\
+1&1&1
+\end{bmatrix},
 \qquad
-\frac{\partial\ell}{\partial b}
-=\frac{\partial\ell}{\partial e}\frac{\partial e}{\partial b}
-=e\cdot1
+\theta=
+\begin{bmatrix}
+b\\
+w_u\\
+w_v
+\end{bmatrix}
 $$
 </div>
 
-Although this looks like canceling parts of a fraction, it is not a rule obtained by simply deleting symbols. As we have just seen, it expresses how actual changes are connected. We must also distinguish the fact that the derivative of the error with respect to $b$ is 1 from the fact that **the derivative of the loss with respect to $b$ is $e$**.
+In the code, `X` stores only the two columns for distance and packaging. This time we have four orders, so `n` is 4 and `np.ones(n)` creates `[1, 1, 1, 1]`. The expression `np.column_stack([np.ones(n), X])` attaches these values as a new column to the left of `X`, creating `Xb`. The shape of `X` is therefore `(4, 2)`, while the shape of `Xb` is `(4, 3)`.
 
-### For the average loss over several samples, average the derivatives too
-
-Our loss $J$ is the mean of the individual sample losses $\ell$. Differentiating a sum adds the derivatives of its terms, and differentiating a value divided by a constant retains that same division. We therefore obtain:
-
-<div class="supervised-math">
-$$
-\frac{\partial J}{\partial b}=\frac{1}{n}\sum_{i=1}^{n}e_i,
-\qquad
-\frac{\partial J}{\partial w}=\frac{1}{n}\sum_{i=1}^{n}e_ix_i
-$$
-</div>
-
-These expressions are `db = np.mean(e)` and `dw = np.mean(e * x)` in code. Here, $i$ is the sample number. Because this model has one input, $x_i$ is the input value for the $i$th sample. Distinguish this context from the earlier two-feature model, where $x_1$ and $x_2$ identified different features.
-
-`db` and `dw` are ordinary variable names chosen by the programmer. Adding `d` to the beginning of a name does not make Python differentiate automatically. We calculate the expressions we derived and store the results ourselves. Also, **these derivatives are for $J=\mathrm{MSE}/2$**. Differentiating MSE itself gives twice each value.
-
-## 10. Updating the coefficients once with gradient descent
-
-If the slope at the current position is positive, increasing the coefficient slightly moves in a direction that increases the loss. We therefore decrease the coefficient a little. If the slope is negative, we move by increasing the coefficient a little. This method of **updating coefficients in the direction opposite to the gradient** is called **gradient descent (GD)**.[^gradient-descent]
-
-<div class="supervised-math">
-$$
-w_{\mathrm{new}}=w-\alpha\frac{\partial J}{\partial w},
-\qquad
-b_{\mathrm{new}}=b-\alpha\frac{\partial J}{\partial b}
-$$
-</div>
-
-The subscript `new` marks the new value after an update. The symbol $\alpha$, read as “alpha,” is the **learning rate**, a positive number that controls how far to move in one step. We call it `lr` in code. Unlike the coefficients the model uses for prediction, the learning rate is a value we set for the training method. Such a setting is called a **hyperparameter**.
-
-Let us perform one calculation using the following three-row dataset with one input. These targets are different from the targets used just to illustrate errors in section 4.
-
-| $x$ | Target $y$ | Initial prediction $0+1\times x$ | Error $e$ | $ex$ |
-| ---: | ---: | ---: | ---: | ---: |
-| 0 | 1 | 0 | −1 | 0 |
-| 1 | 3 | 1 | −2 | −2 |
-| 2 | 5 | 2 | −3 | −6 |
-
-The initial coefficients are $w=1$ and $b=0$. The errors are `[-1, -2, -3]`, the initial MSE is $14/3$, and the initial $J$ is $7/3$. The two derivatives are:
-
-<div class="supervised-math">
-$$
-dw=\frac{0-2-6}{3}=-\frac{8}{3},
-\qquad
-db=\frac{-1-2-3}{3}=-2
-$$
-</div>
-
-With a learning rate of 0.1, the updated values are:
-
-<div class="supervised-math">
-$$
-w_{\mathrm{new}}=1-0.1\left(-\frac{8}{3}\right)
-=\frac{19}{15}\approx1.266667,
-\qquad
-b_{\mathrm{new}}=0-0.1(-2)=0.2
-$$
-</div>
-
-Both coefficients increased because we subtracted negative values. The new predictions are approximately `[0.2, 1.466667, 2.733333]`, and the MSE is approximately **2.709630**, down from the initial value of about 4.666667. The new $J$ is half of that, approximately 1.354815.
-
-We calculate **both `dw` and `db` at the same coefficients before updating them**. If we change one coefficient first and calculate the other derivative using the new coefficient, that differs from the single simultaneous update described here.
-
-The predictions do not match the targets perfectly after one step, but the loss has decreased. We can repeat this process. However, the gradient describes the current position, so it does not guarantee a decrease in loss if we move too far. Section 12 examines the effect of the learning rate separately.
-
-## 11. Combining two inputs into a matrix calculation
-
-We now return to the dataset from section 2, with **two inputs and four samples**. Both its sample count and input count differ from the three-row dataset in the previous section.
-
-A **matrix** is an arrangement of numbers in rows and columns. We can express matrix calculations using two-dimensional NumPy arrays. To include the intercept in the same calculation, add a column of ones to the left of the original `X` and call the result `Xb`.
-
-| 1 for the intercept | $x_1$ | $x_2$ | Prediction calculated for this row |
-| ---: | ---: | ---: | --- |
-| 1 | 0 | 0 | $b$ |
-| 1 | 1 | 0 | $b+w_1$ |
-| 1 | 0 | 1 | $b+w_2$ |
-| 1 | 1 | 1 | $b+w_1+w_2$ |
-
-In code, `np.ones(n)` creates $n$ ones. `np.c_[np.ones(n), X]` joins them as a column to the left of `X`. This column of ones is not a newly observed feature. **Because $b\times1=b$, it lets us include the intercept in the same multiply-and-add calculation.**
-
-We collect the coefficients in the order `theta = [b, w1, w2]`. The mathematical symbol $\theta$ is read as “theta” and is the name of our coefficient collection here. The name theta does not always mean exactly two values, a weight and an intercept. Its length depends on the number of coefficients the model needs.
-
-### `Xb @ theta` produces one prediction per row
-
-For NumPy arrays, `@` performs **matrix multiplication**. In the case used here—a two-dimensional array multiplied by a one-dimensional coefficient vector—it multiplies matching positions in **each row** of the first array and the second vector, then adds those products. This produces one result per row.[^matmul]
-
-For example, multiplying the last row `[1, 1, 1]` by the coefficients `[1, 2, 3]` gives $1\times1+1\times2+1\times3=6$. Applying this to every row gives the predictions `[1, 3, 4, 6]`.
-
-| Part of the calculation | `shape` | Reason |
-| --- | --- | --- |
-| `Xb` | `(4, 3)` | 4 samples and 3 columns corresponding to the coefficients |
-| `theta` | `(3,)` | An intercept and two weights, 3 values in total |
-| `Xb @ theta` | `(4,)` | One prediction per sample |
-| `Xb.T` | `(3, 4)` | The rows and columns of `Xb` are swapped |
-| Error `e` | `(4,)` | Prediction minus target for each sample |
-| `Xb.T @ e / n` | `(3,)` | One derivative value per coefficient |
-
-**The 3 coefficients and the 4 predictions are different kinds of value.** The model expression determines the number of coefficients, while the number of samples supplied determines the number of predictions. Calculating `@` does not change the original `theta` into the shape of the predictions. It produces a separate result. We must also distinguish this from elementwise multiplication with `*`.
-
-### Working through `Xb.T @ e / n` with numbers
-
-Starting the coefficients at `[0, 0, 0]` makes all four predictions 0. The errors are `[-1, -3, -4, -6]`, and the loss is:
+If we start all three coefficients at 0, the predictions for all four orders are also 0. The errors are $[-1,-3,-4,-6]$, giving the following initial loss:
 
 <div class="supervised-math">
 $$
@@ -469,326 +865,368 @@ J=\frac{1+9+16+36}{2\times4}=7.75
 $$
 </div>
 
-The derivative for the intercept is the mean of the errors. The derivative for the first weight is the mean of each error multiplied by the first feature. The second weight works the same way. In `Xb.T`, the inputs from each column are arranged as rows so that we can perform these calculations.
+The same reasoning applies whichever coefficient we adjust. The base fee changes every order's prediction by the same amount. The effect of the per-kilometer fee depends on the additional distance. The packaging fee affects only orders that need special packaging. We therefore calculate the derivatives as follows.
 
-| Row of `Xb.T` | Sum of the products of that row and the error vector | Derivative after dividing by 4 |
-| --- | --- | ---: |
-| `[1, 1, 1, 1]` | $-1-3-4-6=-14$ | −3.5 |
-| `[0, 1, 0, 1]` | $0-3+0-6=-9$ | −2.25 |
-| `[0, 0, 1, 1]` | $0+0-4-6=-10$ | −2.5 |
+| Coefficient to adjust | Value to multiply by each order's error | Sum across the four orders | Derivative after dividing by 4 |
+|---|---|---|---:|
+| Base fee $b$ | 1 | $-1-3-4-6=-14$ | −3.5 |
+| Per-kilometer fee $w_u$ | Additional distance $u$ | $0-3+0-6=-9$ | −2.25 |
+| Packaging fee $w_v$ | Packaging indicator $v$ | $0+0-4-6=-10$ | −2.5 |
 
-Thus, `gradient = Xb.T @ e / n` gives `[-3.5, -2.25, -2.5]`. **The transpose `.T` does not perform differentiation.** It arranges the array in the right direction to calculate all the “mean of input × error” expressions that we have already derived.
+The matrix calculation `Xb.T @ e / n` also gives $[-3.5,-2.25,-2.5]$. Adding another input has not required a new calculation principle. **We still multiply each error by the corresponding input value because that input determines how strongly a change in the coefficient affects the order's prediction.**
 
-Separately calculating one step with a learning rate of 0.1 gives `[0.35, 0.225, 0.25]`. In code, `trial_theta = theta - 0.1 * g0` stores this result in `trial_theta`. Since we have not assigned the result back to `theta`, the original `theta` is still `[0, 0, 0]`.
+Even with two inputs, this is still a regression problem. Regression and classification are distinguished by **what we predict**, not by whether the inputs contain 0s and 1s. We are still predicting a numerical delivery fee.
 
-## 12. Repeated training, loss records, and the learning rate
 
-The actual loop starts the coefficients at 0 and performs **2000 updates with a learning rate of 0.2**. This differs from the trial calculation with 0.1 shown in the previous section. Each iteration performs the following steps:
+## 11. Repeat the calculations and examine the learning rate
 
-1. Calculate predictions for the four samples using the current coefficients.
-2. Subtract the targets from the predictions to obtain the errors.
-3. Record the current loss $J$.
-4. Use the errors and inputs to calculate the derivative for each coefficient.
-5. Subtract `learning rate × derivative` from each coefficient.
+### Recalculate predictions and errors each time
 
-Because each update uses all the training samples, this method is called **batch gradient descent**. Other variations use only some of the samples, but this article uses all four rows.
+For the four-order example, we will use a learning rate of 0.2. All coefficients start at 0, and the gradient we just calculated is $[-3.5,-2.25,-2.5]$.
 
-After 2000 updates, the coefficients are approximately `[1, 2, 3]`, and the predictions are approximately `[1, 3, 4, 6]`. They have approached the answers used to construct the practice data. Starting at 0 is suitable for this simple linear regression problem. Do not extend that conclusion to the initialization of every kind of model, especially every neural network.
+In the first update, the base fee becomes $0-0.2(-3.5)=0.7$, the per-kilometer fee becomes $0-0.2(-2.25)=0.45$, and the packaging fee becomes $0-0.2(-2.5)=0.5$. The new coefficients are $[0.7,0.45,0.5]$.
 
-### Loss recorded before an update is one step behind loss recorded after it
+We now use those new coefficients to predict the four fees again, then calculate a new gradient from the new errors. To repeat this process in code, we follow these steps:
 
-`history` is a Python list that collects losses in order. `.append(value)` adds one value to the end of a list. In this example, we append **before updating**.
+1. Calculate predictions using the current coefficients: `pred = Xb @ theta`.
+2. Compare predictions and targets for the same orders: `e = pred - y`.
+3. Calculate the current loss: `loss = np.mean(e ** 2) / 2`.
+4. Calculate the rates of change in loss at the current coefficients: `gradient = Xb.T @ e / n`.
+5. Update all coefficients together: `theta = theta - lr * gradient`.
 
-| Stored value | Corresponding coefficient state |
-| --- | --- |
-| `history[0]` | 0 updates completed: the initial coefficients |
-| `history[1]` | 1 update completed |
-| `history[1999]` or `history[-1]` | 1999 updates completed |
-| `final_j`, calculated outside the loop | 2000 updates completed |
+Within one iteration, the first four calculations all use the same current coefficients. We use their results to update the coefficients, then start the calculations again in the next iteration.
 
-The negative list index `-1` means the last element. Performing 2000 updates does not automatically make `history[-1]` the loss after the 2000th update. We need to look at **when the value was stored**.
+The complete code performs 2,000 updates. We chose that number to give this small example enough iterations. It is not a fixed number of updates that every training problem requires.
 
-`history + [final_j]` adds the final state, giving 2001 states from 0 through 2000 completed updates. To make the early changes easier to read, the following figure shows only **81 states, from 0 through 80 completed updates**.
+| Stage | Coefficients `[base fee, per-kilometer fee, packaging fee]` | Loss $J$ |
+|---|---|---:|
+| Before any updates | `[0, 0, 0]` | 7.75 |
+| After the first update | `[0.7, 0.45, 0.5]` | 3.784375 |
+| After 2,000 updates | Approximately `[1, 2, 3]` | Numerically very close to 0 |
 
-![Training loss J decreases from 7.75 to approximately 0.002055 over 0 through 80 completed updates.](/supervised-learning-basics/loss-en.svg)
+![Loss decreases as the model learns the delivery fees for the four orders](/supervised-learning-basics/loss-en.svg)
 
-The horizontal axis is the number of completed coefficient updates, and the vertical axis is $J=\mathrm{MSE}/2$. This is **the loss curve for the four training rows**. It does not yet show performance on new data. After 2000 updates, the loss in the execution environment is approximately $4.8\times10^{-30}$, numerically very close to 0. The number $10^{-30}$ is 1 divided by $10^{30}$, a very small value.
+The code stores **the loss before each update** in `history`. With 2,000 updates, this array contains 2,000 losses, from the initial state through the state after 1,999 updates. After the loop ends, we calculate the loss at the final coefficients as `final_j`, then append it to create the complete record, `history_complete`. This complete record contains 2,001 values, including the initial state. On the graph, horizontal position 0 means before any updates, and 1 means after one update.
 
-### Assignment, in-place changes, and copies serve different purposes
+The figure shows 81 loss values, from the initial state through the 80th update. The loss falls quickly at first, then the curve appears to lie close to 0. However, the loss after 80 updates is about 0.002055, which is still positive. Appearing to be 0 on the graph is different from being exactly 0 in the calculation.
 
-`theta = theta - lr * gradient` first produces the result on the right, then reassigns the name `theta` to that result. For the NumPy floating-point array used here, `theta -= lr * gradient` performs an **in-place update**, directly changing the existing array's contents.
+The code uses `theta.copy()` to create and save a separate array with the same coefficient values at that point. We use these saved final coefficients to make predictions and compare the results with other solution methods.
 
-If we write only `saved = theta`, both names refer to the same array. Changing `theta` in place later also changes what we read through `saved`. To preserve an earlier result independently, make a copy with `saved = theta.copy()`. The line `theta_gd = theta.copy()` stores a separate copy of the coefficients after training.
+### Why can a larger learning rate make the result worse?
 
-### A larger learning rate can change the sign; a still larger one can increase the loss
+When we say that increasing a fee will help, we mean **near its current value**. A small increase in the base fee can bring predictions that are too low closer to the actual fees. A very large increase, however, can make the predictions much too high.
 
-To isolate the effect, step away from the regression problem briefly and consider only the function $J(t)=t^2/2$. Its derivative value is $t$, and the initial $t$ is 3. The initial loss is 4.5.
+We will examine this using the original three orders. In this experiment, we **hold the per-kilometer fee fixed at $w=1$** and adjust only the base fee. This is separate from the earlier experiment in which we trained $b$ and $w$ together.
 
-<div class="supervised-math">
-$$
-t_{\mathrm{new}}=t-\alpha t=(1-\alpha)t
-$$
-</div>
-
-| Learning rate $\alpha$ | $t$ after the first update | $J$ after the first update | What to notice |
-| ---: | ---: | ---: | --- |
-| 0.2 | 2.4 | 2.88 | The value moves closer to 0 with the same sign. |
-| 0.8 | 0.6 | 0.18 | The first step takes the value closer to 0 by a larger amount. |
-| 1.5 | −1.5 | 1.125 | The loss decreases even though the sign changes. |
-| 2.2 | −3.6 | 6.48 | The value moves farther from 0, increasing the loss. |
-
-For this function, each step multiplies the value by $1-\alpha$. For a nonzero starting value to approach 0, we therefore need $\lvert1-\alpha\rvert<1$, or **$0<\alpha<2$**. A value getting progressively closer to a target is called **convergence**. At $\alpha=2$, the value alternates between 3 and −3 without reducing the loss.
-
-**This range is a result for the particular function $J(t)=t^2/2$.** A different loss shape or different input magnitudes can call for a different learning rate. Also, a change in the sign of a coefficient does not by itself mean that training has failed. Examine the loss and the size of the movement together.
-
-## 13. Least squares, `fit` and `predict`, and implementation checks
-
-Our training objective has been to find coefficients that make the sum of squared errors small. This is called a **least-squares** problem. For the same fixed data, the coefficients that minimize SSE, MSE, and half the MSE are the same.
-
-The gradient descent code we wrote is not the only way to solve this problem. For linear regression, we can also use a least-squares solver based on linear algebra calculations.
-
-### What does NumPy's `lstsq` return?
-
-`np.linalg.lstsq(Xb, y, rcond=None)` finds coefficients that make `Xb @ theta` close to `y`. The name `linalg` stands for linear algebra and identifies the collection of functions for those calculations. `lstsq` is short for least squares. The setting `rcond=None` uses the library's default criterion for distinguishing very small numerical components.[^lstsq]
-
-A single call returns the following four values in order:
-
-| Returned value | Name used in this article | Meaning |
-| --- | --- | --- |
-| The solution coefficients | `theta_ls` | Here, 3 numbers in the order `[b, w1, w2]` |
-| Array of residual sums of squares | `residual_sums` | The summed squared errors for each target column |
-| Matrix rank | `rank` | The number of linearly independent column directions |
-| Singular values | `singular_values` | Values used to assess magnitudes along the matrix's directions and distinguish them numerically |
-
-Here, an **independent column** is one that cannot be fully replaced by multiplying the other columns by fixed numbers and adding them. Calculating singular values requires more linear algebra, so we will not work through that calculation here. We should still distinguish the fact that `lstsq` returns more than the coefficients and understand what its other outputs represent.
-
-In particular, although its name contains `residual`, the second output is **not an array listing the error for each sample**. In this example it is a length-1 array containing a sum of squares; depending on the matrix dimensions and rank, it can also be empty. To obtain the errors for individual samples, calculate predictions separately and subtract the targets.
-
-### A scikit-learn model is an object that stores calculation results
-
-A **library** is software that collects reusable functionality. NumPy provides array operations, while **scikit-learn** provides functionality for training, prediction, and evaluation.
-
-Calling `LinearRegression()` creates a linear regression model **object**. Here, an object is an entity that stores settings and training results and performs related operations. A function belonging to an object is called a **method**.
-
-| Code | What it does | What it returns or stores |
-| --- | --- | --- |
-| `model = LinearRegression()` | Creates a model object to train. | A model that has not yet been trained on this data |
-| `model.fit(X, y)` | Finds coefficients from the inputs and targets. | Stores the training results in the model and returns the same model object |
-| `model.coef_` | Reads the learned weights. | Here, `[w1, w2]` |
-| `model.intercept_` | Reads the learned intercept. | Here, $b$ |
-| `model.predict(X)` | Makes predictions with the current coefficients. | An array with one prediction per sample |
-
-The return value of `fit` is not an array of predictions. Calling `predict` does not train the coefficients again. In scikit-learn, the trailing underscore in names such as `coef_` and `intercept_` is a convention for attributes obtained through training.[^sklearn-start]
-
-With the **dense NumPy arrays and default settings** in this article, `LinearRegression` uses SciPy's least-squares solver. Here, a dense array stores all its elements in the ordinary array format, and SciPy is a scientific computing library. The model does not internally repeat the same 2000 gradient descent steps we wrote. `fit` is a common interface for “train on the supplied data”; the actual solution method depends on the model and settings.[^linear-regression]
-
-The default `fit_intercept=True` means that the model also estimates an intercept. We therefore supply **the original `X`, before adding a column of ones**. Distinguish this input format from our direct `Xb @ theta` calculation.
-
-For the four-row example, all three methods predict approximately `[1, 3, 4, 6]`. Placing them side by side with `np.c_[pred_ls, pred_gd, pred_sk]` produces **4 rows and 3 columns**: a comparison of three methods' predictions for four samples.
-
-### Preserve the feature order for new inputs
-
-For a new input $x_1=3$, $x_2=4$, our manually implemented model puts a 1 for the intercept first and calculates with `[1, 3, 4]`.
+Order A has an error of $b+1\times0-1=b-1$, order B has an error of $b+1\times1-3=b-2$, and order C has an error of $b+1\times2-5=b-3$. The distances and actual fees still come from the original table; only the base fee $b$ remains unspecified. The derivative of the loss with respect to the base fee is therefore:
 
 <div class="supervised-math">
 $$
-[1,3,4]\cdot[1,2,3]=1\times1+3\times2+4\times3=19
+\texttt{db}
+=\frac{(b-1)+(b-2)+(b-3)}{3}
+=\frac{3b-6}{3}
+=b-2
 $$
 </div>
 
-The centered dot means to multiply corresponding positions and add the results. Changing the training order `[1 for the intercept, first feature, second feature]` changes the calculation. For scikit-learn, supply a two-dimensional input such as `[[3, 4]]`, representing **1 sample with 2 features**.
+When $b$ is less than 2, this value is negative, so increasing the base fee helps. When $b$ is greater than 2, it is positive, so decreasing the base fee helps. **In this experiment, where the per-kilometer fee is fixed at 1**, a base fee of 2 therefore gives the smallest loss. The predictions at that point are $[2,3,4]$, and the errors are $[1,0,-1]$, giving a loss of $(1+0+1)/6=1/3$. They do not match all the targets because we have not also fitted the correct per-kilometer fee. A rate of change of 0 in the loss is different from a loss of 0.
 
-Being able to produce the prediction 19 does not prove that the model predicts real outcomes well. That requires a separate evaluation against the targets of new cases.
+Starting each experiment at $b=0$ gives `db = -2`. We will change only the learning rate and perform one update.
 
-### `assert` checks a condition; it does not train a model
+| Learning rate | Base fee after one update | Loss after the update | What happened |
+|---:|---:|---:|---|
+| 0.2 | 0.4 | Approximately 1.613333 | We move a little closer to the better base fee of 2. |
+| 0.8 | 1.6 | Approximately 0.413333 | We move much closer to 2. |
+| 1.5 | 3.0 | Approximately 0.833333 | We pass 2, but end up closer to it than where we started. |
+| 2.2 | 4.4 | Approximately 3.213333 | We go too far past 2, and the loss exceeds the initial 2.333333. |
 
-`assert condition` continues if the condition is true and raises an error if it is false. `True` and `False` are Python values representing true and false. The examples use assertions to check array shapes and results that we have already calculated by hand.
+Even if we pass the best base fee of 2, the loss decreases if we end up closer to 2 than before. With a learning rate of 1.5, the base fee moves from 0 to 3, so its distance from 2 shrinks from 2 to 1. What matters is **how far we overshoot and how the loss changes in subsequent iterations**.
 
-Computers store real numbers with a finite number of digits, using a representation called **floating point**. Even if a mathematical result is 1, the stored result might differ slightly, such as `0.9999999999999998`. Instead of always comparing floating-point arrays with `==`, we can specify how much difference to allow.
+A learning rate that works well here may not work on different data. For example, writing the same distances in meters instead of kilometers changes the input values from 1 and 2 to 1,000 and 2,000. Because the calculation of `dw` multiplies by the input, its magnitude also changes. Using the same learning rate can then change the coefficient by far too much. A suitable learning rate depends on the units and scale of the inputs, the loss we use, and the structure of the model.
 
-| Tool | Result and purpose |
-| --- | --- |
-| `np.isclose(a, b)` | Checks whether values at corresponding positions are sufficiently close. Array inputs produce an array of true/false values. |
-| `np.allclose(a, b)` | Returns one true/false value indicating whether all the compared values are sufficiently close. |
-| `np.isfinite(a)` | Checks whether each value is neither NaN nor infinite. |
-| `.all()` | Checks whether every value in a true/false array is true. |
+<details>
+<summary>When do repeated updates settle down in the base-fee-only experiment?</summary>
 
-**NaN**, short for “not a number,” is a special value used for numerical results that are undefined or invalid, among other cases. **Infinity** represents a value that is not finite. If these values appear during repeated training, examine the calculations.
-
-The basic comparison rule used by `allclose` is:[^allclose]
+Substituting `db = b - 2` into the update rule gives $b_{\text{new}}=b-\alpha(b-2)$. We will examine how far the new base fee is from 2, the value that minimizes the loss.
 
 <div class="supervised-math">
 $$
-|a-b|\leq\mathrm{atol}+\mathrm{rtol}|b|
+\begin{aligned}
+b_{\text{new}}-2
+&=b-\alpha(b-2)-2\\
+&=(b-2)-\alpha(b-2)\\
+&=(1-\alpha)(b-2)
+\end{aligned}
 $$
 </div>
 
-`atol` is the absolute difference allowed, and `rtol` determines an additional allowance proportional to the magnitude of the reference value $b$. To allow only an absolute difference of $10^{-8}$, write `atol=1e-8, rtol=0`. The code notation `1e-8` means $1\times10^{-8}=0.00000001$. The `e` in this notation is unrelated to the error variable we created earlier.
+Every update multiplies the previous difference $b-2$ by $1-\alpha$. If the absolute value of this multiplier is less than 1, the magnitude of the difference shrinks. We therefore need $-1<1-\alpha<1$.
 
-Because `allclose` also allows broadcasting, **it does not replace a shape check**. Check that the shapes match before comparing the numbers. Also, `final_j < history[0]` checks that the final loss is smaller than the initial loss; it does not check that the loss never increased at any intermediate step. Tiny fluctuations can occur in numerical calculations that have become very close to 0.
+Rearranging the left-hand condition, $-1<1-\alpha$, gives $\alpha<2$. Rearranging the right-hand condition, $1-\alpha<1$, gives $\alpha>0$. In this experiment, the base fee therefore approaches 2 as we keep updating it when $0<\alpha<2$.
 
-Checking whether the coefficients are close to `[1, 2, 3]` verifies the implementation on this particular practice dataset, which was constructed with known answers. We should not expect these coefficients or the same loss threshold for arbitrary real data. Python's `assert` can be removed when running with the `-O` optimization option, so do not rely on it for every input validation that must run in a real service.[^assert]
+We obtained this range **for our current data and loss, while holding the per-kilometer fee at 1 and learning only the base fee**. It is not a universal range of learning rates for other models.
 
-## 14. Splitting real data into training and test sets
+</details>
 
-The small practice dataset let us check the calculations. Now let us examine **whether the model also predicts cases that were not used for training**. This ability is called **generalization**.
+## 12. Check the result with a least-squares solver and scikit-learn
 
-We will use the `diabetes` dataset included in scikit-learn. It has 442 samples and 10 input features. The target is **a numerical measure of disease progression one year after the initial measurements**. The task is not to predict diabetes status as 0 or 1, nor to predict blood glucose itself.[^diabetes]
+### Solve the same problem using a different calculation method
 
-| Column position | Name | Meaning needed for this exercise |
-| --- | --- | --- |
+Our loop reduced squared errors by adjusting the coefficients a little at a time. Finding coefficients that minimize the sum of squared errors is called **solving a least-squares problem**. For the same data, SSE, MSE, and half the MSE differ only by fixed positive multipliers, so the same coefficients minimize all three scores.
+
+There are other ways to solve the least-squares problem for linear regression besides the gradient descent loop we wrote. NumPy provides one through `np.linalg.lstsq`.[^lstsq]
+
+Passing the four orders' input matrix and actual fees to `result = np.linalg.lstsq(Xb, y)` returns a collection of results. The first item is the coefficient array, which we retrieve with `theta_ls = result[0]`. Python starts numbering positions at 0, so `[0]` selects the first item.
+
+In this example, the calculated coefficients are approximately $[1,2,3]$. We can use them to make predictions and check whether those predictions are close to the ones from our own gradient descent code.
+
+### `fit` finds and stores coefficients; `predict` uses them to make predictions
+
+**scikit-learn** is a Python tool that provides many machine-learning methods. Its `LinearRegression` model is a linear regression model, like our “base fee plus a charge for each input” rule. With the default settings we use here, it finds coefficients that minimize squared errors.[^linear-regression]
+
+The expression `model_small = LinearRegression()` creates a **model object** to store the training results and make predictions. Here, you can think of an object as a part of the program that keeps the training functionality, prediction functionality, and learned coefficients together.
+
+| Code | What it does in the delivery-fee problem |
+|---|---|
+| `model_small.fit(X, y)` | Finds coefficients from the four orders' distances, packaging indicators, and actual fees, then stores them in the model. |
+| `model_small.intercept_` | Retrieves the learned base fee, approximately 1. |
+| `model_small.coef_` | Retrieves the learned per-kilometer and packaging fees, approximately `[2, 3]`. |
+| `model_small.predict(X)` | Uses the stored coefficients to predict fees for the four orders. |
+
+The trailing underscore is scikit-learn's naming convention for values determined during training. The return value of `fit` is the fitted model itself, not an array of predictions. To obtain predictions, we call `predict`.
+
+By default, `LinearRegression` handles the intercept separately. We therefore pass **the two-column `X` containing only distance and packaging** to `fit`. We do not pass `Xb`, to which we added a column of 1s for our own calculations. Also, the name `fit` does not mean “run the gradient descent loop from earlier.” It is a common name for training; the calculation method depends on the model.
+
+### Use the same units and column order for new orders
+
+Let us predict the fee for an order with an additional distance of 3 km and special packaging. For our own matrix calculation, the input is `[1, 3, 1]`: a 1 for the base fee, a distance of 3, and a packaging indicator of 1.
+
+With learned coefficients of $[1,2,3]$, the prediction is:
+
+<div class="supervised-math">
+$$
+1\times1+3\times2+1\times3=10
+$$
+</div>
+
+The predicted delivery fee is 10 thousand won. For scikit-learn, we remove the 1 for the base fee and provide `[[3, 1]]`. The two layers of brackets keep the input in a 1-row, 2-column shape: one order with two inputs.
+
+If we swap the distance and packaging columns, each coefficient will multiply the wrong input. Using meters for prediction when we used kilometers for training also produces an incorrect result. **The input columns must have the same order and units during training and prediction.**
+
+This 3 km order lies outside the 0–1 km range in our fictional training records. Here, we are checking the calculation for a rule we deliberately built into the data. With real data, we need to check separately whether the same relationship continues beyond the range we observed.
+
+### When calculated decimals differ slightly
+
+Even when two methods give the same mathematical answer, a computer may produce slightly different final digits because it stores decimals with finite precision and performs operations in different orders. When comparing prediction arrays, we can therefore allow a specified difference instead of requiring exact equality.
+
+For example, if the expected value is 3 and the calculated value is 3.000000002, the difference is 0.000000002. That result is within an allowed difference of 0.00000001.
+
+The code `np.allclose(actual, expected, atol=1e-8, rtol=0)` checks whether corresponding values in the arrays agree within this tolerance. Here, `actual` is the array we calculated, and `expected` is the array we compare it with. The notation `1e-8` is how we write $10^{-8}=0.00000001$ in code. The argument `atol` sets the allowed absolute difference. The argument `rtol` sets an additional allowance proportional to the magnitude of the comparison value. We set `rtol=0` here to use only the absolute difference.[^allclose]
+
+An `assert` statement checks whether the condition that follows it is true and stops execution if it is false. Our code uses these statements to check agreement with calculations by hand or with another solution method. They help us find calculation errors; they do not train a more accurate model.[^assert]
+
+We still need to compare arrays with matching shapes. Since `allclose` can also use broadcasting, we check `shape` first.
+
+
+## 13. Check predictions on data that was not used for training
+
+We created delivery records that followed an exact rule so that we could check our calculations. In real work, fitting past records well is not enough. The program's purpose is **to predict the fees for orders that will arrive in the future**.
+
+A program that memorizes every past order number and its fee may still have no answer for an order it has never seen. The ability to predict well for examples that were not used during training is called **generalization**.
+
+To examine this ability, we will set aside some of the data before training. We use the **training data** to find the coefficients and the **test data** to evaluate predictions on examples that were not used for training.
+
+### Move to a real dataset that anyone can run
+
+We will now move from our handmade delivery records to the `diabetes` dataset included with scikit-learn. This lets anyone run the same exercise without obtaining records from a delivery company.
+
+The dataset contains records for 442 people and 10 input features. The target is a numerical measure of **disease progression one year after the initial measurements**. We are predicting a different kind of number from a delivery fee, but the process is the same: train using paired inputs and targets, then evaluate predictions on new examples.[^diabetes]
+
+| Column index | Name | What the input records |
+|---|---|---|
 | 0 | `age` | Age |
-| 1 | `sex` | Sex category recorded numerically |
-| 2 | `bmi` | Body mass index, an indicator calculated from height and weight |
+| 1 | `sex` | Sex recorded as a numerical category |
+| 2 | `bmi` | Body mass index: a measure calculated from height and weight |
 | 3 | `bp` | Average blood pressure |
-| 4–9 | `s1`–`s6` | Six indicators related to blood tests, including cholesterol |
+| 4–9 | `s1`–`s6` | Six measures related to blood tests |
 
-The purpose of this article is to practice regression using inputs and a numerical target from the same row, rather than to interpret each medical indicator. The official documentation also notes uncertainty about the exact meanings of some original features. We will not assign meanings to the numbers by guessing.[^diabetes]
+This exercise is a regression problem that predicts the recorded target number, not a classification problem that predicts whether someone has diabetes. We are not assigning our own medical interpretations to the measurements or using the model to make clinical decisions. The official documentation also notes that the precise meanings of some original features are unclear.[^diabetes]
 
-`load_diabetes(return_X_y=True, scaled=False)` returns the input array followed by the target array. `return_X_y=True` means that we want the two arrays `X` and `y` directly. `scaled=False` means that we **receive the stored feature values without applying the additional mean centering and scaling offered by the loader**. Mean centering subtracts the feature's mean from each value; scaling transforms values, for example by dividing them by a chosen reference quantity. This does not mean that no column has ever undergone any earlier processing.
+The call `load_diabetes(return_X_y=True, scaled=False)` returns the input array followed by the target array. The option `return_X_y=True` requests these two arrays directly. The option `scaled=False` returns the stored feature values without the additional mean centering and scaling offered by the loading function. It does not mean that no column has ever been processed before.
 
-This exercise directly solves ordinary least-squares regression with an intercept. Additional scaling is not required for this example, but do not generalize that conclusion to say input scaling is always unnecessary for the earlier gradient descent code or for other algorithms.
+Mean centering subtracts a column's mean from each of its values. Scaling changes their scale, for example by dividing them by a chosen reference quantity. Here, we will use the least-squares solver in `LinearRegression`. We are not applying our earlier delivery-example gradient descent loop and learning rate directly to this real dataset.
 
-### Split row indices, then apply the same selection to inputs and targets
+### Split row indices first to keep inputs paired with their targets
 
-**Training data** is used to find the coefficients. **Test data** contains cases not used in that training, allowing us to evaluate the predictions.
+We will store the 442-by-10 input array as `X_real` and the 442 targets in the same order as `y_real`. Shuffling the inputs and targets independently could pair values from different people. We therefore **split the row indices first, then apply the same indices to both arrays**.
 
-`np.arange(len(y_real))` creates one row index per target, from `0` through `441`. The function `arange` creates evenly spaced numbers; here, it excludes the endpoint 442. We split that index array with `train_test_split`.[^split]
+The expression `np.arange(len(y_real))` creates indices from 0 to 441. The value of `len(y_real)` is the number of targets, 442. The call `np.arange(442)` creates integers starting at 0 and stopping just before 442.
 
-| Setting or result | Meaning |
-| --- | --- |
-| `test_size=0.2` | Select approximately 20% of the data for testing. |
-| `random_state=42` | Fix the starting point for random number generation so that the same inputs, settings, and environment reproduce the same random split. |
-| `train_idx` | Array of row indices selected for training, with length 353 |
-| `test_idx` | Array of row indices selected for testing, with length 89 |
+We pass these indices to `train_test_split`. The setting `test_size=0.2` leaves roughly 20% of them for testing. The option `random_state=42` fixes the starting state of the random selection process so that we can reproduce the split with the same data and settings. The number 42 does not guarantee a particularly good split.[^split]
 
-Random numbers are numbers used to make random selections. The value 42 does not guarantee a better model than another number. It is a setting that makes the split reproducible. It also does not mean that exactly the same cases will be selected if the data itself or its order changes.
+We store the training indices returned by the splitting function as `train_ids` and the test indices as `test_ids`. The expressions `X_real[train_ids]` and `y_real[train_ids]` select rows with the same indices in the same order. We apply the same procedure to the test indices.
 
-`train_idx` is **an array of multiple row indices**, not a single number. Applying the same selection in `X_real[train_idx]` and `y_real[train_idx]` preserves the input–target pairs. The resulting shapes are:
+| Purpose | Input array shape | Target array shape |
+|---|---|---|
+| Training | `X_train: (353, 10)` | `y_train: (353,)` |
+| Testing | `X_test: (89, 10)` | `y_test: (89,)` |
 
-| Array | `shape` |
-| --- | --- |
-| `X_train` | `(353, 10)` |
-| `y_train` | `(353,)` |
-| `X_test` | `(89, 10)` |
-| `y_test` | `(89,)` |
+In the execution results, the first record in the test array has **index 287** in the original dataset. Since Python starts its indices at 0, that was the 288th record in the original order.
 
-### First, build a baseline that predicts only the mean
+| Value to check | Position in the code | Value |
+|---|---|---:|
+| Original index of the first test record | `test_ids[0]` | 287 |
+| BMI for that record | `X_test[0, 2]` | 25.8 |
+| Target for that record | `y_test[0]` | 219 |
 
-A **baseline** is a simple method against which we can measure how much a more complex method improves. Here, we calculate the mean of the training targets and predict that mean for every test sample. `DummyRegressor(strategy="mean")` performs this role.[^baseline]
+The indices `[0, 2]` select the first row and third column of the current array. Distinguishing the original row index, 287, from its position in the test array, 0, lets us keep track of which record's target each prediction is compared with.
 
-Why the mean? If we predict the same number $c$ for every sample, the derivative of half the mean squared loss with respect to $c$ is `mean(c - y)`. This equals $c-\operatorname{mean}(y)$. When $c$ equals the mean of the training targets, the derivative is 0 and the upward-opening squared loss reaches its minimum. In other words, **if we predict just one constant and evaluate it with MSE, the mean of the training targets is the right choice**.
+## 14. Compare the model with predicting the mean every time
 
-Here, the training target mean is approximately **153.736544**. If we used the test target mean to choose the baseline, we would be using the evaluation answers for training. We must calculate it from **the training targets alone**. This baseline does not use individual feature values, such as weight or BMI, to make its predictions.
+### We need a point of comparison to interpret MSE
 
-### Compare BMI alone with all features on the same test rows
+If a model has a test MSE of 2,900, is that a good result? The number alone does not tell us. We need to know the units and scale of the targets, as well as how well a simple method can predict them.
 
-The first linear model uses only the BMI column. Its column index is 2, so we pass `X_train[:, [2]]`. Using `[2]` keeps the input two-dimensional, with shape `(353, 1)`.
+A simple prediction method chosen as a point of comparison for more complex models is called a **baseline**. Our baseline will ignore differences between inputs and **predict the mean of the training targets for every person**.
 
-The second linear model uses all 10 features. We create a separate model object for each and call `fit` using only the 353 training rows. We then call `predict` on the inputs for the same 89 test rows and compare both sets of predictions with the same `y_test`.
+In the delivery-fee example, this would mean quoting the same fee for every order, regardless of distance or packaging. If a new model performs worse than this baseline on the same test data, the more complex model has not produced better predictions in this evaluation.
 
-| Method | What it learns | Test MSE |
-| --- | --- | ---: |
-| Mean baseline | One number: the mean of the training targets | 5361.533457 |
-| Linear regression using only BMI | A BMI weight and an intercept | 4061.825928 |
+scikit-learn's `DummyRegressor(strategy="mean")` calculates and stores the mean of the training targets, then uses that value for every prediction.[^baseline] The mean in our training data is approximately 153.736544. The baseline therefore predicts that same value for the first test record, the second test record, and all the others.
+
+We use `fit(X_train, y_train)` and `predict(X_test)` just as with the other models. However, this baseline does not change its predictions according to age, BMI, or any other input value. It returns the same prediction once for each row in the test input.
+
+<details>
+<summary>Why use the mean when predicting the same value for every example?</summary>
+
+Suppose we predict the same number $c$ for every record. The value $c$ is the only coefficient we can adjust in this method, and it is the **shared prediction** for all records. The error for one record is $c-y$. We will again use the loss we defined earlier, $J=\text{MSE}/2$.
+
+We can use the same calculation we used for the derivative of the loss with respect to the base fee. Increasing the shared prediction $c$ raises every prediction by the same amount. The derivative of the loss with respect to $c$ is therefore also the mean of the errors.
+
+Let the training targets be $y_1$, $y_2$, and $y_3$. Using the same prediction $c$ for every record gives three errors: $c-y_1$, $c-y_2$, and $c-y_3$. Adding these errors and dividing by 3 gives:
+
+<div class="supervised-math">
+$$
+\begin{aligned}
+\frac{(c-y_1)+(c-y_2)+(c-y_3)}{3}
+&=\frac{3c-(y_1+y_2+y_3)}{3}\\
+&=c-\frac{y_1+y_2+y_3}{3}
+\end{aligned}
+$$
+</div>
+
+The derivative is therefore “the current shared prediction minus the mean of the training targets.”
+
+When the shared prediction is below the mean, the derivative is negative, so raising the prediction reduces the loss. When it is above the mean, the derivative is positive, so lowering the prediction reduces the loss. **When we predict the same value for every example and evaluate it using MSE, the mean of the training targets gives the smallest loss.** The same reasoning applies to any number of records.
+
+We calculate this mean using the training targets. If we looked at the test targets first and used them to choose the mean, we would already have used the answers from our future evaluation data to create the prediction rule.
+
+</details>
+
+### A model using only BMI and a model using all ten features
+
+Our first linear regression model uses only BMI as its input. Since the BMI column has index 2, we select it with `X_train[:, [2]]`. Inside the brackets, `:` selects all rows, while `[2]` selects the third column and keeps it in a one-column table. The result has shape `(353, 1)`.
+
+Writing `X_train[:, 2]` instead produces an array of shape `(353,)`, a sequence of 353 numbers. This scikit-learn model expects inputs as a table of “number of samples × number of features,” so we keep a two-dimensional shape even when there is only one feature.[^sklearn-start]
+
+Our second model uses all 10 input columns. Each model learns its own coefficients, and **both are fitted using only the same 353 training rows**. We then predict the same 89 test rows and compare both sets of predictions with the same `y_test`.
+
+| Method | Values learned during training | Test MSE |
+|---|---|---:|
+| Mean baseline | One mean of the training targets | 5361.533457 |
+| Linear regression using only BMI | A weight for BMI and an intercept | 4061.825928 |
 | Linear regression using all 10 features | 10 weights and an intercept | 2900.193628 |
 
-This table rounds results obtained with Python 3.12.14, NumPy 2.3.5, and scikit-learn 1.8.0, using `scaled=False`, `test_size=0.2`, and `random_state=42`. A smaller MSE means smaller squared errors on this test set.
+These are rounded results from Python 3.12.14, NumPy 2.3.5, and scikit-learn 1.8.0, using `scaled=False`, `test_size=0.2`, and `random_state=42`. The function call `mean_squared_error(y_test, prediction)` calculates the same MSE we learned earlier.
 
-**For this split, the model using all features has the smallest MSE.** This does not establish that adding features always improves performance or that the ranking will remain the same in every situation. Additional features may contain unhelpful information, and a model may fit incidental patterns in its training data.
+On this split, the BMI model had a lower MSE than the mean baseline, and the model using all features had the lowest MSE. We can say that **the model using all features produced the smallest mean squared error on these 89 held-out records**.
 
-In the code, we store the three prediction arrays by name in a **dictionary** called `predictions`. A dictionary pairs a name, called a key, with its corresponding value. We distinguish the results as `baseline`, `bmi`, and `all` so that after the loop we do not look only at the final `prediction` variable and lose track of which model it belongs to.
+This does not mean that adding features always improves a model. Some inputs may not help, and a model can learn relationships that appeared in the past data only by chance. This comparison tells us how the three methods performed on this particular dataset and split.
 
-## 15. Residual plots: how far off, and in which direction?
+## 15. Examine individual mistakes and understand what the evaluation tells us
 
-MSE summarizes errors across many samples as a single number. To see the direction of each sample's error, examine its **residual**. For the residual plot in this article, we subtract in the following order:
+### MSE alone does not show which way predictions were wrong
 
-<div class="supervised-math">
-$$
-\text{Residual}=y-\hat y
-$$
-</div>
+The model using all features predicts approximately 139.547558 for the first test record. Its target is 219, so the prediction is about 79.452442 too low.
 
-This has **the opposite sign** from the training error $e=\hat y-y$. Different texts or programs may use the word “error” differently, so check the subtraction order. Either order gives the same squared value and therefore the same MSE, but the interpretations of positive and negative values differ.
-
-| Residual | Meaning |
-| --- | --- |
-| Positive | The actual value is greater than the prediction. The model predicted too low. |
-| 0 | The actual value and prediction are equal. |
-| Negative | The actual value is less than the prediction. The model predicted too high. |
-
-The first test sample for the model using all features is row index 287 in the original data. Its actual value is 219 and its prediction is approximately 139.547558, giving this residual:
+Now we will examine how far each record's actual value is above its prediction. To represent this difference, we use the **residual**, calculated by subtracting the prediction from the actual value. Plotting residuals for multiple records lets us examine which way the model's predictions were wrong. We calculate them as follows:
 
 <div class="supervised-math">
 $$
-219-139.547558\approx+79.452442
+\text{residual}=\text{actual value}-\text{predicted value}=y-\hat y
 $$
 </div>
 
-A **scatter plot** shows each sample as a point positioned by its horizontal and vertical values. The figure below places predictions on the horizontal axis and residuals on the vertical axis. Each point is one test sample, for a total of 89 points.
+This subtraction runs in the opposite order from the error $e=\hat y-y$ that we used for training. A positive residual therefore means the prediction was too low, and a negative residual means it was too high. Reversing the subtraction does not change the squared value, so it does not change MSE.
 
-![A scatter plot of predictions and residuals for 89 test samples. The first sample is highlighted with target 219, prediction about 139.55, and positive residual about 79.45.](/supervised-learning-basics/residuals-en.svg)
+The residual for the first test record is:
 
-The horizontal reference line marks residual 0. The farther a point is from this line, the larger the error for that sample. The highlighted point is the first test sample calculated above. It lies above the line, so its prediction was too low.
+<div class="supervised-math">
+$$
+219-139.547558\approx79.452442
+$$
+</div>
 
-This type of plot lets us look for patterns, such as residuals leaning in one direction as predictions increase or errors becoming more spread out in a particular range. Such patterns can be reasons to investigate the model's relationship or the conditions of the data further. A single plot cannot establish their cause or guarantee performance in actual use.
+The figure below is a **scatter plot**: it shows one point per test record, with the prediction on the horizontal axis and the residual on the vertical axis. There are 89 points in total. The first record, whose residual we just calculated, is highlighted.
 
-## 16. What this evaluation tells us, and what else needs checking
+![Predictions and residuals for 89 test records. The highlighted first record has an actual value of 219, a prediction of about 139.55, and a residual of about 79.45.](/supervised-learning-basics/residuals-en.svg)
 
-### Implementation checks and model evaluation answer different questions
+The horizontal line marks a residual of 0. The farther a point is from this line, the larger the error for that record. The highlighted point is above the line, so its prediction was below the actual value.
 
-Checking whether the small dataset produces coefficients `[1, 2, 3]` asks **whether the calculation is implemented as intended**. Calculating MSE on 89 real-data rows that were not used for training asks **how well the trained model predicts separate cases**.
+In delivery work, we might look for something that orders with underestimated fees have in common. For example, if predictions are consistently too low for orders with special packaging, that gives us a reason to examine the packaging inputs or the prediction rule more closely. Examining errors record by record can reveal problems that an overall MSE hides. The shape of the plot alone, however, does not establish the cause.
 
-Passing `assert` checks does not mean prediction performance is good. A small MSE on a particular dataset does not mean the entire implementation is free of errors, either. Performing 2000 training iterations and splitting the data into training and test sets also serve different purposes. Iteration updates the coefficients; splitting separates the cases used to assess performance.
+### Fitting past records well is different from predicting new examples well
 
-### Repeatedly choosing models from the same test results changes that data's role
+**Overfitting** occurs when a model fits even the chance details of its training records so closely that it predicts new examples poorly.
 
-**Overfitting** occurs when a model fits the training data well but does not predict new data well. Looking only at the training loss is not enough to detect it reliably.
+If a delivery model memorizes a separate fee for every order number, it can have very little loss on orders it has already seen. For a new order number, however, it has no memorized answer. To check whether it has learned useful relationships with distance and packaging, we need to evaluate it on separate examples.
 
-Use **validation data** when repeatedly comparing model types, learning rates, or feature choices. The training data determines the coefficients, the validation data helps compare settings, and a separately reserved test set provides the final evaluation.
+Earlier, we checked that the small delivery table produced coefficients of $[1,2,3]$ to **verify our calculation implementation**. Here, we calculated MSE on 89 records that were not used for training to **evaluate predictions on separate examples**. Passing assertions in the code does not automatically answer the second question.
 
-If we keep changing the model based on the test table above and choose whichever gives the lowest MSE, those 89 rows effectively become validation data. After repeating that process, we should no longer describe the result as performance on a completely untouched final test set.[^leakage]
+### Separate the data for model selection from the data for final evaluation
 
-When data is limited, we can also use **cross-validation**. Split the data into several groups, leave one group out for validation in turn, train on the remaining groups, and collect the results. This helps us examine how sensitive the result is to one particular split. Plan both how to reserve data for the final evaluation and how to use cross-validation to compare settings.[^cross-validation]
+If we want to try different model types or learning rates and choose the settings that perform best, we set aside **validation data** for those comparisons. We use training data to learn coefficients, validation data to choose settings, and the remaining test data for a final evaluation.
 
-### Apply the training-data boundary to preprocessing too
+Repeatedly studying the same exam questions and answers makes us familiar with that particular exam. Similarly, if we keep checking the same test results and changing our model, that dataset influences our choice of model. If we repeatedly make choices using the 89 records above, those records are effectively serving as validation data. We can no longer interpret the subsequent result as performance on a final exam we have never seen.[^cross-validation]
 
-**Preprocessing** means cleaning or transforming data before passing it to a model. It includes filling in **missing values**, which are entries with no value, and adjusting input scales.
+When data is limited, **cross-validation** divides it into several groups and rotates which group is held out for validation. Here, imagine leaving the final test data aside and splitting the remaining data into five groups. We train on four groups and validate on the remaining group, repeating the process five times. These results help us examine how much performance depends on one particular split.[^cross-validation]
 
-If a transformation derives quantities such as a mean from the data, **split into training and test sets first, then calculate those quantities using only the training data**. Apply the transformation determined during training unchanged to the test data. Filling missing entries using the mean of the entire dataset before splitting can allow test information into training. When information that should not be available during evaluation enters training or model selection, the problem is called **data leakage**.[^leakage]
+### Use only information that will be available when making a prediction
 
-Scikit-learn's `Pipeline` connects preprocessing and a model in sequence, helping apply the transformation learned during training when making predictions too. This article focuses on the basic least-squares regression calculation, so we have not added a preprocessing model. If new data requires transformations, the same boundary must be respected.
+Suppose we are predicting the delivery fee when an order arrives, but include the final billed amount—which is only known after delivery—as an input. The model might fit past records well, but we cannot provide that input when a new order arrives.
 
-Also check whether the rows represent independent cases. If one person's records occupy several rows, consider the consequences of distributing that person's records across both training and test sets. Predicting the future may require a split that follows time order. A random split is not appropriate for every dataset.[^cross-validation]
+**Data leakage** occurs when **information unavailable at prediction time is used to build the prediction rule, or when test information reserved for final evaluation enters training or model selection**.[^leakage]
 
-When working with real data, also check the input–target pairing, missing values, duplicate records, units, and plausible ranges. The fixed split and three MSE values in this article form **a reproducible example of the full training, prediction, and evaluation process**. There is no universal passing MSE for every regression problem; comparisons and separate evaluation must fit the actual purpose.
+The same principle applies when preparing inputs. Filling missing values or adjusting the scale of inputs is called **preprocessing**. Suppose we fill missing distance values with the mean distance. We first split the data into training and test sets, then **calculate the mean using only distances in the training data**. We use that same mean to fill missing values in the test data. Filling values with a mean calculated from both sets before splitting would allow information from the held-out data into training.[^leakage]
 
-## 17. Complete Python code to run from the beginning
+The way we split the data should also reflect the prediction task. To predict next month's orders, it makes sense to train on earlier orders and evaluate on later ones. To check performance for customers we have never served before, we can keep each customer's records entirely on one side of the training–evaluation split. Randomly splitting rows is not suitable for every problem.[^cross-validation]
 
-The following code runs in Python 3. A **package** is a unit of software distributed so that it can be installed and used. The required packages are `numpy`, `matplotlib`, and `scikit-learn`. `matplotlib` draws the graphs, and scikit-learn is imported in code under the name `sklearn`.
+Our original goal was to predict the fee for a new order. To serve that goal, we need to **prepare inputs, compare predictions with targets for the same orders, learn coefficients, and check results in situations that were not used for training**. Calculating a loss and running gradient descent each contribute to part of that process.
 
-In Jupyter Notebook, prepare the packages in a separate cell with `%pip install numpy matplotlib scikit-learn`, then place the following code in one cell or run it in order from top to bottom. `%pip` is an installation command for the notebook environment, so do not put it directly into an ordinary `.py` file. If the packages are already installed, there is no need to install them again.
 
-**`import`** makes library functionality available for use. In `import numpy as np`, `as np` means that we will refer to `numpy` by the shorter name `np`. The form `from ... import ...` brings in a specific feature by name.
+## 16. The complete Python code, ready to run from the beginning
 
-A `for` loop takes values one at a time and repeats the same work. `range(2000)` supplies 2000 numbers, from 0 through 1999. In `for _ in ...`, `_` is a conventional name indicating that the iteration number itself is not used in the calculation. The indented lines run as part of that iteration, so **preserve the indentation when copying the code**.
+The code below runs through the calculations in order. The names `x_one` and `y_one` refer to the original three-order dataset, while `X` and `y` later refer to the four-order dataset with special packaging. In variable names, `initial` identifies values before an update, `trial` identifies an experiment that changes one coefficient, and `after` identifies values after an update.
 
-In the code, `len` gives the number of elements, `float` converts a value to a Python floating-point number, and `print` displays output. An array's `.shape[0]` is the first entry in its shape tuple, which is the number of rows for this two-dimensional input. Passing `name=value` to a function sets the named option to that value.
+The tools we need are `numpy`, `matplotlib`, and `scikit-learn`. We use `matplotlib` to draw graphs, and import scikit-learn under the name `sklearn`. A collection of software that we install and use in this way is called a **package**.
 
-Writing several names side by side, as in `w, b = 1.0, 0.0`, assigns the values on the right to those names in order. The same applies to `X_real, y_real = ...` when a function returns multiple values. The operator `is` checks whether two names refer to the same object. Thus, `fit_return is model_small` checks whether `fit` returned the original model object itself.
+In Jupyter Notebook, you can prepare the packages in a separate cell with `%pip install numpy matplotlib scikit-learn`, then run the code. To run a regular Python file, prepare them in a terminal with `python -m pip install numpy matplotlib scikit-learn`. You do not need to reinstall packages that are already installed.
 
-`history_complete[:shown]` is **slicing**: it selects from the beginning up to, but not including, index `shown`. Because the endpoint is excluded, `shown=81` selects indices 0 through 80. The function `min` finds the smaller of the supplied values, while `np.max` finds the largest value in an array. `scores = {}` creates an empty dictionary, and `scores[name] = value` stores an entry under that name.
+[Download the Python code](/supervised-learning-basics/examples-en.py)
 
-To create a graph, `plt.subplots` returns the overall figure and a plotting area. `plot` draws a line graph, and `scatter` draws a scatter plot. `set` sets the axis labels and title, `legend` displays the names of points or lines in a legend, and `plt.show()` displays the prepared figures. The relevant code lines also explain the individual settings.
+As you read the code, follow where it uses the current coefficients and which line stores the new ones. The indented lines below a `for` statement are the operations to repeat. The expression `range(n_steps)` makes the loop repeat the specified number of times. Here, `_` is a conventional name indicating that we do not use the iteration number itself in the calculation.
 
-[Download the Python example](/supervised-learning-basics/examples-en.py)
+The call `history.append(...)` adds a new value to the end of the loss history. Later in the code, `predictions` is a **dictionary** that pairs each model name with its prediction array. Using `predictions.items()` retrieves one name and prediction array at a time so that we can evaluate all three models in the same way.
+
+The function `np.abs` calculates magnitudes with the signs removed, while `np.sqrt` calculates square roots. The function `np.isfinite` checks that results are neither infinite nor values indicating an undefined numerical result. Calling `.all()` on its result checks whether every value in the array satisfies that condition.
+
+The `print` calls display results, and the `assert` statements check calculations; these lines help us examine the training results. On your first run, execute the complete code from top to bottom. When changing values to experiment, also check which data and initial coefficients you are using.
 
 ```python
-"""Supervised Learning: Core Concepts and Basic Coding — runnable Python examples.
+"""Supervised Learning: Core Concepts and Basic Coding, from delivery fees to real data.
 
 Required packages: numpy, matplotlib, scikit-learn
-In Jupyter, install in a separate cell: %pip install numpy matplotlib scikit-learn
-Run the code below from top to bottom in one pass.
+In Jupyter, install them in a separate cell with %pip install numpy matplotlib scikit-learn
+Run the code below from top to bottom.
 """
 
 import numpy as np
@@ -799,180 +1237,200 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
-# Change only the number of displayed decimal places, not the calculation precision.
 np.set_printoptions(precision=6, suppress=True)
 
-# 1. Errors, sum of squares, mean squared error, and training loss J
-y_demo = np.array([10.0, 20.0, 30.0])
-pred_demo = np.array([9.0, 18.0, 27.0])
-e_demo = pred_demo - y_demo
-sse = np.sum(e_demo ** 2)       # ** 2: square each element
-mse = np.mean(e_demo ** 2)      # mean: divide the sum of the elements by their count
-j_demo = mse / 2                # The factor 1/2 is not part of the definition of MSE itself
-mae = np.mean(np.abs(e_demo))    # abs: magnitude without the sign
-rmse = np.sqrt(mse)             # sqrt: square root
-print("Errors:", e_demo)
-print("SSE, MSE, J, MAE, RMSE:", sse, mse, j_demo, mae, rmse)
-
-# 2. Indexing: select rows and columns, and check the resulting shape
-A = np.array([[10, 11, 12], [20, 21, 22], [30, 31, 32]])
-row_ids = [0, 2]
-index_examples = {
-    "A[1]": A[1],
-    "A[[1]]": A[[1]],
-    "A[:, 2]": A[:, 2],
-    "A[:, [2]]": A[:, [2]],
-    "A[row_ids][1]": A[row_ids][1],
-    "A[row_ids][:, [2]]": A[row_ids][:, [2]],
-    "A[[0, 2], [1, 2]]": A[[0, 2], [1, 2]],
-}
-# items(): retrieve each name and result as a pair from the dictionary
-for label, values in index_examples.items():
-    print(label, "=", values, "shape =", values.shape)
-print("A[1][2] =", A[1][2])
-
-# 3. Adding axes, reshaping, and possible broadcasting mistakes
-v = np.array([1.0, 3.0, 5.0])
-p = np.array([0.0, 2.0, 4.0])
-print("Shapes of v and v.T:", v.shape, v.T.shape)
-print("v[:, None]:", v[:, None], "shape =", v[:, None].shape)
-print("v[None, :]:", v[None, :], "shape =", v[None, :].shape)
-print("reshape(-1, 1):", v.reshape(-1, 1))
-print("Correct errors at matching positions:", p - v)
-print("Unintended 3×3 result:\n", p - v[:, None])
-assert p.shape == v.shape
-
-# 4. Use derivatives to update a model with one input feature once
+# These fictional, simplified data describe delivery fees.
+# x_one: additional distance beyond the distance included in the base fee (km); y_one: fee (thousand won).
+# b is the base fee, and w is the fee per additional km. Start with b=0 and w=1.
 x_one = np.array([0.0, 1.0, 2.0])
 y_one = np.array([1.0, 3.0, 5.0])
-w, b = 1.0, 0.0
-lr_one = 0.1
-pred_one = b + w * x_one
+b_initial, w_initial = 0.0, 1.0
+pred_one = b_initial + w_initial * x_one
 e_one = pred_one - y_one
-j_before = np.mean(e_one ** 2) / 2
-dw = np.mean(e_one * x_one)      # Current value of the derivative of J with respect to w
-db = np.mean(e_one)              # Current value of the derivative of J with respect to b
-# Compute both derivatives at the existing w and b before updating either coefficient.
-w = w - lr_one * dw
-b = b - lr_one * db
+sse = np.sum(e_one ** 2)
+mse = np.mean(e_one ** 2)
+j_before = mse / 2
+mae = np.mean(np.abs(e_one))
+rmse = np.sqrt(mse)
+print("Initial delivery fee predictions:", pred_one)
+print("Error = prediction - target:", e_one)
+print("SSE, MSE, J, MAE, RMSE:", sse, mse, j_before, mae, rmse)
+assert np.allclose(e_one, [-1.0, -2.0, -3.0], atol=1e-12, rtol=0)
+assert np.isclose(j_before, 7 / 3, atol=1e-12, rtol=0)
+
+# Increase only the base fee by 0.1 thousand won; keep the original fee per km.
+b_trial = b_initial + 0.1
+pred_b_trial = b_trial + w_initial * x_one
+e_b_trial = pred_b_trial - y_one
+j_b_trial = np.mean(e_b_trial ** 2) / 2
+print("Predictions / errors / J after increasing only b by 0.1:", pred_b_trial, e_b_trial, j_b_trial)
+assert np.allclose(pred_b_trial, [0.1, 1.1, 2.1], atol=1e-12, rtol=0)
+assert np.allclose(e_b_trial, [-0.9, -1.9, -2.9], atol=1e-12, rtol=0)
+assert np.isclose(j_b_trial, 1283 / 600, atol=1e-12, rtol=0)
+
+# Start again from the original b=0, w=1, and increase only the fee per km by 0.1.
+# Do not carry over b_trial from the previous experiment.
+w_trial = w_initial + 0.1
+pred_w_trial = b_initial + w_trial * x_one
+e_w_trial = pred_w_trial - y_one
+j_w_trial = np.mean(e_w_trial ** 2) / 2
+print("Predictions / errors / J after increasing only w by 0.1:", pred_w_trial, e_w_trial, j_w_trial)
+assert np.allclose(pred_w_trial, [0.0, 1.1, 2.2], atol=1e-12, rtol=0)
+assert np.allclose(e_w_trial, [-1.0, -1.9, -2.8], atol=1e-12, rtol=0)
+assert np.isclose(j_w_trial, 83 / 40, atol=1e-12, rtol=0)
+
+# Use the derivatives to update the base fee and the fee per km together once.
+# First calculate both derivatives from the errors at the original b=0, w=1.
+db = np.mean(e_one)
+dw = np.mean(e_one * x_one)
+lr_one = 0.1
+b = b_initial - lr_one * db
+w = w_initial - lr_one * dw
 pred_after = b + w * x_one
 mse_after = np.mean((pred_after - y_one) ** 2)
-print("J, dw, db before the single update:", j_before, dw, db)
-print("w, b, MSE after the update:", w, b, mse_after)
-assert np.isclose(j_before, 7 / 3, atol=1e-12, rtol=0)
-assert np.isclose(mse_after, 1829 / 675, atol=1e-12, rtol=0)
+j_after = mse_after / 2
+print("db, dw before the update:", db, dw)
+print("b, w, J after one update:", b, w, j_after)
+assert np.allclose([db, dw], [-2.0, -8 / 3], atol=1e-12, rtol=0)
+assert np.allclose([b, w], [0.2, 19 / 15], atol=1e-12, rtol=0)
+assert np.isclose(j_after, 1829 / 1350, atol=1e-12, rtol=0)
 
-# 5. A separate dataset with four rows and two input features
+# Writing the same three deliveries as a matrix gives the same predictions and derivatives.
+# The leading column of ones adds the base fee b once to each delivery.
+Xb_one = np.column_stack([np.ones(len(y_one)), x_one])
+theta_one = np.array([b_initial, w_initial])
+pred_matrix_one = Xb_one @ theta_one
+gradient_one = Xb_one.T @ (pred_matrix_one - y_one) / len(y_one)
+theta_after_matrix = theta_one - lr_one * gradient_one
+print("Three-row delivery matrix Xb:\n", Xb_one)
+print("Matrix predictions / [db, dw]:", pred_matrix_one, gradient_one)
+print("[b, w] after one matrix update:", theta_after_matrix)
+assert np.array_equal(Xb_one, [[1.0, 0.0], [1.0, 1.0], [1.0, 2.0]])
+assert np.allclose(pred_matrix_one, pred_one, atol=1e-12, rtol=0)
+assert np.allclose(gradient_one, [db, dw], atol=1e-12, rtol=0)
+assert np.allclose(theta_after_matrix, [b, w], atol=1e-12, rtol=0)
+
+# Select deliveries or the distance column and check the resulting array shapes.
+print("Second delivery row:", Xb_one[1], "shape =", Xb_one[1].shape)
+print("Keep the second delivery as one row:", Xb_one[[1]], "shape =", Xb_one[[1]].shape)
+print("Distance column:", Xb_one[:, 1], "shape =", Xb_one[:, 1].shape)
+print("Keep distance as a single column:", Xb_one[:, [1]], "shape =", Xb_one[:, [1]].shape)
+
+# Subtract the target from the prediction for the same delivery.
+# Turning only one array into a column produces an unintended 3-by-3 set of differences.
+print("Prediction and target shapes:", pred_one.shape, y_one.shape)
+print("Shape after turning targets into a column:", y_one[:, None].shape)
+print("Correct errors for matching deliveries:", pred_one - y_one)
+print("Unintended 3-by-3 result:\n", pred_one - y_one[:, None])
+assert pred_one.shape == y_one.shape
+
+# Compare learning rates on the same deliveries by fixing w=1 and updating only the base fee.
+# Here db is b-2. Restart every experiment from the same b=0.
+learning_rate_results = []
+for rate in [0.2, 0.8, 1.5, 2.2]:
+    b_rate = 0.0
+    db_rate = b_rate - 2.0
+    b_rate = b_rate - rate * db_rate
+    pred_rate = b_rate + 1.0 * x_one
+    j_rate = np.mean((pred_rate - y_one) ** 2) / 2
+    learning_rate_results.append([rate, b_rate, j_rate])
+    print("Learning rate / b after the first update / J:", rate, b_rate, j_rate)
+assert np.allclose(np.array(learning_rate_results)[:, 1], [0.4, 1.6, 3.0, 4.4],
+                   atol=1e-12, rtol=0)
+assert np.allclose(np.array(learning_rate_results)[:, 2],
+                   [121 / 75, 31 / 75, 5 / 6, 241 / 75], atol=1e-12, rtol=0)
+
+# Add a second input: u is additional distance (km); v indicates special packaging (no=0, yes=1).
+# Fees for these four deliveries are still measured in thousand won.
 X = np.array([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0]])
 y = np.array([1.0, 3.0, 4.0, 6.0])
 n = len(y)
-# ones(n): create n ones. c_: join arrays side by side as columns.
-Xb = np.c_[np.ones(n), X]
-theta = np.zeros(3)              # Coefficient order: [b, w1, w2]
-e0 = Xb @ theta - y              # @: matrix multiplication of each row by the coefficient vector
-g0 = Xb.T @ e0 / n              # .T: swap the rows and columns of this two-dimensional array
+Xb = np.column_stack([np.ones(n), X])
+theta = np.zeros(3)              # [base fee b, fee per km w_u, special packaging fee w_v]
+e0 = Xb @ theta - y
+g0 = Xb.T @ e0 / n
 j0 = np.mean(e0 ** 2) / 2
-trial_theta = theta - 0.1 * g0   # Store the result under another name; theta is still zero
-print("Xb:\n", Xb)
+print("Four-row delivery matrix Xb:\n", Xb)
 print("Initial J, gradient:", j0, g0)
-print("Trial update with learning rate 0.1:", trial_theta)
-print("Original theta after the trial calculation:", theta)
 
-# 6. Run the actual iterations with learning rate 0.2, starting from zero coefficients
+# Train all three fees from zero with learning rate 0.2 for 2000 updates.
 lr = 0.2
 n_steps = 2000
-history = []                     # List that stores each loss immediately before the corresponding update
-for _ in range(n_steps):         # range(2000): 0 through 1999, for a total of 2000 iterations
+history = []
+for _ in range(n_steps):
     pred = Xb @ theta
     e = pred - y
-    history.append(float(np.mean(e ** 2) / 2))
+    history.append(float(np.mean(e ** 2) / 2))  # Loss immediately before this update
     gradient = Xb.T @ e / n
-    theta -= lr * gradient      # In-place update that changes the contents of the existing array
+    theta = theta - lr * gradient
 
-theta_gd = theta.copy()          # Independent copy that preserves the result if theta changes later
+theta_gd = theta.copy()
 pred_gd = Xb @ theta_gd
 final_j = float(np.mean((pred_gd - y) ** 2) / 2)
 history_complete = np.array(history + [final_j])
-print("GD coefficients:", theta_gd)
-print("GD predictions:", pred_gd)
-print("First loss / last stored loss / final loss:", history[0], history[-1], final_j)
-print("Length including the loss after 2000 updates:", len(history_complete))
+print("GD coefficients [b, w_u, w_v]:", theta_gd)
+print("GD delivery fee predictions:", pred_gd)
+print("Initial / last stored / final loss:", history[0], history[-1], final_j)
+print("History length including the loss after 2000 updates:", len(history_complete))
 
-# subplots returns the entire figure, fig, and the plotting area, ax.
-fig_loss, ax_loss = plt.subplots(figsize=(7, 4))  # figsize is measured in inches
-shown = min(81, len(history_complete))           # 0 through 80 completed updates
+fig_loss, ax_loss = plt.subplots(figsize=(7, 4))
+shown = min(81, len(history_complete))  # Show the starting loss and the first 80 completed updates.
 ax_loss.plot(np.arange(shown), history_complete[:shown])
 ax_loss.set(xlabel="Completed updates", ylabel="J = MSE / 2",
-            title="Gradient descent on four samples")
-ax_loss.grid(alpha=0.25)           # alpha: opacity of the grid lines
-fig_loss.tight_layout()           # Adjust margins to prevent overlap of the title and axis labels
+            title="Gradient descent on four delivery samples")
+ax_loss.grid(alpha=0.25)
+fig_loss.tight_layout()
 
-# 7. Compare learning rates using the separate function J(t)=t²/2
-# Here, t is a single number, separate from theta in the original regression model.
-for rate in [0.2, 0.8, 1.5, 2.2]:
-    t = 3.0
-    t_history = [t]              # Start recording at the state with zero completed updates
-    for _ in range(8):
-        t -= rate * t           # The derivative of this function at t is t
-        t_history.append(t)
-    losses = np.array(t_history) ** 2 / 2
-    print("Learning rate", rate, "t/J after the first update:", t_history[1], losses[1],
-          "J after 8 updates:", losses[-1])
-
-# 8. Apply least squares and scikit-learn to the same small dataset
-# Four returned values: coefficients, array of residual sums of squares, rank, singular values.
-theta_ls, residual_sums, rank, singular_values = np.linalg.lstsq(
-    Xb, y, rcond=None
-)
+# Fit the same four deliveries with least squares and scikit-learn as well.
+# The first item in the least-squares result is the coefficient array we need.
+result = np.linalg.lstsq(Xb, y)
+theta_ls = result[0]
 pred_ls = Xb @ theta_ls
-model_small = LinearRegression()  # Default: fit_intercept=True
-fit_return = model_small.fit(X, y)  # Use X before adding the column of ones
+model_small = LinearRegression()
+fit_return = model_small.fit(X, y)  # The model handles the base fee, so use X without a leading column of ones.
 pred_sk = model_small.predict(X)
 print("Least-squares coefficients:", theta_ls)
-print("Other values returned by lstsq:", residual_sums, rank, singular_values)
-print("Does fit return the same model object:", fit_return is model_small)
-print("sklearn intercept / weights:", model_small.intercept_, model_small.coef_)
-print("Compare least-squares / GD / sklearn predictions by column:\n", np.c_[pred_ls, pred_gd, pred_sk])
-new_input = np.array([1.0, 3.0, 4.0])  # [1 for the intercept, x1, x2]
-print("GD prediction for x1=3, x2=4:", new_input @ theta_gd)
+print("Does fit return the same model:", fit_return is model_small)
+print("sklearn base fee / distance and packaging fees:", model_small.intercept_, model_small.coef_)
+print("Least-squares / GD / sklearn predictions as columns:\n", np.column_stack([pred_ls, pred_gd, pred_sk]))
+new_input = np.array([1.0, 3.0, 1.0])  # [1 for the base fee, 3 additional km, special packaging]
+new_prediction = new_input @ theta_gd
+print("Fee for 3 additional km with special packaging (thousand won):", new_prediction)
 
-# 9. Check the implementation: verify shapes first, then compare numbers within a tolerance
+# Compare arrays of matching shapes to check that all three methods predict the same fees.
 assert theta_gd.shape == (3,)
 assert pred_gd.shape == y.shape
-assert np.isfinite(theta_gd).all()  # Check that every coefficient is neither NaN nor infinite
+assert np.isfinite(theta_gd).all()
 assert np.isfinite(history_complete).all()
 assert np.isclose(j0, 7.75, atol=1e-12, rtol=0)
 assert np.allclose(g0, [-3.5, -2.25, -2.5], atol=1e-12, rtol=0)
 assert np.allclose(theta_gd, [1.0, 2.0, 3.0], atol=1e-8, rtol=0)
 assert np.allclose(pred_gd, pred_ls, atol=1e-8, rtol=0)
 assert np.allclose(pred_gd, pred_sk, atol=1e-8, rtol=0)
+assert np.isclose(new_prediction, 10.0, atol=1e-8, rtol=0)
 assert final_j < history_complete[0]
-print("Implementation checks passed. Maximum GD/least-squares prediction difference:", np.max(np.abs(pred_gd - pred_ls)))
+print("Implementation checks passed. Largest GD/least-squares prediction difference:", np.max(np.abs(pred_gd - pred_ls)))
 
-# 10. Real data: stored feature values without the additional scaling offered by the loader
+# Move to real data, using stored feature values without the loader's additional scaling.
 X_real, y_real = load_diabetes(return_X_y=True, scaled=False)
-# Split the row indices and apply the same indices to both arrays.
+# Apply the same row indices to inputs and targets to preserve their pairing.
 all_ids = np.arange(len(y_real))
-train_idx, test_idx = train_test_split(
-    all_ids, test_size=0.2, random_state=42
-)
-X_train, X_test = X_real[train_idx], X_real[test_idx]
-y_train, y_test = y_real[train_idx], y_real[test_idx]
+train_ids, test_ids = train_test_split(all_ids, test_size=0.2, random_state=42)
+X_train, X_test = X_real[train_ids], X_real[test_ids]
+y_train, y_test = y_real[train_ids], y_real[test_ids]
 assert X_train.shape[0] == y_train.shape[0]
 assert X_test.shape[0] == y_test.shape[0]
 print("Full / training / test input shapes:", X_real.shape, X_train.shape, X_test.shape)
 
-# 11. Baseline: predict the mean of the training targets for every test row
+# Build a baseline that predicts the mean training target for every test row.
 baseline = DummyRegressor(strategy="mean")
 baseline.fit(X_train, y_train)
 pred_baseline = baseline.predict(X_test)
 
-# 12. Regression using only the BMI feature. Select with [2] to retain the column dimension.
+# Train separate models using BMI alone and all ten features.
 model_bmi = LinearRegression()
 model_bmi.fit(X_train[:, [2]], y_train)
 pred_bmi = model_bmi.predict(X_test[:, [2]])
-
-# 13. Regression using all ten features. This is a separate object from the BMI model above.
 model_all = LinearRegression()
 model_all.fit(X_train, y_train)
 pred_all = model_all.predict(X_test)
@@ -985,56 +1443,58 @@ for name, prediction in predictions.items():
     print(name, "Test MSE:", scores[name])
 print("Mean training target used by the baseline:", y_train.mean())
 
-# 14. Residual = actual value - prediction, the opposite sign from e used during training.
+# Residuals are target minus prediction, the opposite sign of the earlier errors e.
 residual = y_test - pred_all
-print("Original row index of the first test sample:", test_idx[0])
-print("First test target / prediction / residual:", y_test[0], pred_all[0], residual[0])
+print("Original row index of the first test sample:", test_ids[0])
+print("First test sample BMI:", X_test[0, 2])
+print("First test target / all-feature prediction / residual:", y_test[0], pred_all[0], residual[0])
+assert test_ids[0] == 287
+assert np.isclose(X_test[0, 2], 25.8, atol=1e-12, rtol=0)
+assert y_test[0] == 219.0
 fig_residual, ax_residual = plt.subplots(figsize=(7, 4))
 ax_residual.scatter(pred_all, residual, alpha=0.65, label="Test samples")
 ax_residual.scatter([pred_all[0]], [residual[0]], color="crimson",
-                    s=90, label="First test sample")  # s: marker area
-ax_residual.axhline(0, color="black", linewidth=1)  # Reference line at residual 0
+                    s=90, label="First test sample")
+ax_residual.axhline(0, color="black", linewidth=1)
 ax_residual.set(xlabel="Prediction", ylabel="Residual = target - prediction",
                 title="Residuals on 89 held-out samples")
 ax_residual.legend()
 fig_residual.tight_layout()
-plt.show()                       # Display the two prepared figures
+plt.show()
 ```
 
-Running the code prints the errors, array shapes, update results, and test MSE values for the three methods calculated above, then displays the loss and residual plots. When their conditions hold, `assert` checks pass without printing anything. Check that execution reaches the end and that the final output appears. The last decimal places may vary slightly between environments.
+Running the code shows the initial errors `[-1, -2, -3]`, the coefficients `[0.2, 1.266667]` after the first simultaneous update, the coefficients `[1, 2, 3]` learned from the four orders, and a predicted fee of 10 thousand won for the new order. It then prints the three MSE values for the real dataset and the residual for the first test record.
 
-## 18. Implementing the same gradient descent in Rust
+The numbers checked in this code are **the results of these particular examples under the stated execution settings**. If you replace the examples with your own data, you should not expect the same coefficients or the same MSE.
 
-The Python example uses `@` and `np.mean` to express many multiplications and additions at once. In Rust, we can write the same calculations directly with loops and no external numerical package. The code below translates **only gradient descent on the four-row practice dataset**. The earlier Python example includes the real-data split and evaluation.
+## 17. Calculate the same sums directly with Rust loops
 
-**Rust** is another programming language. Normally, a **compiler** converts the source code into an executable, which is then run. A compiler checks the syntax and data types of the code and converts it into an executable form. You can put the following code into `main.rs` in a Rust binary project.
+To see which values NumPy's matrix multiplication adds together, we can also calculate with the same four orders using loops in Rust. Rust is a different programming language from Python. The mathematics below is unchanged; we simply write the multiplications and additions one item at a time instead of performing them together.
 
-| Rust expression | Meaning and correspondence with the Python example |
-| --- | --- |
-| `fn main()` | The function where the program starts |
-| `let` | Declares a variable |
-| `mut` | Allows the variable's value to be changed later |
-| `f64` | A 64-bit floating-point number type |
-| `[f64; 3]` | A fixed-length array containing 3 floating-point numbers |
-| `[[f64; 3]; 4]` | 4 rows of length 3: `Xb` in this example |
-| `[0.0_f64; 3]` | An array containing 3 zeros of type `f64` |
-| `0..2000` | A range excluding its endpoint, giving 2000 iterations |
-| `as f64` | Converts a length to a floating-point value for division |
-| `+=`, `-=` | Adds to or subtracts from an existing value to update it |
-| `assert!(condition)` | Checks whether the condition holds |
-| `println!` | Prints one line of output |
+You do not need to learn Rust syntax before understanding the Python example. The example below lets us follow the process of **calculating one order's prediction, then calculating that order's contribution to the gradient for each coefficient**.
 
-Array positions start at 0, as in Python. Here, braces delimit functions and loops, and statements end with semicolons. In `println!`, `{:?}` displays an array's contents, while `{:.6}` displays a number with six digits after the decimal point.[^rust]
+In the Rust code, `i` is an order's position and `j` is a coefficient's position. Both start at 0. The expression `xb[i][j]` is the input value to multiply by that coefficient for that order.
 
-The code first calculates a prediction for each sample, then accumulates each error's contribution to the derivative for each coefficient. **It updates the coefficients only after calculating the derivatives for all four rows.** It therefore uses the same mean gradient as Python's `Xb.T @ e / n`.
+For example, when all initial coefficients are 0, the first order has input `[1, 0, 0]` and an actual fee of 1. Its prediction is 0 and its error is −1. This order therefore contributes $[-1/4,0,0]$ to the overall gradient. The second order contributes $[-3/4,-3/4,0]$, the third $[-1,0,-1]$, and the fourth $[-1.5,-1.5,-1.5]$. Adding the four arrays position by position gives the same $[-3.5,-2.25,-2.5]$ we calculated earlier.
 
-[Download the Rust example](/supervised-learning-basics/gradient-descent-en.rs)
+**We must finish adding the contributions from every order before updating the coefficients.** That is why the loop that updates coefficients sits outside the per-order calculations, after they are complete.
+
+<details>
+<summary>View the Rust code and how to run it</summary>
+
+This code uses no external packages. If you save it as `gradient-descent-en.rs`, you can compile it in an environment with Rust installed by running `rustc gradient-descent-en.rs -o gradient-descent`, then run the resulting executable.
+
+The keyword `let` declares a name, and `mut` allows its value to change later. The type `f64` stores floating-point numbers. The type `[f64; 3]` is an array of three such numbers, while `[[f64; 3]; 4]` contains four rows of three values. The range `0..2000` runs from 0 through 1999.[^rust]
+
+The contents of `fn main()` run when the program starts. The operator `+=` adds a calculated value to the existing value, while `-=` subtracts it. The expression `y.len()` gives the number of orders, and `as f64` converts that number to a floating-point type for division. The macro `assert!` checks a condition, and `println!` prints a result. Inside the assertions, `.abs()` removes the sign of a difference to obtain its magnitude.
+
+[Download the Rust code for this example](/supervised-learning-basics/gradient-descent-en.rs)
 
 ```rust
-// Compute gradient descent on the same four-row dataset without external packages.
-// Save this file as main.rs in a Rust binary project to run it.
+// Learn fees for four deliveries with gradient descent and no external packages.
+// Each row is [1 for the base fee, additional distance (km), special packaging (no=0, yes=1)].
+// Fees are in thousand won. Save this as main.rs and run it in a Rust project.
 fn main() {
-    // Each row is [1 for the intercept, x1, x2]. f64 is a 64-bit floating-point type.
     let xb: [[f64; 3]; 4] = [
         [1.0, 0.0, 0.0],
         [1.0, 1.0, 0.0],
@@ -1042,13 +1502,14 @@ fn main() {
         [1.0, 1.0, 1.0],
     ];
     let y: [f64; 4] = [1.0, 3.0, 4.0, 6.0];
-    let mut theta = [0.0_f64; 3]; // mut: a variable that can be updated, [b, w1, w2]
+    let mut theta = [0.0_f64; 3]; // [base fee b, fee per km w_u, special packaging fee w_v]
     let lr = 0.2;
-    let n = y.len() as f64;       // Convert the array length for floating-point calculations
+    let n = y.len() as f64;
 
-    for _ in 0..2000 {           // The upper bound 2000 is excluded, giving 2000 iterations
+    for _ in 0..2000 {
         let mut gradient = [0.0_f64; 3];
         for i in 0..y.len() {
+            // Add the base fee, distance fee, and packaging fee for one delivery.
             let mut prediction = 0.0;
             for j in 0..theta.len() {
                 prediction += xb[i][j] * theta[j];
@@ -1058,7 +1519,7 @@ fn main() {
                 gradient[j] += xb[i][j] * error / n;
             }
         }
-        // Compute gradients for all rows at the existing coefficients, then update them together.
+        // Calculate derivatives for all deliveries at the old coefficients, then update all three fees.
         for j in 0..theta.len() {
             theta[j] -= lr * gradient[j];
         }
@@ -1068,53 +1529,42 @@ fn main() {
     for j in 0..theta.len() {
         assert!((theta[j] - expected[j]).abs() < 1e-8);
     }
-    let new_input = [1.0, 3.0, 4.0];
+    // Predict a delivery with 3 additional km and special packaging.
+    let new_input = [1.0, 3.0, 1.0];
     let mut new_prediction = 0.0;
     for j in 0..theta.len() {
         new_prediction += new_input[j] * theta[j];
     }
-    println!("Coefficients [b, w1, w2]: {:?}", theta);
-    println!("Prediction for the new input: {:.6}", new_prediction);
+    assert!((new_prediction - 10.0).abs() < 1e-8);
+    println!("Coefficients [b, w_u, w_v]: {:?}", theta);
+    println!("Predicted delivery fee (thousand won): {:.6}", new_prediction);
 }
 ```
 
-The expected result is a set of coefficients close to `[1, 2, 3]` and a prediction of `19` for the new input. The Python example in this article was run and checked from beginning to end. The Rust example received a static review of the corresponding expressions, arrays, and update order. Rust compilation and execution were not performed in the environment used to write this article.
+The calculation implemented by this code gives coefficients of approximately `[1, 2, 3]` and a predicted fee of approximately 10 thousand won for the new order. The environment used to revise this article did not have a Rust compiler, so the Rust file itself has not been compile-checked. The same calculations, in the same loop order, were checked in Python, and the complete Python example above was actually executed.
 
-We can now connect the roles of the values in the code as follows:
-
-| Concept | What it is | Code in this article |
-| --- | --- | --- |
-| Input | Information used for prediction | `X`, `X_train`, `X_test` |
-| Target | The value used for comparison during training or evaluation | `y`, `y_train`, `y_test` |
-| Coefficients | Numbers that define the prediction rule and are determined by training | `theta`, `coef_`, `intercept_` |
-| Prediction | The result calculated from inputs and coefficients | `pred`, `model.predict(...)` |
-| Loss | A number summarizing how wrong predictions are | `MSE`, and this article's `J = MSE / 2` |
-| Gradient | The current rate of change of the loss with respect to each coefficient | `Xb.T @ e / n` |
-| Training | The process of finding coefficients from data | Our manually written update loop or `fit` |
-| Evaluation | Comparing predictions on separate data with the targets | Test MSE and the residual plot |
-
-When learning a new model, first identify **the input shape, the meaning of the target, the coefficients being changed, the loss being reduced, and the data used for evaluation**. These connections help you read the code as a sequence of related calculations.
+</details>
 
 ## References
 
-The calculations in the main text were checked directly with the examples included above. The following official documentation was used to confirm library behavior and dataset descriptions.
+The official lessons and documentation below explain the mathematical principles and the behavior of the functions we use. The delivery records are fictional data created to explain the calculations. The calculations in the article and the evaluation results on real data were checked with the accompanying examples. The documentation was checked on October 8, 2026.
 
-[^sklearn-start]: scikit-learn, [Getting Started](https://scikit-learn.org/stable/getting_started.html). Input and target shapes, `fit`, `predict`, and the convention for attributes obtained through training.
-[^mse]: scikit-learn, [mean_squared_error](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_squared_error.html). The definition of mean squared error and the function's inputs and outputs.
-[^indexing]: NumPy, [Indexing on ndarrays](https://numpy.org/doc/stable/user/basics.indexing.html). Integer and list indexing, preserving axes, and multiple selections.
-[^broadcasting]: NumPy, [Broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html). Shape rules that compare axes from the right.
-[^derivative]: MIT OpenCourseWare, [Introduction to Derivatives](https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/1.-differentiation/part-a-definition-and-basic-rules/session-1-introduction-to-derivatives/). The basics of rates of change and differentiation.
-[^gradient]: MIT OpenCourseWare, [Partial Derivatives and the Gradient](https://ocw.mit.edu/ans7870/18/18.013a/textbook/HTML/chapter06/section06.html). Partial derivatives and the gradient vector.
-[^chain-rule]: MIT OpenCourseWare, [The Chain Rule (PDF)](https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/66ba9836b3c9e99138bc8d766d913bc5_MIT18_01SCF10_Ses11a.pdf). Differentiation when functions are composed.
-[^gradient-descent]: MIT OpenCourseWare, [Gradient Descent: Downhill to a Minimum](https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/resources/lecture-22-gradient-descent-downhill-to-a-minimum/). The basic principles of gradient descent.
-[^matmul]: NumPy, [numpy.matmul](https://numpy.org/doc/stable/reference/generated/numpy.matmul.html). Matrix–vector multiplication and dimension rules.
-[^lstsq]: NumPy, [numpy.linalg.lstsq](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html). Least-squares solutions and the meanings of the four returned values.
-[^linear-regression]: scikit-learn, [LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html). The default intercept setting and solution methods for different input formats.
-[^allclose]: NumPy, [numpy.allclose](https://numpy.org/doc/stable/reference/generated/numpy.allclose.html). Absolute and relative tolerances, and broadcasting.
-[^assert]: Python, [The assert statement](https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement). Assertions and their behavior during optimized execution.
-[^diabetes]: scikit-learn, [load_diabetes](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_diabetes.html) and [Diabetes dataset](https://scikit-learn.org/stable/datasets/toy_dataset.html#diabetes-dataset). Dataset size, features, target, and the `scaled` option.
-[^split]: scikit-learn, [train_test_split](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html). Split sizes and reproducibility settings.
-[^baseline]: scikit-learn, [DummyRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyRegressor.html). A baseline using the mean of the training targets.
-[^leakage]: scikit-learn, [Common pitfalls and recommended practices](https://scikit-learn.org/stable/common_pitfalls.html). Separating test data, limiting preprocessing to the appropriate data, and data leakage.
-[^cross-validation]: scikit-learn, [Cross-validation: evaluating estimator performance](https://scikit-learn.org/stable/modules/cross_validation.html). The distinction between validation and test data, and splits that respect groups or time order.
+[^sklearn-start]: scikit-learn, [Getting Started](https://scikit-learn.org/stable/getting_started.html). Input and target shapes, training and prediction, and the naming convention for fitted attributes.
+[^mse]: scikit-learn, [mean_squared_error](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_squared_error.html). The definition of mean squared error and the function that calculates it.
+[^derivative]: OpenStax, [Calculus Volume 1, 3.1 Defining the Derivative](https://openstax.org/books/calculus-volume-1/pages/3-1-defining-the-derivative), MIT OpenCourseWare, [Introduction to Derivatives](https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/1.-differentiation/part-a-definition-and-basic-rules/session-1-introduction-to-derivatives/). Ratios of changes and the meaning of a derivative at a point.
+[^gradient]: MIT OpenCourseWare, [Partial Derivatives and the Gradient](https://ocw.mit.edu/ans7870/18/18.013a/textbook/HTML/chapter06/section06.html). Partial derivatives when changing one variable, and the gradient.
+[^gradient-descent]: MIT OpenCourseWare, [Gradient Descent: Downhill to a Minimum](https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/resources/lecture-22-gradient-descent-downhill-to-a-minimum/). How gradient descent works.
+[^chain-rule]: MIT OpenCourseWare, [The Chain Rule (PDF)](https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/66ba9836b3c9e99138bc8d766d913bc5_MIT18_01SCF10_Ses11a.pdf). The chain rule for rates of change through a sequence of calculations.
+[^broadcasting]: NumPy, [Broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html). Rules for combining different array shapes.
+[^indexing]: NumPy, [Indexing on ndarrays](https://numpy.org/doc/stable/user/basics.indexing.html). Selecting values by position and preserving row and column shapes.
+[^matmul]: NumPy, [numpy.matmul](https://numpy.org/doc/stable/reference/generated/numpy.matmul.html). Matrix–vector multiplication and its shape rules.
+[^lstsq]: NumPy, [numpy.linalg.lstsq](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html). Calculating coefficients that minimize squared errors, and the returned results.
+[^linear-regression]: scikit-learn, [LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html). Fitting linear regression, handling the intercept, and retrieving coefficients.
+[^allclose]: NumPy, [numpy.allclose](https://numpy.org/doc/stable/reference/generated/numpy.allclose.html). Comparing arrays with a specified tolerance.
+[^assert]: Python, [The assert statement](https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement). How assertions work. Running Python with the `-O` option can remove assertion statements.
+[^diabetes]: scikit-learn, [load_diabetes](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_diabetes.html), [Diabetes dataset](https://scikit-learn.org/stable/datasets/toy_dataset.html#diabetes-dataset). Dataset size, features, targets, and loading options.
+[^split]: scikit-learn, [train_test_split](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html). Splitting training and test data and reproducing the split.
+[^baseline]: scikit-learn, [DummyRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyRegressor.html). A baseline that uses the mean of the training targets.
+[^cross-validation]: scikit-learn, [Cross-validation: evaluating estimator performance](https://scikit-learn.org/stable/modules/cross_validation.html). The roles of validation and test data, and choosing a split appropriate to the task.
+[^leakage]: scikit-learn, [Common pitfalls and recommended practices](https://scikit-learn.org/stable/common_pitfalls.html). Separating training and evaluation, and preventing leakage during preprocessing.
 [^rust]: The Rust Programming Language, [Variables and Mutability](https://doc.rust-lang.org/book/ch03-01-variables-and-mutability.html), [Data Types](https://doc.rust-lang.org/book/ch03-02-data-types.html), [Control Flow](https://doc.rust-lang.org/book/ch03-05-control-flow.html).

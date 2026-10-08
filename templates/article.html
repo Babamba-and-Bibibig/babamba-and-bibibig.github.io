@@ -1,4 +1,4 @@
-{# Duckquill 5b0c3fca: add language links directly below the article title. #}
+{# Duckquill 5b0c3fca: add language links below the title; intentionally omit reading-time estimates from every article. #}
 {% extends "base.html" %}
 
 {% block content %}
@@ -40,22 +40,10 @@
 
 		{% include "partials/content_languages.html" %}
 
-		{%- if page.authors or config.extra?.show_reading_time -%}
+		{%- if page.authors -%}
 			<p>
 				<small>
-					{%- if page.authors -%}
-						<span>{% include "partials/authors.html" -%}</span>
-						{%- if config.extra?.show_reading_time -%}
-							<span> {{ config.extra?.separator | default(value="•") }} </span>
-						{%- endif -%}
-					{%- endif -%}
-
-					{%- if config.extra?.show_reading_time -%}
-						<span>{{ <translate key="minutes_read" number={page.reading_time} default="$NUMBER minute read" language_strings /> }}</span>
-						{%- if page?.taxonomies -%}
-							<span> {{ config.extra?.separator | default(value="•") }} </span>
-						{%- endif -%}
-					{%- endif -%}
+					<span>{% include "partials/authors.html" -%}</span>
 				</small>
 			</p>
 		{%- endif -%}

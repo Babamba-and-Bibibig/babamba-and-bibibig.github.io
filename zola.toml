@@ -40,7 +40,8 @@ styles = ["reactor-ui-v4.css", "code-blocks.css", "bilingual.css"]
 
 # 기존 글 읽기 기능을 유지합니다.
 show_copy_button = true
-show_reading_time = true
+# 모든 언어의 글에서 예상 읽기 시간을 표시하지 않습니다.
+show_reading_time = false
 
 [extra.nav]
 show_theme_switcher = true
