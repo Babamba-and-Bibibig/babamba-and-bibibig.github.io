@@ -28,6 +28,11 @@ slug = "weekly-paper-03"
 #main-content article h4.research-topic + h5.research-detail {
   margin-top: 0;
 }
+/* 표의 짧은 구분 이름이 한 글자씩 줄바꿈되지 않도록 합니다. */
+#main-content article table th:first-child,
+#main-content article table td:first-child {
+  white-space: nowrap;
+}
 </style>
 
 ## 질문 1

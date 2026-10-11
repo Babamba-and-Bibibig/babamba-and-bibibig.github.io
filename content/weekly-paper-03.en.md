@@ -28,6 +28,11 @@ slug = "weekly-paper-03"
 #main-content article h4.research-topic + h5.research-detail {
   margin-top: 0;
 }
+/* Keep the short labels in the first column on one line. */
+#main-content article table th:first-child,
+#main-content article table td:first-child {
+  white-space: nowrap;
+}
 </style>
 
 ## Question 1
