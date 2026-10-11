@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="938" viewBox="0 0 500 938" role="img" aria-labelledby="figure-title figure-desc" xml:lang="ko">
+  <title id="figure-title">회귀와 분류에 공통으로 쓸 수 있는 신경망 학습 과정</title>
+  <desc id="figure-desc">신경망을 경사하강법으로 학습하는 경우의 흐름이다. 1단계 입력 정보, 2단계 모델 계산, 3단계 예측과 실제 정답 비교, 4단계 예측 목표에 맞는 손실 계산, 5단계 기울기를 구해 가중치와 편향 수정으로 이어진다. 5단계에서 2단계로 돌아가 수정한 가중치와 편향으로 다시 계산한다. 입력과 실제 정답을 수정하는 과정이 아니다.</desc>
+  <defs>
+    <marker id="step-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L9 5 L1 9 Z" fill="#64748b"/></marker>
+    <marker id="repeat-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L9 5 L1 9 Z" fill="#334155"/></marker>
+  </defs>
+  <rect width="500" height="938" rx="14" fill="#f8fafc"/>
+  <g font-family="system-ui, -apple-system, BlinkMacSystemFont, Apple SD Gothic Neo, Malgun Gothic, Noto Sans CJK KR, sans-serif" text-anchor="middle">
+    <text x="250" y="39" fill="#0f172a" font-size="24" font-weight="700">신경망을 경사하강법으로</text>
+    <text x="250" y="70" fill="#0f172a" font-size="24" font-weight="700">학습하는 경우</text>
+    <g fill="none" stroke="#64748b" stroke-width="2.4" marker-end="url(#step-arrow)">
+      <path id="step-1-to-2" d="M222 218 V240"/>
+      <path id="step-2-to-3" d="M222 360 V382"/>
+      <path id="step-3-to-4" d="M222 502 V524"/>
+      <path id="step-4-to-5" d="M222 664 V686"/>
+    </g>
+    <path id="repeat-from-parameter-update-to-model-computation" d="M420 762 H464 V301 H422" fill="none" stroke="#334155" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#repeat-arrow)"/>
+    <g id="step-1">
+      <rect x="24" y="104" width="396" height="110" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="222" y="141" fill="#0f172a" font-size="24" font-weight="700">1. 입력 정보</text>
+      <text x="222" y="172" fill="#334155" font-size="22">배송 거리와</text>
+      <text x="222" y="200" fill="#334155" font-size="22">출발 시점에 알 수 있는 정보</text>
+    </g>
+    <g id="step-2">
+      <rect x="24" y="246" width="396" height="110" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="222" y="283" fill="#0f172a" font-size="24" font-weight="700">2. 모델 계산</text>
+      <text x="222" y="314" fill="#334155" font-size="22">가중치·편향을 이용해</text>
+      <text x="222" y="342" fill="#334155" font-size="22">입력으로 예측을 계산</text>
+    </g>
+    <g id="step-3">
+      <rect x="24" y="388" width="396" height="110" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="222" y="425" fill="#0f172a" font-size="24" font-weight="700">3. 예측과 정답 비교</text>
+      <text x="222" y="456" fill="#334155" font-size="22">모델의 예측 결과와</text>
+      <text x="222" y="484" fill="#334155" font-size="22">기록된 실제 정답을 확인</text>
+    </g>
+    <g id="step-4">
+      <rect x="24" y="530" width="396" height="130" rx="10" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+      <text x="222" y="573" fill="#9a3412" font-size="24" font-weight="700">4. 손실 계산</text>
+      <text x="222" y="604" fill="#334155" font-size="22">회귀·분류의 예측 목표에</text>
+      <text x="222" y="632" fill="#334155" font-size="22">맞는 방식으로 손실을 계산</text>
+    </g>
+    <g id="step-5">
+      <rect x="24" y="692" width="396" height="140" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="222" y="735" fill="#0f172a" font-size="24" font-weight="700">5. 기울기 계산과 모델 수정</text>
+      <text x="222" y="766" fill="#334155" font-size="22">가중치·편향별 기울기를 구해</text>
+      <text x="222" y="794" fill="#334155" font-size="22">손실이 줄어들도록 값을 수정</text>
+    </g>
+    <rect x="428" y="472" width="71" height="40" rx="6" fill="#f8fafc"/>
+    <text x="464" y="499" fill="#334155" font-size="22" font-weight="600">반복</text>
+    <text x="250" y="880" fill="#334155" font-size="22">수정한 가중치·편향을 사용해</text>
+    <text x="250" y="910" fill="#334155" font-size="22">2번 계산부터 반복합니다.</text>
+  </g>
+</svg>
