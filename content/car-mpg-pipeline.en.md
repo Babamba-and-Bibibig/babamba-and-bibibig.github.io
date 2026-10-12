@@ -14,7 +14,7 @@ Suppose we want to predict a car's fuel economy from its weight and region of or
 
 This article connects those steps around one rule: <strong>learn preprocessing statistics and prediction coefficients from the training data, then apply those statistics and coefficients to evaluation data and new inputs.</strong> We begin with the whole task, then examine the table transformations and evaluation methods that recur throughout it. Later, we use equations to see why scaling and regularization affect how coefficients are learned.
 
-The learning notes behind this article contain course results and functions supplied by the course. The sections interpreting those notes are separate from the <strong>runnable example using fictional car data</strong> at the end. Where the original course data or function implementations were unavailable, that limitation is stated explicitly.
+The processing steps throughout this article connect to <strong>one runnable example using 16 fictional cars</strong>. We first explain the operations we need, then provide the complete Python code, including the data and function definitions, in Section 13. The example shows the order in which preprocessing, training, and evaluation fit together.
 
 ## 1. From a car's information to a predicted value
 
@@ -27,7 +27,7 @@ A <strong>sample</strong> is one data record. Here, each row represents one car.
 | `mpg` | Fuel economy measured in miles traveled per gallon of fuel | The target the model predicts. |
 | Row `index` or `row_id` | An identifier showing which car a record belongs to | Check that inputs match their targets. It is not a feature in this example. |
 
-The weight unit and the actual places represented by the region codes must come from the data description. We should not invent units or place names that the learning notes do not provide. In the standalone example at the end, weight is explicitly measured in <strong>lb (pounds)</strong>, and regions are identified by codes 1, 2, and 3 rather than by place names.
+In this article's example, weight is measured in <strong>lb (pounds)</strong>, and codes 1, 2, and 3 identify fictional regions of production. When working with real data, check the data description for the weight unit and the region represented by each code.
 
 We write the input table as `X`, actual fuel economy as `y`, and the model's predicted fuel economy as `y_pred`, or $\hat y$ in equations. <strong>The actual value `y` and the prediction `y_pred` are different values.</strong> Comparing them tells us how far the prediction is from the target.
 
@@ -159,7 +159,7 @@ $$
 
 A new weight above the training maximum can produce a value greater than 1. A weight below the training minimum can produce a value less than 0. The default `clip=False` does not force these values back into the interval from 0 to 1. They are the result of applying the original training reference.
 
-Whichever method we use, each row still represents the same car before and after transformation. For example, comparing `row_id=199` before and after scaling in the learning notes means comparing different representations of the same car's weight. The transformed weight is neither a fuel-economy prediction nor a loss value.
+Whichever method we use, each row still represents the same car before and after transformation. For example, comparing `row_id=101` in the original table with `row_id=101` in the transformed result shows the same car's weight expressed relative to different reference values. The transformed weight is neither a fuel-economy prediction nor a loss value.
 
 ## 4. Encode region codes and keep each car's information together
 
@@ -234,31 +234,50 @@ Our Pipeline has the following structure.
 | Both transformation results | `ColumnTransformer` | 4 input columns for each car |
 | Transformed inputs and targets | `Ridge` | Learn one coefficient per input and an intercept |
 
-Calling `cv_model.fit(train_frame, y_train)` learns preprocessing statistics from the training data, transforms those same data, and then fits Ridge coefficients using the transformed inputs and targets.
+### make_model wraps repeated preprocessing setup in a function
 
-Calling `cv_model.predict(sample_request)` transforms the new inputs using the stored preprocessing statistics and predicts using the stored coefficients. <strong>Prediction does not relearn either the preprocessing statistics or the model coefficients.</strong>[^pipeline]
+To compare a model using weight alone with one using both weight and region, we need preprocessing configurations that fit each model. Instead of rewriting shared code such as weight standardization for every model, we can <strong>define the shared operations once inside a function, then call it with the settings we need</strong>.
 
-### Creating a configuration is different from running training
+We name that function `make_model`. `make_model` is <strong>a function that combines preprocessing objects with the supplied regression model and returns a Pipeline object</strong>. It does not run training internally. Its return value is neither a transformed data table nor a prediction. Its definition is included in the complete code in Section 13.
 
-Executing `Pipeline([...])` creates the processing configuration. It does not yet train anything on data. The code constructing the Pipeline defines the preprocessing; Ridge does not automatically add it.
+Consider the call `cv_model = make_model(Ridge(alpha=1.0), include_origin=True)`. Python first creates a Ridge object with `Ridge(alpha=1.0)`. `make_model` receives that object through the `regressor` argument and places it at the end of the Pipeline. The setting `include_origin=True` includes the region column among the inputs. Changing it to `False` configures the model to use weight alone.[^functions]
 
-The call `make_model(Ridge(alpha=1.0), include_origin=True)` in the learning notes uses a course-supplied function. According to the notes, this function combines preprocessing and the model. However, its actual implementation was not supplied, so we cannot claim to have verified all its options or the names of its internal steps.
+<strong>The internal operations not visible in this short call</strong> are listed below. The code for each operation appears in the body of `make_model`.
 
-The complete code in this article is <strong>a separate implementation that makes the processing configuration explicit</strong>, not a reproduction of the original `make_model` source. The step names `preprocess`, `weight`, `origin`, and `model` are defined in this implementation. Knowing these names lets us inspect the saved scaler and coefficients later.
+| Order | What the function configures | Role during later training and prediction |
+| --- | --- | --- |
+| 1 | Create a `StandardScaler` object to handle `weight`. | Standardize weight. |
+| 2 | If `include_origin=True`, add a `OneHotEncoder` object to handle `origin`. | Convert region codes into separate columns containing 0 or 1 for each region. |
+| 3 | Combine the column-specific transformers in a `ColumnTransformer`. | Join each car's transformed values into one input. |
+| 4 | Combine preprocessing and the supplied `regressor` in a `Pipeline`, then return it. | Preserve the order of preprocessing followed by the regression model. |
 
-We pass the previously defined `categories=[[1, 2, 3]]` to `OneHotEncoder`. The outer list contains one list per input column; the inner list contains the categories for the single `origin` column. `sparse_output=False` requests an ordinary two-dimensional array here, and `handle_unknown="error"` raises an error when a value outside the specified categories appears.[^onehot]
+What the call leaves out is <strong>the internal configuration code we would otherwise repeat at each call site</strong>. The preprocessing operations themselves still take place. Keeping the configuration inside a function means we do not need to copy the common preprocessing code when changing the model or deciding whether to include region. For example, `make_model(LinearRegression(), include_origin=False)` configures linear regression with the same weight standardization and without region.
+
+Inside the function, the weight and region transformations are named `weight` and `origin`. Within the Pipeline, the complete preprocessing step is named `preprocess`, and the regression model is named `model`. These names let us locate stored objects later or change a particular step's setting through a name such as `model__alpha`. The names do not create the corresponding behavior automatically; the code associates each name with an object.
+
+When region is included, we pass `categories=[[1, 2, 3]]` to `OneHotEncoder`. The outer list contains one list per input column; the inner list contains the allowed region codes for the single `origin` column. Defining these three categories in advance preserves three region-indicator columns even when a training portion contains no cars from a particular region. `sparse_output=False` requests an ordinary two-dimensional array, and `handle_unknown="error"` raises an error when a value outside the allowed codes appears.[^onehot]
+
+### After configuration, use fit to train and predict to make predictions
+
+`make_model` creates and connects objects internally. We do not pass it any car data or targets at this point, so it does not calculate the mean, standard deviation, or prediction coefficients. The same is true when we construct a `Pipeline` object directly. This configuration code defines the types of preprocessing and their execution order.
+
+Later, calling `cv_model.fit(train_frame, y_train)` learns preprocessing statistics from the training data, transforms those same data, and then fits Ridge coefficients using the transformed inputs and targets.
+
+After training, calling `cv_model.predict(sample_request)` transforms the new inputs using the stored preprocessing statistics and predicts using the stored coefficients. <strong>Prediction does not relearn either the preprocessing statistics or the model coefficients.</strong>[^pipeline]
 
 ## 6. Cross-validation refits preprocessing in every split
 
 If we split data only once to judge a model, the result can depend on that particular split. <strong>Cross-validation (CV)</strong> repeats training and evaluation while changing which portions of the training data are used for fitting and validation.[^cv-guide]
 
-The learning notes divide 318 cars into three groups, A, B, and C. If each group contains 106 cars, their roles in each split are as follows. A, B, and C are names used to explain those roles.
+The example in Section 13 sets aside 4 of its 16 fictional cars for final evaluation and uses the remaining 12 as training data. Dividing these <strong>12 training cars</strong> into three groups, A, B, and C, gives 4 cars per group. A, B, and C are names used to explain the roles in the three splits below.
 
 | Split | Cars used to fit preprocessing and the model | Cars used to evaluate predictions in this split |
 | --- | --- | --- |
-| Split 1 | A + B, 212 cars | C, 106 cars |
-| Split 2 | A + C, 212 cars | B, 106 cars |
-| Split 3 | B + C, 212 cars | A, 106 cars |
+| Split 1 | A + B, 8 cars | C, 4 cars |
+| Split 2 | A + C, 8 cars | B, 4 cars |
+| Split 3 | B + C, 8 cars | A, 4 cars |
+
+The 4 validation cars in each split come from the 12 training cars. The 4 cars set aside for final evaluation at the outset are not part of these three groups.
 
 <strong>The fitted model from the previous split is not carried forward.</strong> Each split trains a new model with the same configuration. That is why C can be validation data in split 1 and training data in split 2. The model in split 1 was not trained on C, and the model in split 2 is trained separately.
 
@@ -317,7 +336,7 @@ Negating `cv_result["test_score"]` again restores each element to the actual MSE
 
 ### A baseline establishes the starting point for comparison
 
-A <strong>baseline</strong> is a reference model chosen to assess how much later models improve. The learning notes use `LinearRegression` with weight as its only input. The variable name `baseline` does not have any special functionality.
+A <strong>baseline</strong> is a reference model chosen to assess how much later models improve. This example uses `LinearRegression` with weight as its only input. The variable name `baseline` does not have any special functionality.
 
 After changing input features or model settings, we must still evaluate on the same splits with the same metric to make a comparison. The complete code below also compares a weight-only reference model with Ridge using weight and region. Both the inputs and the model change in this comparison, so <strong>we must not attribute the performance difference to regularization alone</strong>.
 
@@ -357,7 +376,7 @@ Because the Pipeline's last step is named `model`, `model__alpha` refers to <str
 | Refit after selecting settings | All of `train_frame` | All of `train_frame` |
 | Final evaluation and new predictions | Statistics are not relearned. | Coefficients are not refitted. |
 
-Using the counts in the learning notes, each CV split fits preprocessing and the model on 212 training cars. After selecting settings, it refits on all 318 cars in `train_frame`. The <strong>final statistics and coefficients learned from those 318 cars</strong> are then applied to `valid_frame` and new cars.
+In this example, each CV split fits preprocessing and the model on 8 training cars. After selecting settings, it refits on all 12 cars in `train_frame`. The <strong>final statistics and coefficients learned from those 12 training cars</strong> are then applied to the 4 cars in `valid_frame` and to new cars.
 
 Evaluating five candidates across three splits fits the Pipeline $5\times3=15$ times. If every candidate runs successfully, adding one final refit gives 16 fits in one `search.fit` call. This does not mean coefficients were updated 16 times. It means <strong>the entire Pipeline fitting procedure ran 16 times</strong>. Fits performed by a separate earlier `cross_validate` call are not included in this count.
 
@@ -369,19 +388,20 @@ Evaluating five candidates across three splits fits the Pipeline $5\times3=15$ t
 
 `mean_` is the stored mean, `scale_` is the divisor used during transformation, `coef_` contains the input coefficients, and `intercept_` is the intercept. Ridge in this example has four coefficients for its four transformed input columns, plus one intercept. <strong>Inspect the actual stored values on the final selected object, rather than guessing which object from the initial construction holds them.</strong>[^scaler][^ridge][^column-transformer]
 
-### Interpret the values recorded in the learning notes
+### Interpret the complete example's execution results
 
-The following values are outputs from the supplied learning notes. They were not recalculated here by rerunning the original course data and function implementations.
+Running the fictional car data and complete code in Section 13 produces the following results. Read each value together with the data and stage used to calculate it.
 
-| Recorded result | What it tells us |
+| Execution result | What it tells us |
 | --- | --- |
-| Selected setting `{"model__alpha": 10}` | This setting was selected among the specified candidates under the specified splitting conditions. |
-| Mean validation MSE of about `19.9297` | The mean cross-validation MSE used to select the setting. |
-| Prediction of about `25.6714 mpg` for `weight=2800`, `origin=2` | The prediction calculated by the final model for those inputs. |
+| Selected setting `{"model__alpha": 0.01}` | This setting was selected from the five specified candidates. |
+| Mean validation MSE of about `0.5831` | The mean validation MSE across the three splits used to select the setting. |
+| Separate evaluation MSE of about `0.2756` | The MSE calculated from the final model's predictions for the 4 cars set aside at the outset. |
+| Prediction of about `27.7189 mpg` for `weight=2800`, `origin=2` | The fuel economy calculated by the final model for a new request. |
 
-`19.9297` is not the MSE on the separate evaluation data. To obtain that MSE, compare the final model's predictions for `valid_frame` with the actual `y_valid`. Similarly, `25.6714 mpg` is a prediction whose accuracy cannot be calculated without the car's actual fuel economy.
+`0.5831` and `0.2756` are scores calculated on different data. The first is the cross-validation score used to select a candidate; the second is the score calculated on the separate evaluation data after the final selection. `27.7189 mpg` is a prediction for one car, so we cannot know its prediction error until we compare it with the actual fuel economy.
 
-The selected `alpha=10` is a value chosen from the specified candidates. It does not mean the search found the best possible `alpha` among all real numbers. Also, repeatedly checking the final evaluation score and changing settings makes those data influence selection. They can then no longer be said to serve the originally intended role of an independent final evaluation set.[^cv-guide]
+The selected `alpha=0.01` is a value chosen from the specified candidates. It does not mean the search found the best possible `alpha` among all real numbers. Also, repeatedly checking the final evaluation score and changing settings makes those data influence selection. They can then no longer be said to serve the originally intended role of an independent final evaluation set.[^cv-guide]
 
 ## 9. A loss derivative is different from the coefficient of the prediction line
 
@@ -562,21 +582,20 @@ A derivative describes the neighborhood of the current point. If the learning ra
 
 In one iteration, we predict using the current coefficients, calculate errors and loss, calculate derivatives, and update the coefficients. Calculating a prediction or a loss is not itself differentiation. Actual code substitutes current values into derivative formulas derived in advance, then repeats the process using the new coefficients.
 
-### Connect scaling to the recorded divergence
+### Check scaling and stopping conditions together
 
 $dw$ contains $e_ix_i$. Changing the numerical representation of inputs changes this calculation and the current errors, and can change the update size and stability at the same learning rate. However, terms from different samples can cancel, so larger inputs do not always imply a larger overall $dw$.
 
-The learning notes report the following outputs with a learning rate of 0.1. The values and stopping conditions in this table are <strong>results and explanations supplied in those notes</strong>, not results from this article's fictional dataset.
+When comparing gradient descent with different input representations, we should therefore check both the final MSE and <strong>how the loss changed and why iteration stopped</strong>. If we write our own iterative training code, we can use different stopping conditions such as those below. This table explains how to interpret stopping conditions; it does not report measurements.
 
-| Input representation | `last_step` | Recorded training MSE | Status and meaning |
-| --- | ---: | ---: | --- |
-| Original weight, `Raw` | 3 | About $3.261805\times10^{38}$ | `mse_guard_stopped`: stopped after exceeding the specified MSE limit of $10^{30}$. |
-| `MinMax` | 2000 | About 19.78192 | `iteration_budget_completed`: used the specified maximum number of updates. |
-| Standardization | 2000 | About 19.78192 | `iteration_budget_completed`: used the specified maximum number of updates. |
+| Example stopping condition | What stopping under this condition means | What else to check |
+| --- | --- | --- |
+| Stop when MSE exceeds a predetermined limit. | The loss has become too large, so the run stops instead of continuing the calculation. | Check the learning rate, input scale, and derivative and update calculations. |
+| Stop after using the specified maximum number of updates. | The run has used all the allowed iterations. | Check whether the loss fell sufficiently and whether it was still changing at the end. |
 
-The raw-input run was not configured to perform only three iterations; it stopped because the loss grew rapidly. The other two methods completing 2000 iterations does not establish that they reached the exact minimum. Similar final training MSE values also do not imply identical convergence speeds or performance on separate evaluation data.
+Exceeding an MSE limit does not by itself prove mathematical divergence. Completing the specified number of iterations also does not establish that the exact minimum has been reached. Even if two methods finish with similar training MSE, they can require different numbers of updates to reach the same value or perform differently on separate evaluation data.
 
-The notes explain that `run_gd` updates coefficients using the derivative of MSE/2 but displays MSE in its results table. The course function's implementation was unavailable, so checking that description against the actual implementation requires inspecting its source.
+The derivation above differentiates MSE/2 to obtain the quantities used to update coefficients. If a manually written loop reports its progress as MSE, it displays twice the loss used for the updates. <strong>Check the definition of the loss being differentiated and the definition of the reported evaluation value separately</strong> to avoid confusing constants in the update equations with numbers in a results table.
 
 ## 10. L1 and L2 do not overwrite coefficients with their squares
 
@@ -691,7 +710,7 @@ J_{\mathrm{data}}
 $$
 </div>
 
-Therefore, <strong>matching this article's L2 equation to Ridge requires $\lambda=\texttt{alpha}/(2n)$</strong>. We must not assume that $\lambda$ in the general equation and `alpha` in code are numerically identical.
+Therefore, <strong>matching this article's L2 equation to Ridge requires $\lambda=\texttt{alpha}/(2n)$</strong>. We must not assume that $\lambda$ in the general equation defined above and `alpha` in code are numerically identical.
 
 Lasso's documented objective is $J_{\mathrm{data}}+\texttt{alpha}\sum_j|w_j|$, so under this convention, $\lambda=\texttt{alpha}$. The penalties have different forms and the error terms use different scaling conventions. Giving Ridge and Lasso the same numerical `alpha` therefore does not produce the same regularization effect.[^lasso]
 
@@ -730,26 +749,28 @@ The car model likewise has two original features in terms of meaning: weight and
 
 Allowing both $w$ and $b$ to vary gives the loss $J(w,b)$, a function of two variables. It can be represented as a surface using a $w$ axis, a $b$ axis, and a loss axis. A straight prediction relationship does not require a straight loss function. A quadratic loss function does not mean the graph of training progress against update count is a parabola.
 
-## 12. Distinguish course functions from library features
+## 12. Distinguish functions we define from library features
 
-A function does not need to be defined in the current notebook if we `import` it from another file. In the learning notes, `run_gd` is a course function imported from `course_helpers`, and `make_model` comes from `cv_support`. Names such as `prepare_inputs` and `check_scaling` also refer to course-supplied functionality, not standard built-in Python or scikit-learn features.
+`make_model` is a function defined in this article's code, while `Pipeline` and `Ridge` are classes provided by scikit-learn. A <strong>function definition</strong> specifies the values the function will receive and the operations it will perform. A <strong>function call</strong> passes values to that definition and runs the operations. In Section 13, the statements indented below `def make_model(regressor, include_origin=True):` form the function body, and the final `return` sends the constructed Pipeline back to the point of the call.[^functions]
+
+If we move the function definition to another Python file, we can bring it in with `import`. The function body is then absent from the file making the call, but the code that runs is in the imported file. When reading a short function call, check <strong>what we pass in, what it configures or calculates internally, and what it returns</strong>.
 
 | Kind | Examples in this article | How to read it |
 | --- | --- | --- |
 | Class | `StandardScaler`, `Ridge`, `Pipeline`, `GridSearchCV`, `pd.DataFrame` | Calling it creates an object with that role. |
-| Function | `cross_validate`, `mean_squared_error`, `pd.get_dummies`, `pd.concat` | Pass the required arguments, run the operation, and receive a return value. |
+| Function | `make_model`, `cross_validate`, `mean_squared_error`, `pd.get_dummies`, `pd.concat` | Pass the required arguments, run the operation, and receive a return value. |
 | Method | `fit`, `transform`, `predict`, `astype` | Functionality called through a particular object. |
 | Attribute | `shape`, `mean_`, `scale_`, `coef_`, `best_score_` | Read information stored on the object. |
 
-There is no need to read every function implementation on every use. But interpreting results requires knowing the inputs, return values, defaults, and stopping conditions. Python's `inspect.getfile` returns the file location of a definition, while `inspect.getsource` returns accessible Python source text as a string. Inspecting source can fail for objects whose source is unavailable.[^inspect]
+This article includes the definition and calls of `make_model` in the same code listing. To examine the location or contents of a function imported from another file, Python provides `inspect.getfile` and `inspect.getsource`. They return, respectively, the file location of the definition and its accessible Python source text as strings. For example, in the downloaded Python file, `inspect.getsource(make_model)` lets us inspect this function's definition. Inspection can fail when the source cannot be located, as can happen in some notebook environments.[^inspect]
 
-The long initial setup code is also easier to read by separating its roles. `Path` handles file paths, and ZIP handling extracts compressed materials. `RESOURCE_MANIFEST` is course-provided information listing supplied files and related details. SHA-256 is used to compare values calculated from file contents to check whether files have changed. Adding a directory to `sys.path` allows Python to find modules there. These operations prepare the files and modules needed for execution; they are not the model's training equations.[^python-files]
+A project that downloads data files may need file preparation code before model training. `Path` handles file paths, and ZIP handling extracts compressed materials. SHA-256 is used to compare values calculated from file contents to check whether a file has changed. Adding a directory to `sys.path` allows Python to find modules there. These operations prepare files and modules and serve a different role from learning model coefficients.[^python-files]
 
 Plotting and display code should also be distinguished from training. `np.linspace` is a function that creates evenly spaced numbers over a specified interval. Creating 200 numbers supplies 200 input positions for drawing a line, rather than adding measurements of 200 cars. `scatter` displays values as points, while `plot` can connect values with a line. `head` shows the beginning of a table, and `round` produces rounded values. Rounding a results table does not refit the model's coefficients.[^plotting]
 
 ## 13. Run the full Python example with fictional car data
 
-The following code is <strong>a separate example that runs without the course functions</strong>. It uses 16 fictional cars, created to demonstrate the processing sequence rather than to represent actual measurements. Twelve cars are used for training and four for separate evaluation, so each of the three CV splits trains on eight cars and validates on four. These are different data from the 318-car course record interpreted earlier.
+The following code is <strong>one complete example covering data creation, function definitions, preprocessing, training, and evaluation</strong>. It uses 16 fictional cars created to demonstrate the processing sequence. Twelve cars are used for training and four for separate evaluation, so each of the three CV splits described earlier trains on eight cars and validates on four.
 
 The required libraries are NumPy, Pandas, and scikit-learn. Because the code uses `sparse_output`, it targets scikit-learn 1.2 or later. While preparing this article, the complete code was run and checked with NumPy 2.3.5, Pandas 2.2.3, and scikit-learn 1.8.0. The library behavior described in the article was checked against official documentation on October 12, 2026.
 
@@ -759,7 +780,7 @@ The complete code follows the sequence below. Manual preprocessing is used only 
 
 1. Create fictional data and split inputs and targets together.
 2. Use manual preprocessing to check shapes, category columns, and row correspondence.
-3. Cross-validate the baseline and Ridge on the same splits.
+3. Define `make_model`, then cross-validate the baseline and Ridge created with this function on the same splits.
 4. Use `GridSearchCV` to select `alpha` and refit on all training data.
 5. Predict the separate evaluation data and a new car, and inspect the stored statistics.
 6. Finally, run a separate, simple calculation for comparison with Rust.
@@ -769,7 +790,7 @@ The complete code follows the sequence below. Manual preprocessing is used only 
 ```python
 """Review preprocessing, cross-validation, and Ridge with fictional cars.
 
-This code does not reconstruct the course functions or reproduce course results.
+The required make_model function is defined in this file, so no separate helper file is needed.
 The 16 records are fictional data created to demonstrate the processing sequence.
 weight is measured in lb (pounds), and mpg is miles traveled per gallon of fuel.
 origin values 1, 2, and 3 are fictional region codes, not magnitudes or rankings.
@@ -869,29 +890,42 @@ assert X_train_ready.shape == (12, 4) and X_valid_ready.shape == (4, 4)
 print("Manual preprocessing result shapes:", X_train_ready.shape, X_valid_ready.shape)
 print(X_train_ready.head())  # The head method shows the first few rows.
 
-# 3. Pass a Pipeline receiving the original train_frame to actual cross-validation.
-# ColumnTransformer combines results specified as (name, transformer, target columns).
-preprocess = ColumnTransformer([
-    ("weight", StandardScaler(), ["weight"]),
-    ("origin", OneHotEncoder(
-        categories=[[1, 2, 3]],  # Previously allowed codes for the single origin column.
-        handle_unknown="error",  # Report an error for codes outside the allowed list.
-        sparse_output=False,  # Return an ordinary two-dimensional NumPy array.
-    ), ["origin"]),
-])
-# Pipeline creates an object that runs named preprocessing steps and a model in order.
-# "preprocess", "model", and "weight" are names chosen for this example.
-cv_model = Pipeline([
-    ("preprocess", preprocess),
-    ("model", Ridge(alpha=1.0)),  # alpha is regularization strength, not a learning rate.
-])
-# The baseline is the reference model: linear regression using only weight here.
-baseline = Pipeline([
-    ("preprocess", ColumnTransformer([
-        ("weight", StandardScaler(), ["weight"]),
-    ])),
-    ("model", LinearRegression()),
-])
+# 3. Group the repeated preprocessing and regression configuration in the make_model function.
+# Pass a Ridge or LinearRegression object as regressor.
+# include_origin determines whether to include region as an input; its default is True.
+def make_model(regressor, include_origin=True):
+    """Return an unfitted Pipeline combining preprocessing and the supplied regression model.
+
+    Always include weight standardization; add region encoding when include_origin=True.
+    This function only creates the configuration. A later fit learns statistics and coefficients.
+    """
+    # Create a new list and scaler on each call. Each entry is (name, transformer, target columns).
+    transformers = [("weight", StandardScaler(), ["weight"])]
+    if include_origin:
+        # The append method adds the region transformation to the end of the current list.
+        transformers.append((
+            "origin",
+            OneHotEncoder(
+                categories=[[1, 2, 3]],  # Previously allowed codes for the single origin column.
+                handle_unknown="error",  # Report an error for codes outside the allowed list.
+                sparse_output=False,  # Return an ordinary two-dimensional NumPy array.
+            ),
+            ["origin"],
+        ))
+    # ColumnTransformer combines the results. remainder="drop" excludes columns not specified.
+    preprocess = ColumnTransformer(transformers, remainder="drop")
+    # Pipeline runs preprocessing and the model in order. This function defines the step names.
+    return Pipeline([
+        ("preprocess", preprocess),
+        ("model", regressor),
+    ])
+
+
+# Calling the function only creates the configuration. Cross-validation below uses the original train_frame.
+# alpha is regularization strength, not a learning rate. include_origin=True uses standardized weight and region indicators together.
+cv_model = make_model(Ridge(alpha=1.0), include_origin=True)
+# The baseline is the reference model. include_origin=False excludes region and uses only weight.
+baseline = make_model(LinearRegression(), include_origin=False)
 
 # KFold defines 3 splits. Each uses 8 training records and 4 validation records.
 # shuffle=True shuffles before splitting; random_state=42 reproduces the same split.
@@ -957,9 +991,9 @@ print("Standard deviation for transformation stored during final fitting:", fitt
 print("Learned coefficients:", fitted_ridge.coef_)
 print("Learned intercept:", fitted_ridge.intercept_)
 
-# Uncomment the next two lines only in a course environment where run_gd has been imported.
-# print(inspect.getfile(run_gd))  # Inspect the file containing the function definition.
-# print(inspect.getsource(run_gd))  # Inspect the implementation when Python source is accessible.
+# Uncomment the next two lines to inspect the location and implementation of make_model defined in this file.
+# print(inspect.getfile(make_model))  # Inspect the file containing the function definition.
+# print(inspect.getsource(make_model))  # Inspect the function body when Python source is accessible.
 
 # 6. A separate calculation for comparison with Rust. These are arbitrary saved values, not fitted values above.
 # This checks weight-only standardization and prediction; origin encoding and Ridge fitting are excluded.
@@ -971,7 +1005,7 @@ assert np.isclose(demo_prediction, 26.6)
 print("Prediction checked with arbitrary saved values (mpg):", demo_prediction)
 ```
 
-Running the fictional example selected `alpha=0.01`, with a mean cross-validation MSE of about `0.5831` and a separate evaluation MSE of about `0.2756`. The new request's prediction was about `27.7189 mpg`. These are execution results for the fictional data and code above. They do not represent predictive performance on real cars or a reproduction of the course results.
+Running the fictional example selected an `alpha` of `0.01`, with a mean cross-validation MSE of about `0.5831` and a separate evaluation MSE of about `0.2756`. The new request's prediction was about `27.7189 mpg`. These values were calculated from the fictional data above, so performance on real cars must be evaluated separately using actual measurements.
 
 The separate evaluation weights in this example also include values below the training minimum. The smallest value after the default MinMax transformation is therefore about `-0.1765`. As explained earlier, this follows from applying the training reference unchanged to new data.
 
@@ -1050,11 +1084,12 @@ fn main() {
 
 ## References
 
-The course sample counts, outputs, and descriptions of course functions come from the supplied learning notes. The official documents below support the explanations of library behavior. Outputs for the fictional dataset were calculated with the accompanying code.
+The official documents below support the explanations of function definitions and library behavior. The values from cross-validation, setting selection, and final evaluation in this article were calculated using the fictional data and code provided in Section 13.
 
 [^pitfalls]: scikit-learn, [Common pitfalls and recommended practices](https://scikit-learn.org/stable/common_pitfalls.html). Consistent preprocessing, separation of training and evaluation, and data leakage.
 [^scaler]: scikit-learn, [StandardScaler](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html). `fit`, `transform`, `mean_`, `scale_`, `ddof=0`, and constant-column handling.
 [^pipeline]: scikit-learn, [Pipeline](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html). Step execution, transformation during prediction, and nested setting names.
+[^functions]: Python, [Defining Functions](https://docs.python.org/3/tutorial/controlflow.html#defining-functions). Function definitions, passing arguments, and return values.
 [^preprocessing]: scikit-learn, [Preprocessing data](https://scikit-learn.org/stable/modules/preprocessing.html). Purposes and scope of standardization and scaling.
 [^std]: NumPy, [numpy.std](https://numpy.org/doc/stable/reference/generated/numpy.std.html). Standard deviation and the meaning of `ddof`.
 [^minmax]: scikit-learn, [MinMaxScaler](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html). Training ranges and the `clip` setting.

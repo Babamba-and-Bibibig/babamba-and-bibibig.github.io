@@ -1,6 +1,6 @@
 """Review preprocessing, cross-validation, and Ridge with fictional cars.
 
-This code does not reconstruct the course functions or reproduce course results.
+The required make_model function is defined in this file, so no separate helper file is needed.
 The 16 records are fictional data created to demonstrate the processing sequence.
 weight is measured in lb (pounds), and mpg is miles traveled per gallon of fuel.
 origin values 1, 2, and 3 are fictional region codes, not magnitudes or rankings.
@@ -100,29 +100,42 @@ assert X_train_ready.shape == (12, 4) and X_valid_ready.shape == (4, 4)
 print("Manual preprocessing result shapes:", X_train_ready.shape, X_valid_ready.shape)
 print(X_train_ready.head())  # The head method shows the first few rows.
 
-# 3. Pass a Pipeline receiving the original train_frame to actual cross-validation.
-# ColumnTransformer combines results specified as (name, transformer, target columns).
-preprocess = ColumnTransformer([
-    ("weight", StandardScaler(), ["weight"]),
-    ("origin", OneHotEncoder(
-        categories=[[1, 2, 3]],  # Previously allowed codes for the single origin column.
-        handle_unknown="error",  # Report an error for codes outside the allowed list.
-        sparse_output=False,  # Return an ordinary two-dimensional NumPy array.
-    ), ["origin"]),
-])
-# Pipeline creates an object that runs named preprocessing steps and a model in order.
-# "preprocess", "model", and "weight" are names chosen for this example.
-cv_model = Pipeline([
-    ("preprocess", preprocess),
-    ("model", Ridge(alpha=1.0)),  # alpha is regularization strength, not a learning rate.
-])
-# The baseline is the reference model: linear regression using only weight here.
-baseline = Pipeline([
-    ("preprocess", ColumnTransformer([
-        ("weight", StandardScaler(), ["weight"]),
-    ])),
-    ("model", LinearRegression()),
-])
+# 3. Group the repeated preprocessing and regression configuration in the make_model function.
+# Pass a Ridge or LinearRegression object as regressor.
+# include_origin determines whether to include region as an input; its default is True.
+def make_model(regressor, include_origin=True):
+    """Return an unfitted Pipeline combining preprocessing and the supplied regression model.
+
+    Always include weight standardization; add region encoding when include_origin=True.
+    This function only creates the configuration. A later fit learns statistics and coefficients.
+    """
+    # Create a new list and scaler on each call. Each entry is (name, transformer, target columns).
+    transformers = [("weight", StandardScaler(), ["weight"])]
+    if include_origin:
+        # The append method adds the region transformation to the end of the current list.
+        transformers.append((
+            "origin",
+            OneHotEncoder(
+                categories=[[1, 2, 3]],  # Previously allowed codes for the single origin column.
+                handle_unknown="error",  # Report an error for codes outside the allowed list.
+                sparse_output=False,  # Return an ordinary two-dimensional NumPy array.
+            ),
+            ["origin"],
+        ))
+    # ColumnTransformer combines the results. remainder="drop" excludes columns not specified.
+    preprocess = ColumnTransformer(transformers, remainder="drop")
+    # Pipeline runs preprocessing and the model in order. This function defines the step names.
+    return Pipeline([
+        ("preprocess", preprocess),
+        ("model", regressor),
+    ])
+
+
+# Calling the function only creates the configuration. Cross-validation below uses the original train_frame.
+# alpha is regularization strength, not a learning rate. include_origin=True uses standardized weight and region indicators together.
+cv_model = make_model(Ridge(alpha=1.0), include_origin=True)
+# The baseline is the reference model. include_origin=False excludes region and uses only weight.
+baseline = make_model(LinearRegression(), include_origin=False)
 
 # KFold defines 3 splits. Each uses 8 training records and 4 validation records.
 # shuffle=True shuffles before splitting; random_state=42 reproduces the same split.
@@ -188,9 +201,9 @@ print("Standard deviation for transformation stored during final fitting:", fitt
 print("Learned coefficients:", fitted_ridge.coef_)
 print("Learned intercept:", fitted_ridge.intercept_)
 
-# Uncomment the next two lines only in a course environment where run_gd has been imported.
-# print(inspect.getfile(run_gd))  # Inspect the file containing the function definition.
-# print(inspect.getsource(run_gd))  # Inspect the implementation when Python source is accessible.
+# Uncomment the next two lines to inspect the location and implementation of make_model defined in this file.
+# print(inspect.getfile(make_model))  # Inspect the file containing the function definition.
+# print(inspect.getsource(make_model))  # Inspect the function body when Python source is accessible.
 
 # 6. A separate calculation for comparison with Rust. These are arbitrary saved values, not fitted values above.
 # This checks weight-only standardization and prediction; origin encoding and Ridge fitting are excluded.

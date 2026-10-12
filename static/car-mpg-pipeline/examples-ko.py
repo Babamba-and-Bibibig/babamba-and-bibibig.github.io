@@ -1,6 +1,6 @@
 """가상 자동차로 실행하는 전처리·교차검증·Ridge 복습 예제.
 
-이 코드는 수업 함수의 원문을 복원하거나 수업 결과를 재현하지 않습니다.
+필요한 make_model 함수를 이 파일에서 직접 정의하므로 별도 보조 파일 없이 실행합니다.
 16건의 값은 처리 순서를 확인하기 위해 직접 만든 가상 자료입니다.
 weight의 단위는 lb(파운드), mpg는 갤런당 주행 마일 수입니다.
 origin의 1·2·3은 가상 생산 지역 코드이며 크기나 순서를 뜻하지 않습니다.
@@ -100,29 +100,42 @@ assert X_train_ready.shape == (12, 4) and X_valid_ready.shape == (4, 4)
 print("수동 전처리 결과 shape:", X_train_ready.shape, X_valid_ready.shape)
 print(X_train_ready.head())  # head 메서드는 앞부분을 보여 줍니다.
 
-# 3. 실제 교차검증에는 원래 train_frame을 받는 Pipeline을 전달합니다.
-# ColumnTransformer 클래스는 (이름, 변환 객체, 대상 컬럼)별 결과를 결합합니다.
-preprocess = ColumnTransformer([
-    ("weight", StandardScaler(), ["weight"]),
-    ("origin", OneHotEncoder(
-        categories=[[1, 2, 3]],  # origin 한 컬럼의 사전 허용 코드 목록입니다.
-        handle_unknown="error",  # 허용 목록 밖의 코드가 오면 오류로 알립니다.
-        sparse_output=False,  # 일반적인 2차원 NumPy 배열을 출력합니다.
-    ), ["origin"]),
-])
-# Pipeline 클래스는 이름을 붙인 전처리와 모델을 순서대로 실행하는 객체를 만듭니다.
-# "preprocess", "model", "weight"는 이 예제에서 직접 정한 이름입니다.
-cv_model = Pipeline([
-    ("preprocess", preprocess),
-    ("model", Ridge(alpha=1.0)),  # alpha는 규제 강도입니다. 학습률이 아닙니다.
-])
-# baseline은 비교 기준입니다. 여기서는 무게 하나만 쓰는 선형회귀입니다.
-baseline = Pipeline([
-    ("preprocess", ColumnTransformer([
-        ("weight", StandardScaler(), ["weight"]),
-    ])),
-    ("model", LinearRegression()),
-])
+# 3. 반복해서 사용하는 전처리와 회귀 모델의 구성을 make_model 함수로 묶습니다.
+# regressor에는 Ridge나 LinearRegression 객체를 전달합니다.
+# include_origin은 지역을 입력에 포함할지 정하는 값이며, 기본값은 True입니다.
+def make_model(regressor, include_origin=True):
+    """전처리와 전달받은 회귀 모델을 묶은, 아직 학습하지 않은 Pipeline을 반환합니다.
+
+    무게의 표준화는 항상 포함하고, include_origin=True일 때 지역 인코딩을 추가합니다.
+    이 함수는 구성을 만들 뿐입니다. 기준과 계수의 학습은 이후 fit에서 실행합니다.
+    """
+    # 매번 새 목록과 스케일러를 만듭니다. 각 항목은 (이름, 변환 객체, 대상 컬럼)입니다.
+    transformers = [("weight", StandardScaler(), ["weight"])]
+    if include_origin:
+        # append 메서드는 지역 변환 항목을 현재 목록의 끝에 추가합니다.
+        transformers.append((
+            "origin",
+            OneHotEncoder(
+                categories=[[1, 2, 3]],  # origin 한 컬럼의 사전 허용 코드 목록입니다.
+                handle_unknown="error",  # 허용 목록 밖의 코드가 오면 오류로 알립니다.
+                sparse_output=False,  # 일반적인 2차원 NumPy 배열을 출력합니다.
+            ),
+            ["origin"],
+        ))
+    # ColumnTransformer는 변환 결과를 결합합니다. remainder="drop"은 지정하지 않은 컬럼을 제외합니다.
+    preprocess = ColumnTransformer(transformers, remainder="drop")
+    # Pipeline은 전처리와 모델을 순서대로 실행합니다. 단계 이름은 이 함수에서 정합니다.
+    return Pipeline([
+        ("preprocess", preprocess),
+        ("model", regressor),
+    ])
+
+
+# 함수 호출은 구성만 만듭니다. 실제 교차검증은 아래에서 원래 train_frame으로 실행합니다.
+# alpha는 규제 강도이며 학습률이 아닙니다. include_origin=True는 표준화한 무게와 지역 표시를 함께 사용합니다.
+cv_model = make_model(Ridge(alpha=1.0), include_origin=True)
+# baseline은 비교 기준입니다. include_origin=False이면 지역을 제외하고 무게만 사용합니다.
+baseline = make_model(LinearRegression(), include_origin=False)
 
 # KFold 클래스는 3회 분할을 정합니다. 각 회차는 훈련 8건과 검증 4건을 사용합니다.
 # shuffle=True는 분할 전 섞기, random_state=42는 같은 분할을 재현하기 위한 설정입니다.
@@ -188,9 +201,9 @@ print("최종 학습에서 저장된 변환용 표준편차:", fitted_scaler.sca
 print("학습된 계수:", fitted_ridge.coef_)
 print("학습된 절편:", fitted_ridge.intercept_)
 
-# 아래 두 줄은 수업에서 run_gd를 import한 환경에서만 주석을 해제합니다.
-# print(inspect.getfile(run_gd))  # 함수가 정의된 파일 위치를 확인합니다.
-# print(inspect.getsource(run_gd))  # 접근 가능한 Python 소스가 있을 때 본문을 확인합니다.
+# 아래 두 줄의 주석을 해제하면 이 파일에서 정의한 make_model의 위치와 본문을 확인합니다.
+# print(inspect.getfile(make_model))  # 함수가 정의된 파일 위치를 확인합니다.
+# print(inspect.getsource(make_model))  # 접근 가능한 Python 소스가 있을 때 함수 본문을 확인합니다.
 
 # 6. Rust와 비교할 별도 계산입니다. 다음 값은 위 모델의 학습값이 아닌 임의의 저장값입니다.
 # 무게 하나의 표준화와 예측만 확인하며, origin 인코딩과 Ridge 학습은 포함하지 않습니다.
