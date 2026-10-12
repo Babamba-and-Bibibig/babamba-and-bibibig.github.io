@@ -1,0 +1,96 @@
+/* Loaded only by the car-MPG learning article and its English translation. */
+#main-content article .mpg-math {
+  max-width: 100%;
+  margin: 1.2rem 0;
+  padding: .2rem .1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+#main-content article .mpg-math .katex-display {
+  margin: .55rem 0;
+}
+
+#main-content article .mpg-math .katex {
+  font-size: 1.06em;
+}
+
+#main-content article .mpg-figure {
+  max-width: 100%;
+  margin: 1.8rem auto;
+}
+
+#main-content article .mpg-figure img,
+#main-content article img[src*="/car-mpg-pipeline/workflow-"] {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: .8rem;
+}
+
+#main-content article .mpg-figure figcaption {
+  max-width: 38rem;
+  margin: .8rem auto 0;
+  color: var(--im-muted, #536173);
+  font-size: .94em;
+  line-height: 1.7;
+}
+
+#main-content article .mpg-table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+#main-content article table {
+  font-variant-numeric: tabular-nums;
+}
+
+#main-content article th,
+#main-content article td {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+#main-content article details.mpg-review {
+  max-width: 100%;
+  margin: 1.5rem 0;
+  padding: .85rem 1rem;
+  border: 1px solid var(--im-border, #ccd5df);
+  border-radius: .65rem;
+}
+
+#main-content article details.mpg-review > summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+
+#main-content article details.mpg-review[open] > summary {
+  margin-bottom: 1rem;
+}
+
+#main-content article details.mpg-review pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+  /* Keep wide equations inside the table's own scroll area on a phone. */
+  #main-content article table {
+    display: block;
+    /* Keep KaTeX's absolutely positioned MathML inside this scroll area. */
+    position: relative;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  #main-content article .mpg-math .katex {
+    font-size: 1em;
+  }
+
+  #main-content article details.mpg-review {
+    padding: .75rem;
+  }
+}

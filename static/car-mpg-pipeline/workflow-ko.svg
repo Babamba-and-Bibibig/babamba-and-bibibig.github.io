@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="1980" viewBox="0 0 520 1980" role="img" aria-labelledby="workflow-title workflow-desc" xml:lang="ko">
+<title id="workflow-title">자동차 연비 예측의 전체 과정</title>
+<desc id="workflow-desc">과거 자동차 자료를 학습 자료와 별도 최종 평가 자료로 먼저 나눈다. 학습 자료 안에서만 후보별 교차검증을 진행한다. 매 회차 학습 부분으로 전처리 기준과 모델을 학습하고, 회차 검증 부분은 저장된 기준으로 변환해 검증한다. 선택한 설정으로 전체 학습 자료에 다시 fit한다. 최종 평가 입력과 새 자동차 입력은 저장된 전처리 기준으로 transform하고 학습된 모델로 predict한다. 최종 평가 정답은 선택이나 학습에 들어가지 않고, 최종 예측값과 비교해 MSE를 계산할 때만 사용한다. 새 자동차의 실제 정답이 없으면 MSE를 계산할 수 없다.</desc>
+<defs>
+<marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L9 5 L1 9 Z" fill="#12667c"/></marker>
+<marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L9 5 L1 9 Z" fill="#915b21"/></marker>
+</defs>
+<rect width="520" height="1980" rx="18" fill="#f5f8fb"/>
+<g font-family="Noto Sans KR, Pretendard, -apple-system, BlinkMacSystemFont, Apple SD Gothic Neo, Malgun Gothic, Noto Sans CJK KR, system-ui, sans-serif" text-anchor="middle">
+<path id="data-to-split" d="M260 136 V184" fill="none" stroke="#12667c" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<path id="split-to-training" d="M205 262 V282 H139 V306" fill="none" stroke="#12667c" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<path id="split-to-final-test" d="M315 262 V282 H388 V306" fill="none" stroke="#915b21" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-amber)"/>
+<path id="training-to-cv" d="M139 470 V517 H215 V540" fill="none" stroke="#12667c" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<path id="held-out-test-lane" d="M488 386 H506 V1798 H490" fill="none" stroke="#915b21" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-amber)"/>
+<path id="cv-to-selection" d="M215 893 V939" fill="none" stroke="#12667c" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<path id="selection-to-refit" d="M215 1039 V1082" fill="none" stroke="#12667c" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<path id="fitted-pipeline-to-transform" d="M215 1225 V1416" fill="none" stroke="#12667c" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<path id="new-input-to-transform" d="M385 1366 V1390 H318 V1416" fill="none" stroke="#12667c" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<path id="test-input-to-transform" d="M506 1496 H406" fill="none" stroke="#915b21" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-amber)"/>
+<path id="transformed-input-to-predict" d="M215 1556 V1600" fill="none" stroke="#12667c" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<path id="new-prediction-to-result" d="M174 1710 V1734 H139 V1758" fill="none" stroke="#12667c" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<path id="test-prediction-to-evaluation" d="M258 1710 V1734 H386 V1758" fill="none" stroke="#12667c" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<rect id="historical-data" x="42" y="38" width="436" height="98" rx="12" fill="#e8f0f6" stroke="#becdd9" stroke-width="1.6"/>
+<text x="260.0" y="79.0" font-size="29" font-weight="700" fill="#192c3a">과거 자동차 자료</text>
+<text x="260.0" y="111.0" font-size="24" font-weight="450" fill="#42566a">입력 정보 + 실제 연비</text>
+<rect id="split" x="42" y="190" width="436" height="72" rx="12" fill="#e8f0f6" stroke="#becdd9" stroke-width="1.6"/>
+<text x="260.0" y="234.0" font-size="27" font-weight="700" fill="#192c3a">1. 학습 전에 자료를 분리</text>
+<rect id="training-data" x="22" y="312" width="234" height="158" rx="12" fill="#e7f3f7" stroke="#73a3b2" stroke-width="1.6"/>
+<text x="139.0" y="367.0" font-size="27" font-weight="700" fill="#192c3a">학습 자료</text>
+<text x="139.0" y="399.0" font-size="22" font-weight="450" fill="#42566a">학습 입력과 정답</text>
+<text x="139.0" y="431.0" font-size="21" font-weight="450" fill="#42566a">후보 비교와 학습에 사용</text>
+<rect id="held-out-final-test" x="288" y="312" width="200" height="158" rx="12" fill="#fff2df" stroke="#ba8d55" stroke-width="1.6"/>
+<text x="388.0" y="352.5" font-size="24" font-weight="700" fill="#192c3a">최종 평가 자료</text>
+<text x="388.0" y="383.5" font-size="20" font-weight="450" fill="#42566a">평가 입력과 정답</text>
+<text x="388.0" y="414.5" font-size="24" font-weight="450" fill="#42566a">CV와 refit에</text>
+<text x="388.0" y="445.5" font-size="24" font-weight="450" fill="#42566a">넣지 않고 보관</text>
+<rect id="cross-validation" x="22" y="546" width="386" height="347" rx="12" fill="#e7f3f7" stroke="#73a3b2" stroke-width="1.6"/>
+<text x="215" y="585" font-size="25" font-weight="700" fill="#192c3a">2. 학습 자료 안에서 교차검증</text>
+<text x="215" y="620" font-size="23" font-weight="450" fill="#42566a">후보 설정마다 모든 회차를 반복</text>
+<rect id="fold-training-fit" x="40" y="651" width="350" height="87" rx="12" fill="#fff" stroke="#becdd9" stroke-width="1.6"/>
+<text x="215.0" y="687.0" font-size="24" font-weight="450" fill="#192c3a">회차 학습 부분으로</text>
+<text x="215.0" y="718.0" font-size="23" font-weight="450" fill="#42566a">전처리 기준과 모델을 학습</text>
+<path id="fold-training-to-fold-validation" d="M215 739 V770" fill="none" stroke="#12667c" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-blue)"/>
+<rect id="fold-validation" x="40" y="776" width="350" height="92" rx="12" fill="#fff" stroke="#becdd9" stroke-width="1.6"/>
+<text x="215.0" y="814.0" font-size="23" font-weight="450" fill="#192c3a">회차 검증 부분을 변환·예측</text>
+<text x="215.0" y="846.0" font-size="23" font-weight="450" fill="#42566a">예측값과 정답으로 MSE 계산</text>
+<rect id="select-settings" x="22" y="945" width="386" height="94" rx="12" fill="#fff" stroke="#becdd9" stroke-width="1.6"/>
+<text x="215.0" y="984.0" font-size="27" font-weight="700" fill="#192c3a">3. 설정을 선택</text>
+<text x="215.0" y="1016.0" font-size="23" font-weight="450" fill="#42566a">회차별 검증 MSE의 평균을 비교</text>
+<rect id="refit-and-store" x="22" y="1088" width="386" height="137" rx="12" fill="#e7f3f7" stroke="#73a3b2" stroke-width="1.6"/>
+<text x="215.0" y="1132.5" font-size="27" font-weight="700" fill="#192c3a">4. 전체 학습 자료로 refit</text>
+<text x="215.0" y="1164.5" font-size="24" font-weight="450" fill="#42566a">선택한 설정으로 다시 학습</text>
+<text x="215.0" y="1196.5" font-size="24" font-weight="450" fill="#42566a">전처리 기준과 모델을 저장</text>
+<text x="120" y="1294" font-size="22" font-weight="450" fill="#42566a">학습에서 저장한</text>
+<text x="120" y="1326" font-size="22" font-weight="450" fill="#42566a">기준·모델 사용</text>
+<rect id="new-car-input" x="284" y="1252" width="202" height="114" rx="12" fill="#fff" stroke="#becdd9" stroke-width="1.6"/>
+<text x="385.0" y="1287.0" font-size="26" font-weight="700" fill="#192c3a">새 자동차</text>
+<text x="385.0" y="1317.0" font-size="25" font-weight="450" fill="#42566a">새 입력 정보</text>
+<text x="385.0" y="1347.0" font-size="22" font-weight="450" fill="#42566a">실제 정답은 없음</text>
+<rect id="apply-stored-preprocessing" x="22" y="1422" width="386" height="134" rx="12" fill="#e7f3f7" stroke="#73a3b2" stroke-width="1.6"/>
+<text x="215.0" y="1465.0" font-size="29" font-weight="700" fill="#192c3a">5. transform</text>
+<text x="215.0" y="1497.0" font-size="25" font-weight="450" fill="#42566a">저장된 전처리 기준으로</text>
+<text x="215.0" y="1529.0" font-size="25" font-weight="450" fill="#42566a">각 입력을 변환</text>
+<rect id="test-input-label-background" x="417" y="1428" width="80" height="60" rx="0" fill="#f5f8fb" stroke="#f5f8fb" stroke-width="1.6"/>
+<text x="457" y="1452" font-size="22" font-weight="600" fill="#915b21">평가</text>
+<text x="457" y="1479" font-size="22" font-weight="600" fill="#915b21">입력</text>
+<rect id="predict-mpg" x="22" y="1606" width="386" height="104" rx="12" fill="#fff" stroke="#becdd9" stroke-width="1.6"/>
+<text x="215.0" y="1650.0" font-size="30" font-weight="700" fill="#192c3a">6. predict</text>
+<text x="215.0" y="1682.0" font-size="25" font-weight="450" fill="#42566a">학습된 모델로 연비를 예측</text>
+<rect id="new-car-result" x="22" y="1764" width="234" height="130" rx="12" fill="#e7f3f7" stroke="#73a3b2" stroke-width="1.6"/>
+<text x="139.0" y="1821.0" font-size="25" font-weight="700" fill="#192c3a">새 자동차의 결과</text>
+<text x="139.0" y="1853.0" font-size="23" font-weight="450" fill="#42566a">예측 연비를 사용</text>
+<rect id="final-test-mse" x="280" y="1764" width="210" height="130" rx="12" fill="#fff2df" stroke="#ba8d55" stroke-width="1.6"/>
+<text x="385.0" y="1793.5" font-size="25" font-weight="700" fill="#192c3a">최종 평가</text>
+<text x="385.0" y="1822.5" font-size="24" font-weight="450" fill="#42566a">예측값과</text>
+<text x="385.0" y="1851.5" font-size="22" font-weight="450" fill="#42566a">평가 정답을 비교</text>
+<text x="385.0" y="1880.5" font-size="24" font-weight="450" fill="#42566a">MSE 계산</text>
+<rect id="test-label-background" x="417" y="1672" width="80" height="60" rx="0" fill="#f5f8fb" stroke="#f5f8fb" stroke-width="1.6"/>
+<text x="457" y="1696" font-size="22" font-weight="600" fill="#915b21">평가</text>
+<text x="457" y="1723" font-size="22" font-weight="600" fill="#915b21">정답</text>
+<text x="260" y="1933" font-size="24" font-weight="500" fill="#42566a">정답이 있는 평가 자료에만</text>
+<text x="260" y="1965" font-size="24" font-weight="500" fill="#42566a">MSE를 계산합니다.</text>
+</g>
+</svg>
