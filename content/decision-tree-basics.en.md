@@ -1,6 +1,6 @@
 +++
 title = "How a Decision Tree Learns and Predicts: From Gini Impurity to Pruning"
-description = "Connect model creation, training, prediction, and evaluation through penguin classification. Read a small tree's prediction path, calculate Gini and entropy using six samples, and interpret depth limits, pruning, and feature importance."
+description = "Follow how a decision tree chooses split conditions and makes predictions. Calculate Gini and entropy with six samples, then interpret depth limits, pruning, validation accuracy, and feature importance in a penguin classification experiment."
 date = 2026-10-13T18:00:00+09:00
 slug = "decision-tree-basics"
 
@@ -10,150 +10,103 @@ toc = true
 styles = ["decision-tree-basics/article.css"]
 +++
 
-Suppose we want to identify a penguin's species from measurements such as bill length and body mass. Creating a model and printing its accuracy takes only a few lines. Reading those lines requires separating several questions: What did the model learn? What does accuracy compare? Does a number printed in the tree identify a class or a node?
+Suppose we want to identify a penguin's species from measurements such as bill length and body mass. A decision tree applies conditions to these inputs in sequence. During training, it uses labeled data to decide **which feature to compare with which value**. During prediction, it **applies the learned conditions to a new input**.
 
-A decision tree **learns which feature to compare with which threshold. During prediction, it follows those conditions and determines a class at the final node.** We will connect that process first, then examine the calculations used to select conditions and control tree size.
+Creating ever finer partitions is not the objective by itself. A tree that perfectly separates its training data can still misclassify a new penguin. We therefore need to distinguish the calculation that selects a condition from the evaluation of a trained model.
 
-This article organizes the material studied on October 13, 2026. Its three examples use different data.
-
-| Example | Available information | Purpose |
-| --- | --- | --- |
-| Penguin exercise | 204 training samples, 69 validation samples, four features, and recorded experiment tables | Training, evaluation, and configuration comparison |
-| Small tree, `tiny_model` | A structure that compares `x1` with 0.5 and 1.5, plus its recorded output | Nodes, leaves, and prediction paths |
-| Fictional dataset A01 | Six samples with two features and class labels | Gini, entropy, and split calculations |
-
-The penguin tables and the small tree use results recorded during the exercise. The complete code at the end **runs independently using the A01 data provided in this article**. Its results must not be interpreted as the penguin results or as a reconstruction of `tiny_model`.
+We begin with inputs, training, prediction, and tree structure. Next, we calculate splits using six fictional samples, then read a penguin classification experiment to see how tree size and validation accuracy change. The final section provides the complete calculation dataset and executable code.
 
 ## 1. Separate inputs from targets, then training from validation
 
-A **sample** is one observed subject. In the penguin table, one row represents one penguin. A **feature** is information supplied to the model. A **class** is one of the categories to predict, and a **label** is the recorded class assigned to an individual sample.
+A **sample** is one observed subject. In penguin data, one row represents one penguin. A **feature** is information supplied to the model, a **class** is a category to predict, and a **label** is the recorded class assigned to a sample.
 
-Labels such as 0, 1, and 2 do not mean incorrect, correct, and something else. Their meanings come from the dataset's label definitions.
+Labels stored as 0, 1, and 2 are category codes. They do not mean incorrect and correct. The mapping from each code to a real category must come from the dataset's definition.
 
-We use `X` for inputs and `y` for actual targets. The suffixes `train` and `val` distinguish the roles of the data.
+We use `X` for inputs and `y` for actual targets, adding `train` and `val` to distinguish their roles. With 204 training samples, 69 validation samples, and four features per sample:
 
-| Name | Whose information does it contain? | Shape in the penguin exercise |
+| Name | Contents | Shape |
 | --- | --- | --- |
 | `X_train` | Features of the training penguins | `(204, 4)` |
 | `y_train` | Actual labels of those same penguins | `(204,)` |
 | `X_val` | Features of the validation penguins | `(69, 4)` |
 | `y_val` | Actual labels of those same validation penguins | `(69,)` |
 
-**`shape` gives the size of each dimension.** `(204, 4)` describes a two-dimensional input with 204 rows and four columns. `(204,)` describes a one-dimensional array containing 204 labels. Its trailing comma does not indicate an omitted second dimension.
+**`shape` gives the size of each dimension.** `(204, 4)` is a two-dimensional input with 204 rows and four columns. `(204,)` is a one-dimensional array of 204 labels; the trailing comma does not mean an omitted second dimension.
 
-`X_train` and `y_train` are not a training set and a validation set. They are **the inputs and targets of the same training subjects**. The model partitions samples using their inputs, then checks their targets to evaluate how well the split separates classes. That is why `fit(X_train, y_train)` needs both.
+`X_train` and `y_train` are not training data and validation data. They are **the inputs and targets of the same training subjects**. The model partitions samples using inputs, then checks their labels to assess how well a split separates classes. That is why `fit(X_train, y_train)` needs both.
 
-The first input row must correspond to the first target. Matching lengths are not enough. Sorting the target array independently can attach another penguin's label to an input. Converting targets with `np.asarray(y_train)` does not repair an existing mismatch.
+The first input row and first target must refer to the same penguin. Equal lengths are not sufficient. Sorting targets independently can attach another penguin's label to an input. Converting the data to an array does not repair such a mismatch.
 
-### The complete workflow
+### Fix the purpose of each dataset first
 
-**Training** determines the values or structure needed for prediction from data. **Validation** evaluates candidates to help choose a configuration. A **test set** is held separately for final evaluation after that choice.
+**Training** determines the values or structure needed for prediction from data. **Validation** evaluates candidate models to help choose a configuration. **Testing** is the final evaluation on separately held data after the configuration has been chosen.
 
 ```text
-Define the prediction target and class meanings.
+Prepare inputs X and actual targets y.
     ↓
-Prepare X and y, checking that each input matches its target.
+Separate training, validation, and final test data.
     ↓
-Assign separate roles to training, validation, and final test data.
+Create a model and specify its settings.
     ↓
-Create the model and specify its settings.
+fit: learn split conditions and tree structure from training data.
     ↓
-Use fit to learn split conditions and tree structure from training data.
+predict: apply those conditions to validation inputs.
     ↓
-Use predict to obtain a class for each validation input.
+accuracy_score: compare predictions with validation targets.
     ↓
-Use accuracy_score to compare predictions with validation targets.
+Compare validation performance and tree size to choose a configuration.
     ↓
-Compare validation performance and the actual size of candidate trees.
-    ↓
-Inspect one input's path and the model's feature importance.
-    ↓
-After choosing the configuration, evaluate on the separate test set.
+Evaluate final performance on the separate test set.
 ```
 
-Validation inputs must contain the same features in the same order as training inputs. When preprocessing is involved, apply the criteria learned from training data to validation data. Learning preprocessing statistics from validation or test data lets evaluation information enter the training process.[^pitfalls]
+Validation inputs must contain the same features in the same column order as training inputs. When preprocessing is involved, apply the criteria learned from training data to validation data. Learning preprocessing criteria from held-out evaluation data introduces **data leakage**: evaluation information enters the training process.[^pitfalls]
 
-## 2. Creating a model is not the same as training it
+## 2. Model creation, training, and prediction are different operations
 
-`DecisionTreeClassifier` is a **Python class** used to create a classification-tree object. An object is an individual instance that we actually use. A function belonging to an object is a **method**, and a value it exposes is an **attribute**. A Python class is a different concept from a prediction class such as a penguin species.
+`DecisionTreeClassifier` is a **Python class** that creates a classification-tree object. An object is an individual model that we actually use. A function belonging to an object is a **method**, and a value it exposes is an **attribute**. A Python class is different from a prediction class such as a species.
 
 | Code | Operation | Return value |
 | --- | --- | --- |
-| `DecisionTreeClassifier(...)` | Create a configured model object | An untrained model |
-| `model.fit(X_train, y_train)` | Build the tree from training data | The fitted model itself |
-| `model.predict(X_val)` | Apply learned conditions to validation inputs | An array of predicted labels |
+| `DecisionTreeClassifier(...)` | Create a configured model | An untrained model object |
+| `model.fit(X_train, y_train)` | Build a tree from training inputs and targets | The fitted model itself |
+| `model.predict(X_val)` | Predict validation labels using learned conditions | An array of predicted labels |
 | `accuracy_score(y_val, val_pred)` | Compare actual and predicted labels | An accuracy number with default settings |
-| `model.get_depth()` | Inspect actual maximum depth | An integer |
-| `model.get_n_leaves()` | Count leaves | An integer |
-| `model.feature_importances_` | Read feature importance | An array with one value per feature |
 
-Executing `model = DecisionTreeClassifier(...)` does not complete training. Training data are used when `fit` runs. Writing `row = model.fit(...)` also stores the model in `row`, not a row of evaluation results.[^classifier]
+No training data are supplied when the model is merely created. `fit` uses data to determine conditions. Its return value is the model itself, not an evaluation result. Predictions come from `predict` and are passed separately to an evaluation function.[^classifier]
 
-`feature_importances_` is an attribute, so do not append `()`. Prediction with this estimator is `model.predict(X_val)`, not `model(X_val)`.
+### A decision tree does not learn through gradient descent
 
-### Learning does not necessarily mean gradient descent
+**Gradient descent** gradually updates learnable numbers using the gradient of a function that measures error. It is not the method used for all machine learning.
 
-**Gradient descent** updates learnable numbers using the gradient of a loss function. The decision tree in this exercise does not learn its split conditions through gradient descent.
+A decision tree compares feature-and-threshold combinations to select split conditions. The trained model stores feature indices, thresholds, connections to subsequent conditions, and class composition in each part of the data. **What it learns is a set of input-partitioning conditions and their connections.**[^tree]
 
-Its `fit` compares feature-and-threshold combinations and selects conditions for partitioning samples. The resulting model stores feature indices, thresholds, child-node connections, and class composition at nodes.
+`random_state=41` controls the reproducibility of random choices during training. It is useful when comparing experiments while keeping the data and other conditions fixed. `criterion="gini"` selects Gini impurity as the split criterion and is the default. Section 5 explains the calculation.
 
-Saying that a tree “learns questions” does not mean that it generates sentences. It means **choosing which feature to compare with which value and which node to use next for each outcome**.[^tree]
+### Accuracy is a fraction obtained by comparing two sets of labels
 
-`random_state=41` controls reproducibility of random choices during training. It helps reproduce results when the data and other conditions remain the same. It does not mean training 41 times or setting accuracy to 41. The exercises below keep it at 41 and use the default split criterion, `criterion="gini"`.
-
-## 3. Distinguish a model's experiment result from a sample's prediction
-
-`measure`, `show`, `candidate`, and `row` are not special scikit-learn syntax. `measure` and `show` are functions defined for the exercise; the others are variable names chosen by the programmer.
-
-`measure(model, name)` trains and evaluates the supplied model, returning a **dictionary**. A dictionary groups values under keys such as `"metric_name": value`. `show(rows)` displays multiple results as a table.
-
-```text
-candidate or review_model
-    Refers to a model object.
-          ↓ measure trains and evaluates it.
-row or review_row
-    A dictionary describing one model experiment.
-          ↓ rows.append(row) adds that result.
-rows
-    A list containing multiple experiment results.
-          ↓ show(rows) displays the table.
-One row in the result table
-    Represents one model configuration, not one penguin.
-```
-
-The string `"depth=2"` is an experiment name. The actual setting comes from `max_depth=2` supplied to the model. Changing only the name to `"depth=4"` does not change the model.
-
-Check where `measure` obtains its data. When it is defined to use `X_train` and other variables outside the function, it reads those variables. The library is not finding a dataset automatically. In this article's complete code, four data objects are passed to `compare_settings`, and the `measure` defined inside it uses those objects.
-
-Because `measure` already calls `fit`, there is no need to fit the same model immediately before calling it. Calling `fit` again on this decision tree trains it anew rather than adding further learning to the old tree.
-
-### The accuracy function does not need to know the model
-
-`accuracy_score(y_val, val_pred)` takes **actual labels and predictions that have already been computed**. It does not take a model object. With default settings:[^accuracy]
+`accuracy_score` does not receive a model object. It receives actual labels and **predictions that have already been computed**, comparing matching subjects. With default settings:[^accuracy]
 
 $$
-\text{accuracy}=\frac{\text{number of correct predictions}}{\text{number of evaluated samples}}
+\text{accuracy}=\frac{\text{correct predictions}}{\text{evaluated samples}}
 $$
 
-Division converts a count into a fraction of the total. For 67 correct predictions among 69 validation samples:
+Dividing the correct count by the total converts it to a fraction. For 67 correct predictions among 69 validation samples:
 
 $$
 \frac{67}{69}\approx0.971014\approx97.10\%
 $$
 
-Comparing target and prediction arrays with `==` produces `True` or `False` at each position. When summed, `True` contributes 1 and `False` contributes 0, giving the number of correct predictions.
+Comparing target and prediction arrays with `==` produces `True` or `False` at each position. Summing the result counts correct predictions because `True` contributes 1 and `False` contributes 0.
 
-Training accuracy evaluates inputs already used in training. Validation accuracy evaluates the validation inputs not used by that particular `fit`. Their difference can be recorded as `gap = train_accuracy - validation_accuracy`. A gap of 0.05 means **five percentage points**, not a relative five-percent decrease.
+**Training accuracy** is calculated by predicting the training inputs again. **Validation accuracy** is calculated on validation inputs not used to train that model. Their difference can be recorded as `gap = train_accuracy - validation_accuracy`. A gap of 0.05 means five percentage points. A small gap does not establish good performance when both scores are low.
 
-A gap alone does not establish the cause of overfitting. Conversely, a small gap does not make a model good when both scores are low. `accuracy_score` also does not identify the model type and automatically switch to Gini or MSE. Choose the evaluation metric for the target and the evaluation objective.
+## 3. Nodes, leaves, and depth count different things
 
-## 4. A binary tree has at most two children per node, not necessarily two classes
+A **node** is a component of a tree that stores a condition or class distribution. The starting node is the **root**. A **split node** checks a condition and selects another node. A **leaf** has no children and ends the prediction path.
 
-A **node** is a component of the tree that stores a condition or class information. The starting node is the **root**. A **split node** checks a condition and selects a child. A **leaf** has no children and ends the prediction path.
+A **binary tree** gives each node at most two children. Split nodes have two children and leaves have none. “Binary” describes the two-way split, not the number of target classes. A binary tree can classify three or more classes.
 
-A **binary tree** gives each node at most two children. In this decision tree, split nodes have two children and leaves have none. This differs from **binary classification**, which has two target classes. A binary tree can classify three or more classes.
-
-The recorded `tiny_model` has this structure:
+Consider the following tree to understand a prediction path. `x1` is one numerical input feature, and classes 0 and 1 are two target categories. The numbers assigned to nodes are **node IDs** that distinguish individual nodes.
 
 ```text
 node 0: x1 <= 0.5 ?                            depth 0
@@ -161,147 +114,136 @@ node 0: x1 <= 0.5 ?                            depth 0
 ├─ true  → node 1: predict class 0 [leaf]        depth 1
 │
 └─ false → node 2: x1 <= 1.5 ?                  depth 1
-              │
-              ├─ true  → node 3: class 0 [leaf] depth 2
-              │
-              └─ false → node 4: class 1 [leaf] depth 2
+             │
+             ├─ true  → node 3: class 0 [leaf]  depth 2
+             │
+             └─ false → node 4: class 1 [leaf]  depth 2
 ```
 
-Node 1 does not split into nodes 3 and 4. Node 1 is already a leaf; node 2 splits again. The three leaves are nodes 1, 3, and 4. Leaves do not have to occur at the same depth.
+Node 1 is already a leaf. It is node 2 that connects to nodes 3 and 4. The three leaves are nodes 1, 3, and 4; they do not need to have the same depth. Multiple leaves can predict class 0, so **the number of leaves differs from the number of classes**.
 
 | Quantity | Value in this tree | Meaning |
 | --- | --- | --- |
-| Node IDs | 0, 1, 2, 3, 4 | Identifiers for nodes |
+| Node IDs | 0, 1, 2, 3, 4 | Identifiers for individual nodes |
 | Predicted classes | 0, 1 | Target categories |
-| Leaf count | 3 | Number of terminal nodes without children |
+| Number of leaves | 3 | Number of terminal nodes without children |
 | Actual maximum depth | 2 | Number of connections from the root to the deepest leaf |
-| Training sample count | Not determined by this diagram | Number of training observations |
 
-Different leaves can both predict class 0. **Leaf count is neither class count nor sample count.** `leaf 3` means the leaf with node ID 3, not depth 3.
+The number of nodes or leaves does not reveal the number of training samples. Multiple samples can belong to the same leaf.
 
-### Depth starts at zero at the root
+### Depth starts at zero for the root
 
-Depth counts the **connections** traversed from the root. At the root, no connection has been traversed, so depth is zero.
+Depth is the **number of connections** from the root to a node. The root has depth zero because no connection has been crossed yet.
 
-`max_depth=2` permits at most three levels including the root; `max_depth=3` permits four. Each additional depth can double the number of nodes, giving maximum leaf counts of `1 → 2 → 4 → 8`. For a maximum depth $d$, the leaf-count upper bound is $2^d$.
+`max_depth=2` permits up to three levels including the root; `max_depth=3` permits up to four. Each extra depth can split every node into at most two children, so the maximum possible leaf count grows as `1 → 2 → 4 → 8`. For maximum depth $d$, the upper bound is $2^d$ leaves.
 
-`max_depth` is an **allowed upper bound**, whereas `get_depth()` is the **actual result**. Setting a limit of four does not force a tree to reach depth four. `max_depth=None` does not mean splitting forever: depth is unrestricted, but stopping conditions such as pure nodes, the absence of a valid split, and minimum sample requirements remain.[^classifier]
+`max_depth` is an **allowed upper bound**, while `model.get_depth()` returns the **actual maximum depth**. Setting the limit to 4 does not force the model to reach it. `model.get_n_leaves()` returns the actual leaf count.[^classifier]
 
-The counting convention and the parameter's valid values are also distinct. `max_depth` accepts a positive integer or `None`. A root-only fitted tree can have actual depth zero, but that does not mean specifying `max_depth=0`.
+`max_depth=None` means no explicit depth limit. Splitting still stops at pure nodes, where no valid split exists, or when minimum-sample requirements prevent a split. The actual depth can be zero, but the `max_depth` parameter accepts positive integers or `None`.
 
-## 5. Read the predicted class and the prediction path separately
+## 4. Follow the prediction path for one input
 
-Consider the input `[[1, 1]]` used with `tiny_model`. The feature checked along this path is `x1`, whose value is 1.
+Putting `x1=1` into the preceding tree gives this sequence:
 
-| Step | Condition | Result and next operation |
+| Step | Condition | Result |
 | --- | --- | --- |
-| 1 | At node 0, `1 <= 0.5` | False: use the right child, node 2. |
-| 2 | At node 2, `1 <= 1.5` | True: use the left child, node 3. |
-| 3 | Node 3 is a leaf. | Finish prediction using its learned class distribution. |
+| 1 | At node 0, `1 <= 0.5` | False: select right child, node 2. |
+| 2 | At node 2, `1 <= 1.5` | True: select left child, node 3. |
+| 3 | Node 3 is a leaf. | Finish with its stored class distribution. |
 
-“Going right” does not move the original row into another file. It means **selecting the next node to use in the calculation**. Left does not always mean class 0, nor right class 1. Direction comes from the condition; the predicted class comes from information at the reached leaf.
+Moving to a node means **selecting the node used for the next calculation**, not relocating the stored input data. Going left does not always imply class 0. The direction follows the condition; the prediction comes from the destination leaf.
 
-The final recorded line was:
+A class distribution of `{0: 0.5, 1: 0.5}` at node 3 means the two classes have equal proportions there. Without training weights, these are the proportions of training samples reaching that leaf. **It does not mean 50% validation accuracy.** Proportions alone also do not reveal the leaf's sample count.
 
-```text
-leaf 3, class distribution {0: 0.5, 1: 0.5}, prediction 0
-```
+When the highest proportions tie, this classifier selects the earlier class in `classes_`. With class order `[0, 1]`, it predicts 0. For an input whose actual label is 1, that prediction would be incorrect.[^classifier]
 
-The training samples at node 3 had equal class proportions. **These values are not 50% validation accuracy.** Proportions alone also do not reveal how many training samples reached that leaf. For a tie, this classifier chooses the tied class appearing first in `classes_`; here that produces class 0. If the actual label is 1, the prediction is wrong.[^classifier]
+### Predicted classes and node information are different outputs
 
-Conditions and input values can identify the reached leaf. Without that leaf's prediction information, however, the final class cannot be determined.
-
-### Inspection tools return different information
-
-| Tool | What it returns or displays |
+| Operation | What it returns or displays |
 | --- | --- |
 | `export_text(model, ...)` | A string describing the whole tree's conditions and leaf predictions |
 | `model.predict(X)` | A predicted class for each input |
-| `model.apply(X)` | The ID of the leaf reached by each input |
-| `model.decision_path(X)` | A matrix indicating which nodes each input uses |
-| A custom `path_for(...)` | A readable record of conditions and leaf information for one input |
+| `model.predict_proba(X)` | Class probabilities for each input |
+| `model.apply(X)` | The destination leaf's node ID for each input |
+| `model.decision_path(X)` | A matrix showing which nodes each input uses |
 
-Default `export_text` output is not a trace for one input or a table of training sample counts. An `[3]` returned by `apply` does not mean predicted class 3.[^structure]
+An `apply` result of `[3]` identifies **leaf node 3**, not prediction class 3. `predict_proba` returns shape `(number of samples, number of classes)`, with class order given by `classes_`.[^structure]
 
-`path_for` is a custom explanation function, not a standard function for finding a filesystem path. It receives `feature_names` to attach readable names to the stored feature indices. These names must follow training-column order. Supplying display names does not change the fitted split conditions.
-
-Why does a false test of `1 <= 0.5` appear as `1 > 0.5` in a trace? The expression `relation = "<=" if value <= threshold else ">"` prints the **branch actually taken**. The model did not change its threshold.
-
-This explanation assumes no missing values. `NaN` is a special value that can represent missing data; a simple `<=` comparison should not be assumed to describe the model's actual missing-value routing. Rounded display values also require care near thresholds. The complete code's `path_for` accepts only one finite-valued input row and verifies that its calculated leaf agrees with `apply`.
-
-### Check position and dimensionality when selecting a row
-
-When the full prediction array `val_pred` already exists, select the same position to inspect one subject. Re-prediction is unnecessary as long as the model has not been refitted and validation rows have not been reordered.
-
-| Selection | Return shape and type | Meaning |
-| --- | --- | --- |
-| `X_val.iloc[1]` | Series, `(4,)` | Values from the second row |
-| `X_val.iloc[1:2]` | DataFrame, `(1, 4)` | The second row retained as two-dimensional input |
-| `val_pred[1:2]` | NumPy array, `(1,)` | One corresponding prediction retained as an array |
-
-`.iloc` selects by integer **position**. Positions start at zero, and slices include the start but exclude the end. Thus `[1:2]` selects the second row. In this exercise, `predict` takes a two-dimensional `(number of samples, number of features)` input, so one penguin remains shaped `(1, 4)`.[^indexing]
-
-For a pandas Series with integer index labels, `y_val[1]` selects index label 1. Use `y_val.iloc[1]` for the second position. For a NumPy array, `[1]` selects the second position. Original row identifiers and current array positions need not be equal.
-
-### decision_path uses samples as rows and node IDs as columns
-
-Used nodes are marked 1 and unused nodes 0. The path `0 → 2 → 3` produces:
+In the `decision_path` matrix, rows are input samples and columns are node IDs. A used node is marked 1; an unused node is marked 0. The path `0 → 2 → 3` produces:
 
 ```text
-node ID       0  1  2  3  4
-used         [1, 0, 1, 1, 0]
-matrix shape (1, 5)
+node ID        0  1  2  3  4
+node used     [1, 0, 1, 1, 0]
+matrix shape  (1, 5)
 ```
 
-A matrix with many zeros is **sparse**. `decision_path` returns CSR storage, which primarily records nonzero values and their positions. For a one-sample query, `.indices` identifies the nodes recorded for that row. Do not interpret the entire `.indices` array from multiple samples as one sample's path. A sparse matrix's column-index list is not, in general, a chronological execution log.[^csr]
+A matrix with many zeros is a **sparse matrix**. `decision_path` uses the CSR format, which stores nonzero values and their locations. For one input, `.indices` identifies the nodes recorded in that row. With multiple inputs, the entire `.indices` array must not be read as one input's path. The column-index list is not, by itself, a chronological execution log.[^csr]
 
-`.toarray()` expands the matrix into an ordinary array. This is convenient for a small example but can consume substantial memory for a large matrix. Child connections are available through `model.tree_.children_left[node_id]` and `model.tree_.children_right[node_id]`. A child ID of `-1` means no child in that direction. Writing only `children_right[0]` will not work unless that standalone variable has been defined.
+`.toarray()` expands it into an ordinary array. This is convenient for small examples but can consume substantial memory for large matrices. Child connections can be inspected through `model.tree_.children_left[node_id]` and `children_right`. A child ID of `-1` indicates no child.
 
-## 6. Gini impurity measures how classes are mixed
+### Keep even a single input two-dimensional
 
-To choose a split, the model needs a way to compare the resulting groups. **Gini impurity** describes whether actual labels at a node concentrate in one class or mix across classes. It is not an error rate computed by comparing predictions with targets.
+pandas `.iloc` selects by integer **position**. Positions begin at zero, and slices include their start but exclude their end. Selecting the second sample from validation data with four features gives these differences:[^indexing]
 
-First define the symbols. $K$ is the number of classes; $k$ identifies a class from 0 through $K-1$. $n_k$ is the number of samples in class $k$ at the current node, and $n$ is that node's total sample count. Assume $n>0$ and no separate sample or class weights.
+| Selection | Result | Shape |
+| --- | --- | --- |
+| `X_val.iloc[1]` | A Series containing the second row's values | `(4,)` |
+| `X_val.iloc[1:2]` | A DataFrame with the second row only | `(1, 4)` |
+| `val_pred[1:2]` | An array with the corresponding prediction | `(1,)` |
 
-The class proportion $p_k$ and Gini impurity $G$ are:
+`predict` expects a two-dimensional input shaped `(samples, features)`, so keep one row as `(1, 4)`. Once all predictions have been computed, the matching prediction can be selected directly, provided the model has not been refitted and the input order has not changed.
+
+A pandas Series index label is different from an array position. In a Series with integer labels, `y_val[1]` selects label 1, while `y_val.iloc[1]` selects the second position. In a NumPy array, `[1]` selects the second position.
+
+The earlier path calculation assumes no missing values. When an input contains `NaN`, or displayed thresholds have been rounded, do not infer the actual branch solely from a displayed comparison. Check the model's inspection results.
+
+## 5. Gini impurity measures class mixing
+
+Prediction followed stored conditions. We now return to training and ask **which conditions should be stored**. The model needs a numerical criterion to compare the class composition produced by candidate splits.
+
+**Gini impurity** measures whether actual labels at a node are concentrated in one class or mixed across several. It is not an error rate computed by comparing predictions with targets.
+
+Let $K$ be the number of classes and $k$ a class index from 0 through $K-1$. Let $n_k$ be the number of class-$k$ samples at the current node, and $n$ its total sample count. Assume $n>0$ and no sample or class weights. The symbol $\sum$ means to add the specified terms.
+
+The class proportion $p_k$ and Gini impurity $G$ are:[^tree]
 
 $$
 p_k=\frac{n_k}{n},\qquad
 G=1-\sum_{k=0}^{K-1}p_k^2
 $$
 
-The summation symbol means to add the specified terms. **There is one term per class, not one term per sample.** Two classes give two terms; three classes give three. The formula is not restricted to binary classification.[^tree]
+**There is one term per class, not one term per sample.** Two classes produce two terms; three classes produce three.
 
-### Why square the proportions instead of just adding them?
+### Why square the proportions instead of simply adding them?
 
-Class proportions always sum to one. Their sum alone cannot distinguish a distribution dominated by one class from an even mixture.
+Class proportions always sum to 1. Their sum alone cannot distinguish a mostly single-class node from a balanced mixture.
 
-Squaring multiplies a number by itself. When $0<p<1$, $p^2<p$, so the probability itself becomes smaller. For example, $9/10=90/100$, while its square is $81/100$. Both numerator and denominator change.
+Squaring multiplies a value by itself. For $0<p<1$, $p^2<p$, so the proportion itself becomes smaller. For example, $9/10=90/100$, but its square is $81/100$. Both numerator and denominator change.
 
-However, squaring increases the **relative ratio** of a larger positive number to a smaller one. If $a>b>0$:
+At the same time, the relative ratio between unequal positive numbers becomes more pronounced. For $a>b>0$:
 
 $$
 \frac{a^2}{b^2}=\left(\frac{a}{b}\right)^2>\frac{a}{b}
 $$
 
-Because $a/b>1$, squaring that ratio makes it larger. This does not claim that the absolute difference between two values always grows.
+Because $a/b>1$, squaring that ratio makes it larger. This is different from claiming that the absolute difference between the two numbers always grows.
 
-Compare distributions whose proportions sum to one:
+Compare class proportions constrained to sum to 1:
 
-| Class proportions | Sum of squared proportions | Gini after subtracting from one |
+| Class proportions | Sum of squares | Gini: one minus that sum |
 | --- | --- | --- |
 | `[0.9, 0.1]` | $0.81+0.01=0.82$ | $0.18$ |
 | `[0.5, 0.5]` | $0.25+0.25=0.50$ | $0.50$ |
 
-The more concentrated distribution has the larger sum of squares. Subtracting it from one makes the impurity smaller when there is less mixing. A pure node has Gini zero. For a fixed $K$, the maximum occurs at equal class proportions and equals $1-K(1/K)^2=1-1/K$. **0.5 is the maximum for two classes, not for every classification problem.**
+The more concentrated distribution has the larger sum of squares. Subtracting it from 1 gives a smaller score for less mixing. Gini is zero when every sample belongs to one class. With $K$ equally represented classes, its maximum is $1-K(1/K)^2=1-1/K$. Thus **0.5 is the maximum for two classes**, not for every classification problem.
 
-**MSE, mean squared error**, averages squared prediction errors. Both MSE and Gini use properties of squaring, but square different quantities: prediction errors versus class proportions. Squaring is also not the only possible basis for an impurity measure. Entropy is another criterion for the same purpose.
+**Mean squared error, or MSE**, also uses squaring, but squares the difference between predictions and actual values. Gini squares class proportions. Using the same operation does not make them evaluations of the same quantity. Gini is also not the only impurity criterion; entropy provides an alternative.
 
-### Calculate Gini using six fictional samples
+### Split six fictional samples
 
-In A01, `x1` and `x2` are numeric feature names; labels 0 and 1 identify two classes. No physical units or penguin-species meanings are assigned to this fictional table.
+The following fictional data make the split calculation explicit. `x1` and `x2` are numerical features without assigned physical units; 0 and 1 are the two target categories. We will calculate splits of this table separately from the illustrative prediction tree above.
 
-| Sample | x1 | x2 | Actual class |
+| Sample ID | x1 | x2 | Actual class |
 | --- | --- | --- | --- |
 | 1 | 1 | 1 | 0 |
 | 2 | 2 | 2 | 0 |
@@ -310,9 +252,9 @@ In A01, `x1` and `x2` are numeric feature names; labels 0 and 1 identify two cla
 | 5 | 5 | 5 | 1 |
 | 6 | 6 | 6 | 1 |
 
-The condition `x2 <= 2.5` puts samples 1 and 2 on the left, and samples 3, 4, 5, and 6 on the right. Listing counts in class-0, class-1 order gives `[2, 0]` on the left and `[1, 3]` on the right.
+For `x2 <= 2.5`, samples 1 and 2 go left; samples 3, 4, 5, and 6 go right. Writing counts in class order 0, 1 gives `[2, 0]` on the left and `[1, 3]` on the right.
 
-The total right-hand count, 4, is different information from class counts `[1, 3]`. Calculating Gini requires the class composition.
+The right side's total is 4, but Gini requires the **per-class counts `[1, 3]`**:
 
 $$
 G_R
@@ -322,19 +264,19 @@ G_R
 =0.375
 $$
 
-The fractions $1/4$ and $3/4$ describe classes 0 and 1, not probabilities defined as correct and incorrect. The three class-1 samples are already represented by the numerator of $3/4$. Adding $(3/4)^2$ three times would count the same class proportion repeatedly.
+The fractions $1/4$ and $3/4$ are the proportions of classes 0 and 1. The three class-1 samples are already accounted for by the numerator of $3/4$. Adding $(3/4)^2$ three times would count the same class proportion repeatedly.
 
-Both left-hand samples belong to class 0:
+Both left-hand samples are class 0, so:
 
 $$
 G_L=1-\left[\left(\frac22\right)^2+\left(\frac02\right)^2\right]=0
 $$
 
-## 7. Weight each child's impurity by its sample count
+## 6. Weight child impurities by their sample counts
 
-If the children have different sizes, adding their two Gini values and dividing by two gives a two-sample child the same influence as a four-sample child. A **weighted average** accounts for how much each value should contribute.
+There are two samples on the left and four on the right. Adding the two Gini values and dividing by 2 would give equal influence to differently sized groups. Evaluating the overall mixture requires accounting for how much data each group contains.
 
-Let $n_L$ and $n_R$ be the child sample counts and $n=n_L+n_R$ the parent's count. Let $G_L$ and $G_R$ be the child impurities. Counting each child's impurity once for each sample in that child and dividing by the total gives:
+A **weighted average** incorporates the appropriate contribution of each value. Let $n_L$ and $n_R$ be the left and right sample counts, with $n=n_L+n_R$. Weight the child impurities $G_L$ and $G_R$ by those counts and divide by the total:
 
 $$
 \text{weighted Gini}
@@ -342,9 +284,9 @@ $$
 =\frac{n_L}{n}G_L+\frac{n_R}{n}G_R
 $$
 
-Division calculates each child's share of the parent. Multiplication applies that share to the child's impurity. Addition combines the two contributions.
+Division determines each child's share of the data. Multiplication applies that share to its impurity. Addition combines the contributions.
 
-For the two left-hand and four right-hand A01 samples:
+For the six samples just partitioned:
 
 $$
 \text{weighted Gini}
@@ -352,27 +294,27 @@ $$
 =0.25
 $$
 
-The calculation order is **class counts → class proportions → child Gini values → child sample shares → weighted average**. Substituting $(1/16+9/16)$ directly into the right-hand term uses the sum of squares, not Gini. First calculate $1-(1/16+9/16)$.
+The order is **class counts → class proportions → child impurities → sample-weighted average**. The right-hand term uses Gini, not the sum of squared proportions $1/16+9/16$. Subtract that sum from 1 first.
 
-For comparison, `x2 <= 3.5` produces class counts `[2, 1]` and `[1, 2]`. Both children have Gini $1-(4/9+1/9)=4/9$. With three samples per child, their weighted average is also $4/9\approx0.4444$.
+Another candidate, `x2 <= 3.5`, gives `[2, 1]` on the left and `[1, 2]` on the right. Both impurities are $1-(4/9+1/9)=4/9$, and both children contain three samples. Their weighted average is also $4/9\approx0.4444$.
 
-For the same parent, **`x2 <= 2.5`, scoring 0.25, reduces mixing more than the candidate scoring 0.4444**. This compares training-time split criteria, not validation accuracy.
+For the same parent, **`x2 <= 2.5`, with 0.25, reduces mixing more than the candidate with 0.4444**. This compares training split criteria, not validation accuracy.
 
-## 8. Compare distinct partitions instead of infinitely many real thresholds
+## 7. Compare distinct partitions rather than infinitely many real numbers
 
-For a continuous number, we could keep inventing thresholds such as 2.1, 2.11, and 2.111. A decision tree does not test every real number. It compares **ways to partition the current training samples differently**.
+A threshold could be changed from 2.1 to 2.11 to 2.111 indefinitely. A decision tree does not test every real number. It compares **ways of partitioning the current training samples differently**.
 
-Assume a numeric feature, no missing values, and the default `splitter="best"`. Sorting A01's `x2` gives `[1, 2, 3, 4, 5, 6]`. Both `x2 <= 2.1` and `x2 <= 2.9` put values 1 and 2 on the left, producing identical training partitions and impurity.
+Consider a numerical feature without missing values and the default `splitter="best"`. Sorting the table's `x2` values gives `[1, 2, 3, 4, 5, 6]`. Both `x2 <= 2.1` and `x2 <= 2.9` send values 1 and 2 left, producing the same training partition and impurity.
 
-For distinct adjacent values $a<b$, thresholds satisfying $a\le t<b$ in the condition $x\le t$ yield the same training partition. Their midpoint $(a+b)/2$ is commonly used as a representative. With $m$ distinct values, there are at most $m-1$ numeric boundaries producing nonempty children. The width of the numeric range does not determine that count.
+For distinct adjacent values $a<b$, thresholds satisfying $a\le t<b$ produce the same training partition under $x\le t$. The midpoint $(a+b)/2$ is usually used as a representative. With $m$ distinct values, there are at most $m-1$ boundaries that leave both sides nonempty.
 
-But **identical training partitions do not guarantee identical predictions for every future input**. A new value between 2.1 and 2.9 can go to different children depending on the chosen threshold.
+Identical training partitions do not imply identical predictions for every future input. A new value between 2.1 and 2.9 may go to a different side depending on which threshold was stored.
 
-### Targets must follow their samples during sorting
+### Move the boundary and update counts
 
-Sorting A01 by `x2` changes sample order to `1, 2, 4, 3, 5, 6`. Labels must therefore become `[0, 0, 1, 0, 1, 1]`. Sorting only the feature while keeping the original target order would calculate a different dataset.
+Sorting by `x2` changes the sample order to `1, 2, 4, 3, 5, 6`. Labels must follow those samples, becoming `[0, 0, 1, 0, 1, 1]`. Sorting the feature while leaving labels unchanged would calculate a different dataset.
 
-Start with left counts `[0, 0]` and right counts `[3, 3]`. As the boundary moves right, update only the class count of the newly transferred sample:
+Start with left counts `[0, 0]` and right counts `[3, 3]`. Each time the boundary moves right, update the class count of the sample newly added to the left.
 
 | Threshold | Left class counts | Right class counts | Weighted Gini |
 | --- | --- | --- | --- |
@@ -382,42 +324,42 @@ Start with left counts `[0, 0]` and right counts `[3, 3]`. As the boundary moves
 | 4.5 | `[3, 1]` | `[0, 2]` | 0.2500 |
 | 5.5 | `[3, 2]` | `[0, 1]` | 0.4000 |
 
-This avoids recounting all sample labels from the beginning for every candidate. The cost of evaluating class statistics does not disappear. The implementation also applies additional candidate restrictions and optimizations; sorting is not necessarily performed only once for the entire training procedure.[^implementation]
+This avoids recounting all labels from scratch for every candidate. Computing class-dependent scores still has a cost. The implementation also applies further constraints and optimizations, and sorting does not occur only once throughout the entire training process.[^implementation]
 
-This table compares candidates for **`x2` alone**. The full model compares the feature-and-threshold combinations it considers. A01 also offers `x1 <= 3.5`, which produces `[3, 0]` and `[0, 3]`, giving weighted Gini zero. The best score of 0.25 for `x2` therefore is not the best score across all features.
+The table compares candidates for `x2` alone. The model compares the **feature-and-threshold combinations** it examines. On the same data, `x1 <= 3.5` creates `[3, 0]` and `[0, 3]`, giving weighted Gini 0. The best score of 0.25 for `x2` is therefore not the best across all features.
 
-After selecting a condition at the current node, the method repeats in the children. It does not compare all possible future tree structures and guarantee a global optimum.[^tree]
+The tree chooses a condition at the current node, then repeats the process at its children. It does not exhaustively compare every possible future tree structure to guarantee a global optimum.[^tree]
 
-## 9. Entropy is not a second evaluation of Gini
+## 8. Entropy and information gain provide another split criterion
 
-**Entropy** is another measure of uncertainty in class composition. `criterion="gini"` uses Gini; `criterion="entropy"` compares splits using entropy reduction. The model is not first calculating Gini and then grading it with entropy.
+**Entropy** is another measure of uncertainty in class composition. `criterion="gini"` compares splits using Gini, while `criterion="entropy"` compares them by entropy reduction. These are not two stages in which entropy grades an already calculated Gini score.
 
-A **logarithm** is the inverse of exponentiation. $\log_2(p)=r$ means $2^r=p$. Define the **information content** of an outcome with probability $p$ as:
+To understand entropy, first connect logarithms with information. A **logarithm** reverses exponentiation: $\log_2(p)=r$ means $2^r=p$. Define the **information content** of an outcome with probability $p$ as:[^entropy]
 
 $$
 I(p)=-\log_2(p),\qquad 0<p\le1
 $$
 
-A certain outcome has $p=1$ and information content zero. Rarer outcomes have larger information content. For $0<p<1$, the logarithm is negative, so the minus sign makes the quantity nonnegative. When independent outcomes have a joint probability expressed as a product, logarithms make their information content additive:
+A certain outcome has $p=1$ and information content zero; rarer outcomes have more information. For $0<p<1$, the logarithm is negative, so the minus sign makes information nonnegative. When independent outcomes have a joint probability expressed as a product, logarithms express their information as a sum:
 
 $$
 -\log_2(pq)=-\log_2(p)-\log_2(q)
 $$
 
-Entropy $H$ is the **weighted average** of class information content using class proportions. Retaining the same $p_k$ and class indices:[^entropy]
+Entropy $H$ is the **weighted average** of class information, weighted by each class's proportion. Using the previously defined $p_k$ and class indices:
 
 $$
 H=\sum_{k=0}^{K-1}p_kI(p_k)
 =-\sum_{k=0}^{K-1}p_k\log_2(p_k)
 $$
 
-The logarithm converts probability into information content. Multiplying by proportions and adding computes its average. A term with $p_k=0$ contributes zero; do not evaluate `log2(0)` directly. Entropy is not merely “Gini with the square replaced by a logarithm.”
+The logarithm converts probability to information. Multiplication by proportions and summation average that information. A term with $p_k=0$ contributes zero; do not evaluate `log2(0)` directly.
 
-### Information gain is a before-and-after difference
+### Information gain is the difference before and after splitting
 
-**Information gain** subtracts the children's weighted entropy from the parent's entropy. Greater uncertainty reduction gives greater gain.
+**Information gain** is parent entropy minus the sample-weighted average of child entropies. It is larger when the split removes more uncertainty.
 
-A01's parent counts are `[3, 3]`. Both proportions are $1/2$, and $\log_2(1/2)=-1$, so parent entropy is 1. For `x2 <= 2.5`, the left child `[2, 0]` has entropy zero, while `[1, 3]` on the right gives:
+The six-sample parent has counts `[3, 3]`. Both class proportions are $1/2$, and $\log_2(1/2)=-1$, so parent entropy is 1. For `x2 <= 2.5`, the left child `[2, 0]` has entropy zero. The right child `[1, 3]` has:
 
 $$
 H_R=-\left[\frac14\log_2\left(\frac14\right)+\frac34\log_2\left(\frac34\right)\right]
@@ -431,35 +373,33 @@ Weighted entropy is $(2/6)\times0+(4/6)\times0.811278\approx0.540852$. Informati
 | `x2 <= 3.5` | 0.4444 | 0.9183 | 0.0817 |
 | `x2 <= 2.5` | 0.2500 | 0.5409 | 0.4591 |
 
-Lower post-split Gini and entropy are better; higher information gain is better. Both criteria prefer the same candidate here, but need not always choose the same split on other data.
+Lower post-split Gini or entropy is better; higher information gain is better. Both criteria prefer the same candidate in this comparison, but they do not always select the same conditions on other data.
 
-## 10. Depth limits and pruning reduce trees in different ways
+## 9. Depth limits and pruning simplify trees differently
 
-A **hyperparameter** specifies a training rule or constraint. `max_depth` and `ccp_alpha` are hyperparameters. The actual split features, thresholds, connections, and class distributions are determined from data by `fit`.
+A **hyperparameter** specifies how training operates or what limits it obeys. `max_depth` and `ccp_alpha` are hyperparameters. Actual split features, thresholds, connections, and class distributions are learned from data by `fit`.
 
-`max_depth` limits how deep a tree may grow. **Pruning** removes the structure below a split node and makes that node a leaf. It does not delete the original training records.
+`max_depth` limits growth while the tree is being built. **Pruning** removes the structure below a split node and turns that node into a leaf. It does not delete the original training samples.
 
-`ccp_alpha` controls **cost-complexity pruning**. This method assigns a cost to leaf count as well as training impurity. Let $T$ denote a candidate tree, $R(T)$ its leaf impurities weighted by their shares of the entire training set, and $L(T)$ its leaf count. Let $\alpha$ be the complexity cost per leaf.
+`ccp_alpha` controls **cost-complexity pruning**. This method assigns a cost to leaf count as well as training impurity. Let $T$ be a candidate tree, $R(T)$ the leaf impurities summed with weights based on their shares of all training samples, and $L(T)$ the number of leaves. Let $\alpha$ be the complexity cost per leaf.[^pruning]
 
 $$
 \text{cost}(T)=R(T)+\alpha L(T)
 $$
 
-Charging each leaf the same cost $\alpha$ produces the multiplication $\alpha L(T)$. Adding it to training impurity gives the quantity used to compare trees. Starting from the same tree, increasing $\alpha$ penalizes larger leaf counts more strongly and favors simpler trees.[^pruning]
+Adding the same cost $\alpha$ for every leaf produces the multiplication $\alpha L(T)$. Adding training impurity gives the total comparison criterion. For the same starting tree, larger $\alpha$ places more cost on a many-leaf structure and favors simpler trees.
 
-The default `ccp_alpha=0` does not perform this pruning. `0.01` does not mean removing 1% of branches, lowering accuracy by 1%, or setting a learning rate. Structure changes at particular boundaries, so a small alpha increase may leave the result unchanged.
+`ccp_alpha=0` does not perform this pruning by default. Setting it to 0.01 sets alpha in the cost expression to 0.01; it does not mean removing one percent of branches. Structure changes at particular boundaries, so a small increase can leave the result unchanged.
 
-**`fit` does not inspect validation accuracy to decide which branches to remove.** Pruning uses the cost criterion. Comparing alphas on validation data is a separate experiment outside that fitting operation.
+**Training does not inspect validation accuracy to decide which branches to remove.** Pruning uses training impurity and leaf count. Comparing alpha candidates on validation data happens outside that procedure.
 
-## 11. Read what an experiment gains and loses
+## 10. Compare validation accuracy together with leaf count
 
-In a loop, `[1, 2, 4, None]` is the full candidate list, while `depth` is the single candidate used in the current iteration. Pass `max_depth=depth`, not the whole list.
+We now move from the six calculation samples to a penguin classification experiment. It uses 204 training samples, 69 validation samples, and four features. The data split and `random_state=41` remain fixed while the settings change.
 
-Create a fresh model each iteration, obtain its result from `measure`, and store it with `rows.append(row)`. `append` changes the existing list and returns `None`, so do not write `rows = rows.append(row)`. The number of elements in the result list counts experiments, not validation samples.
+These tables are a case study in interpreting recorded experiment results. Original rows and split information are not included, so the fictional-data code in Section 12 does not reproduce these scores.
 
-### The recorded penguin depth experiment
-
-The following results used the same training and validation data and `random_state=41`:
+### Changing the depth limit
 
 | Depth limit | Actual depth | Leaves | Validation accuracy |
 | --- | --- | --- | --- |
@@ -468,11 +408,11 @@ The following results used the same training and validation data and `random_sta
 | 4 | 4 | 9 | 0.971014 |
 | `None` | 4 | 9 | 0.971014 |
 
-Among the tested candidates, depth 4 and `None` achieved the highest validation accuracy. Removing the depth limit still produced actual depth 4. This means **allowing more depth did not make this fitted tree deeper**, not that depths greater than four are useless for every dataset.
+Limits of 4 and `None` tie for the best validation accuracy among these candidates. Removing the explicit limit still produces a tree of depth 4. On these data, permitting more depth did not make the tree deeper. This does not imply that depth 4 is sufficient for every problem.
 
-In unweighted, single-target classification, exactly 100% training accuracy means that every leaf correctly assigns one class to all training samples reaching it. Those leaves therefore have no class mixture. But the model did not stop because it decided that roughly 97% validation accuracy was sufficient. Stopping is determined from the node's training samples and training constraints.
+For single-output classification without sample or class weights, exactly 100% training accuracy means that each leaf correctly predicts all training samples reaching it with one class. Those leaves contain no class mixture. The model did not stop because validation accuracy was about 97%; it stopped according to training data and stopping conditions.
 
-### The recorded penguin pruning experiment
+### Changing the pruning alpha
 
 | Alpha | Actual depth | Leaves | Training accuracy | Validation accuracy |
 | --- | --- | --- | --- | --- |
@@ -482,399 +422,237 @@ In unweighted, single-target classification, exactly 100% training accuracy mean
 | 0.02 | 2 | 4 | 0.965686 | 0.913043 |
 | 0.05 | 2 | 3 | 0.955882 | 0.913043 |
 
-Changing alpha from 0 to 0.01 reduced the number of leaves from nine to six. With 69 validation samples, we can translate the accuracy values back into counts:
+Increasing alpha from 0 to 0.01 reduces leaves from 9 to 6. Convert validation accuracy back to counts:
 
 $$
 0.971014\approx\frac{67}{69},\qquad
 0.927536\approx\frac{64}{69}
 $$
 
-**The model lost three leaves, but also made three fewer correct validation predictions.** The accuracy difference is $(3/69)\times100\approx4.35$ percentage points. Rather than simply calling pruning a failure, describe the observed tradeoff: a simpler tree with lower accuracy on this validation set.
+**The tree loses three leaves, but also makes three fewer correct validation predictions.** The accuracy difference is approximately $(3/69)\times100=4.35$ percentage points. Structure became simpler while accuracy on this validation set decreased.
 
-Alphas 0 and 0.005 tied for the highest validation accuracy in this table. Zero was not the unique winner. Alphas 0.02 and 0.05 also tied on validation accuracy, while 0.05 used fewer leaves, providing a reason to prefer simplicity at the same observed performance.
+Alpha 0 and 0.005 tie for the highest validation accuracy; zero is not uniquely best. Alpha 0.02 and 0.05 also tie in validation accuracy, but 0.05 has fewer leaves. Between those two candidates, there is a basis for preferring the simpler model at the same observed validation performance.
 
-Equal depth, leaf count, and accuracy do not prove that every split condition is identical. Summary statistics and the complete tree structure are different information.
+Matching depth, leaf count, and accuracy does not prove that all split conditions are identical. Summary metrics and the complete tree structure are different information.
 
-### State the scope of configuration choices
+### Do not generalize beyond a single validation result
 
-**Overfitting** occurs when detailed rules fitted to training data do not work well on new data. This is why 100% training accuracy does not guarantee 100% accuracy on future inputs.
+**Overfitting** occurs when detailed rules adapted to training data do not work well on new data. This is why 100% training accuracy does not guarantee 100% accuracy on new samples. A training-validation gap alone does not establish the cause either.
 
-With 69 validation samples, one additional correct prediction changes accuracy by approximately $(1/69)\times100=1.45$ percentage points. Do not treat a single observed score as a fixed measurement of ability.
+With 69 validation samples, one extra correct prediction changes accuracy by roughly $(1/69)\times100=1.45$ percentage points. Check whether the result holds under other appropriate splits.
 
-**Cross-validation** repeatedly evaluates a model while changing which data are used for training and evaluation according to a chosen splitting scheme. `GridSearchCV` compares combinations of candidate settings in this way. Time-ordered observations or repeated records of the same subject require splits appropriate to actual use. Repeatedly adjusting settings after looking at test scores uses the test set for selection too.[^selection]
+**Cross-validation** repeatedly changes the portions used for training and evaluation. `GridSearchCV` compares candidate setting combinations this way. Time-ordered data and repeated observations of the same subject require splits that reflect actual use. Repeatedly changing settings after inspecting test scores also turns the test set into selection data.[^selection]
 
-`cost_complexity_pruning_path(X_train, y_train)` calculates pruning boundaries for the training data and settings. It returns a **Bunch object**, which groups named results; `ccp_alphas` is its array of candidate alpha values. It does not directly return the alpha with the highest validation accuracy. Candidates still need separate training and evaluation, and changing settings such as depth limits can change the candidate boundaries.[^pruning]
+Candidate alphas can be calculated directly. `cost_complexity_pruning_path(X_train, y_train)` computes pruning boundaries for the supplied training data and settings; `ccp_alphas` in the result contains the candidate array. It does not return the alpha with the best validation accuracy. Candidates must be trained and evaluated separately, and changing other settings such as depth can change the candidates.[^pruning]
 
-The scope of this experiment's conclusion is:
+For this experiment, prioritizing validation accuracy favors alpha 0 or 0.005 among the tested candidates. That conclusion is limited to the current split and candidate set, not all possible alphas.
 
-> Prioritizing current validation accuracy, `ccp_alpha=0` or `0.005` is a leading choice among the tested candidates. Alpha `0.01` reduced the tree to six leaves but lowered validation accuracy to about 92.75%. This does not establish an optimum over all possible alphas; the result should also be checked with other appropriate splits.
+## 11. Feature importance describes contribution within the current tree
 
-## 12. Feature importance describes this tree's contribution, not causal strength
+`feature_importances_` measures **feature contribution to impurity reduction**. Each split's impurity reduction is weighted by the node's share of training samples. Contributions are summed for each feature, then divided by the total contribution across features to form relative proportions.[^importance]
 
-In this exercise, `feature_importances_` reports **importance based on impurity reduction**. It weights each split's reduction by the share of training samples reaching that node, adds the contributions of splits using the same feature, and normalizes by total feature contribution.
+If no impurity reduction occurs, every value can be zero. Do not assume the sum must always be one. This is an attribute rather than a method, so read `model.feature_importances_` without parentheses.
 
-When there is no impurity reduction, importance values can all be zero. Do not assume that their sum must always be one. These values are neither validation accuracies nor causal effects.[^importance]
+For example, if `flipper_length_mm` ranks highest, splits using flipper length contributed most to weighted impurity reduction in the current tree. The suffix `mm` denotes millimeters.
 
-For example, if `flipper_length_mm` has the largest importance, read it as: “Splits using flipper length contributed the most to weighted impurity reduction in this fitted tree.” The suffix `mm` indicates millimeters.
-
-| Interpretation | Why it is not supported |
+| Interpretation | Why the importance does not establish it |
 | --- | --- |
-| Importance 0.55 means this feature alone predicts 55% correctly. | This is not validation accuracy from a feature-only model. |
-| Removing the feature will reduce accuracy by 55%. | No removal, retraining, and evaluation have been performed. |
-| Increasing the feature value leads to class 1. | A sum of reductions does not encode the direction of prediction changes. |
-| Flipper length causes the penguin species. | No intervention changing flipper length has established a causal effect. |
+| Importance 0.55 means this feature alone predicts 55% correctly. | It is not validation accuracy using that feature alone. |
+| Removing this feature lowers accuracy by 55%. | It does not measure retraining after feature removal. |
+| Increasing the feature makes the prediction class 1. | Importance does not encode prediction direction. |
+| The feature causes the penguin's species. | Importance does not establish a real-world causal effect. |
 
-Inspecting conditions and input-specific predictions can show how the model responds, but that response is not automatically a real-world causal effect. This does not mean that causal analysis is impossible; it means **this importance measure alone does not establish causality**.
+Conditions and predictions for individual inputs can show how the model responds. That response is still different from a causal relationship in the world.
 
-An importance of zero means that the feature received no impurity-reduction contribution in this model. It often means the feature was unused, but it could occur in a zero-reduction split. Inspect feature indices in `model.tree_.feature` to check actual usage.
+An importance of zero means no impurity-reduction contribution is assigned to that feature in this model. Often the feature is unused, but it can also appear in a split with zero reduction. Actual use can be checked through feature indices in `model.tree_.feature`.
 
-This importance measure can favor features with many distinct values. Similar features may share contributions or concentrate them in one feature. To ask whether a feature helps validation performance, retrain without it or evaluate how the score changes when its validation values are shuffled. Neither procedure automatically proves causality.[^importance]
+Impurity-based importance can favor features with many distinct values. Features carrying similar information may share contribution or concentrate it in one of them. To investigate validation usefulness, retrain without a column or separately measure the score change when its validation values are shuffled. These checks do not automatically establish causality either.[^importance]
 
-### Pair names with zip, then sort with sorted
+### Match feature names in training-column order
 
-`zip(feature_names, importance)` returns an **iterator** producing **tuples** from corresponding positions. A tuple groups values such as `(feature_name, importance)`; an iterator supplies items one at a time. Use `list(...)` to collect a completed list.
+Values in `feature_importances_` follow the training-column order. `zip(feature_names, importance)` creates an **iterator** that yields corresponding values as **tuples**. Collecting them with `list(...)` produces `[(feature name, importance), ...]`.
 
-`zip` does not understand the meanings of names. Names must follow training-column order. In Python 3.10 or later, `strict=True` raises an error for unequal lengths. Default `zip` stops when the shorter input ends.[^python]
+`zip` does not match names semantically. In Python 3.10 or later, `strict=True` raises an error for unequal lengths, but it cannot check whether names are in the correct order.[^python]
 
-`sorted(pairs, key=lambda pair: pair[1], reverse=True)` returns a **new list** in descending importance order. `pair` is one tuple, `pair[0]` is its name, and `pair[1]` its importance. `lambda pair: pair[1]` is a small function extracting the sorting key; `reverse=True` requests descending order.
+`sorted(pairs, key=lambda pair: pair[1], reverse=True)` returns a new list ordered from highest importance to lowest. `pair` is one tuple; `pair[0]` is the name and `pair[1]` the importance. `lambda pair: pair[1]` is a short function that supplies the sort key. The sorted order is not necessarily the original training-column order.
 
-Sorted output is not the original feature order. A `zip` iterator is also consumed: after collecting it fully once, a second `list(...)` call on that same iterator has no items left. Printed `np.float64(...)` indicates a NumPy numeric type, not another evaluation metric.
+## 12. Run split calculations and model inspection on six samples
 
-## 13. Connect the calculations and inspection with complete Python code
+The following code starts with the fictional dataset in Section 5 and runs Gini and entropy calculations, threshold comparisons, model training, and prediction. It requires Python 3.10 or later with NumPy, pandas, and scikit-learn.
 
-The code below includes every A01 data row and all function definitions. It calculates Gini, entropy, and threshold scores, then trains an A01-specific tree and inspects its path and importance. **Accuracy calculated on the same six A01 training samples is training accuracy, not validation performance.**
+`proportions`, `gini`, `entropy`, and `compare_settings` are functions defined below. Their inputs and outputs are:
 
-The condition `x1 <= 3.5` separates the classes completely, producing actual depth 1 and two leaves. That does not contradict the upper bound `max_depth=2`. The second sample uses path `0 → 1`, not the recorded `tiny_model` path `0 → 2 → 3`.
+| Function | Input | Return value |
+| --- | --- | --- |
+| `proportions` | Per-class counts | An array of proportions of the same length |
+| `gini`, `entropy` | Per-class counts | A numerical impurity value |
+| `compare_settings` | Training inputs and targets, validation inputs and targets | A DataFrame with one row per setting |
 
-| Custom function | Input and return value |
-| --- | --- |
-| `proportions_from_counts` | Class counts in; a same-length proportion array out. |
-| `gini_from_counts`, `entropy_from_counts` | Class counts in; one impurity number out. |
-| `path_for` | A fitted model, one numeric input row, and feature names in; a list of trace strings out. |
-| `compare_settings` | Prepared training/validation inputs and targets in; a result table and collection of fitted models out. |
+`compare_settings` accepts training and validation data that have already been separated. Defining the function does not run training. The six-sample execution below trains the calculation model on all six samples, so **its printed accuracy is training accuracy, not validation performance**.
 
-`path_for` is a separate implementation defined here. It reads leaf proportions through the public `predict_proba` method, which returns a `(number of samples, number of classes)` probability array. Selecting `[0]` gives the first sample's class probabilities. It does not assume that `tree_.value` contains counts without checking the version.
-
-Defining `compare_settings` does not run training. Once actual penguin data are prepared, the commented call at the end can run the experiments on those data. Since the original penguin rows and split were not supplied, the A01 results are not claimed to reproduce the penguin tables.
+Inside the comparison function, `settings` contains `(experiment name, parameter dictionary)` pairs. `**parameters` supplies dictionary entries as keyword arguments such as `max_depth=...`. Each iteration trains a fresh model and adds a result dictionary with `rows.append(...)`. One table row therefore represents a model experiment, not an original sample.
 
 <details class="dt-code">
-<summary>Expand the complete Python code</summary>
+<summary>Dataset and complete Python code</summary>
 
 ```python
-# Python 3.10+. Requires numpy, pandas, and scikit-learn.
-# Runs calculations, training, and path inspection on six fictional A01 samples.
-# Does not reproduce the recorded penguin scores or the original tiny_model.
 import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.tree import DecisionTreeClassifier, export_text
 
 
-def proportions_from_counts(counts):
-    """Class counts to a one-dimensional proportion array of the same length."""
-    counts = np.asarray(counts, dtype=float)  # Preserve order; use floating point.
-    # ndim counts dimensions; isfinite excludes NaN and infinity.
+def proportions(counts):
+    # Convert per-class counts to floats while preserving their order.
+    counts = np.asarray(counts, dtype=float)
+    # ndim is the number of dimensions; isfinite rejects NaN and infinity.
     if counts.ndim != 1 or not np.all(np.isfinite(counts)):
-        raise ValueError("Class counts must be a finite one-dimensional sequence.")
+        raise ValueError("counts must be a finite one-dimensional sequence.")
     total = counts.sum()
     if np.any(counts < 0) or not np.isfinite(total) or total <= 0:
-        raise ValueError("Counts must be nonnegative with a finite positive sum.")
+        raise ValueError("Counts must be nonnegative with a finite positive total.")
     return counts / total
 
 
-def gini_from_counts(counts) -> float:
-    """Square each class proportion once and subtract their sum from one."""
-    proportions = proportions_from_counts(counts)
-    return float(1 - np.sum(proportions**2))
+def gini(counts):
+    p = proportions(counts)
+    return float(1 - np.sum(p ** 2))  # Square each class proportion once.
 
 
-def entropy_from_counts(counts) -> float:
-    """Average information content using class proportions and base-2 logs."""
-    proportions = proportions_from_counts(counts)
-    positive = proportions[proportions > 0]  # Do not evaluate log2(0).
+def entropy(counts):
+    p = proportions(counts)
+    positive = p[p > 0]  # Avoid evaluating log2(0).
     return float(-np.sum(positive * np.log2(positive)))
 
 
-def path_for(model, one_row, *, feature_names):
-    """Return a list of readable path strings for one numeric input row."""
-    # Arguments after * must be named, as in feature_names=...
-    # This implementation supports single-target classification and finite inputs.
-    prediction = model.predict(one_row)[0]  # Also validates model/input compatibility.
-    if model.n_outputs_ != 1:
-        raise ValueError("Only single-target classification is supported.")
-    # Match the tree's internal input type: float32 is a 32-bit floating-point type.
-    values = np.asarray(one_row, dtype=np.float32)
-    if values.shape != (1, model.n_features_in_):
-        raise ValueError("Supply one row with the same features used in training.")
-    if not np.all(np.isfinite(values)):
-        raise ValueError("This explanation function does not accept NaN or infinity.")
-    if len(feature_names) != model.n_features_in_:
-        raise ValueError("Feature-name count does not match the trained model.")
-
-    node_id = 0  # Root node ID, not the current depth.
-    trace = []
-    tree = model.tree_
-    while tree.children_left[node_id] != -1:  # -1 means no child.
-        feature_id = int(tree.feature[node_id])
-        threshold = float(tree.threshold[node_id])
-        value = float(values[0, feature_id])
-        go_left = value <= threshold
-        relation = "<=" if go_left else ">"
-        trace.append(
-            f"node {node_id}: {feature_names[feature_id]} "
-            f"{value:.9g} {relation} {threshold:.9g}"
-        )
-        node_id = int(
-            tree.children_left[node_id] if go_left
-            else tree.children_right[node_id]
-        )
-
-    # predict_proba returns a two-dimensional sample-by-class probability array.
-    probabilities = model.predict_proba(one_row)[0]
-    # Use a public method instead of assuming tree_.value contains sample counts.
-    distribution = dict(zip(
-        model.classes_.tolist(), probabilities.tolist(), strict=True
-    ))
-    trace.append(
-        f"leaf {node_id}, distribution {distribution}, prediction {prediction}"
-    )
-    # assert stops on a false condition. Compare manual routing with apply.
-    assert node_id == int(model.apply(one_row)[0])
-    return trace
-
-
 def compare_settings(X_train, y_train, X_val, y_val):
-    """Compare depth and alpha candidates using prepared training/validation data."""
-    if not isinstance(X_train, pd.DataFrame) or not isinstance(X_val, pd.DataFrame):
-        raise TypeError("Supply input features as pandas DataFrames.")
-    y_train_array, y_val_array = np.asarray(y_train), np.asarray(y_val)
-    if y_train_array.ndim != 1 or y_val_array.ndim != 1:
-        raise ValueError("Targets must be one-dimensional, with one label per sample.")
-    if len(X_train) != len(y_train_array) or len(X_train) == 0:
-        raise ValueError("Check the training input and target counts.")
-    if len(X_val) != len(y_val_array) or len(X_val) == 0:
-        raise ValueError("Check the validation input and target counts.")
-    if list(X_train.columns) != list(X_val.columns):
-        raise ValueError("Training and validation columns must match in order.")
-    # Shape checks do not prove subject alignment or train/validation separation.
-
-    def measure(model, name):
-        # Read data passed to the outer function; the library is not finding them.
-        model.fit(X_train, y_train)
-        train_accuracy = float(accuracy_score(y_train, model.predict(X_train)))
-        validation_accuracy = float(accuracy_score(y_val, model.predict(X_val)))
-        return {
-            "setting": name,
-            "depth": int(model.get_depth()),
-            "leaves": int(model.get_n_leaves()),
-            "train_accuracy": train_accuracy,
-            "validation_accuracy": validation_accuracy,
-            "gap": train_accuracy - validation_accuracy,
-        }
-
-    rows, models = [], {}
-    for depth in [1, 2, 4, None]:
-        name = f"depth={depth}"  # The string only names the result row.
-        candidate = DecisionTreeClassifier(max_depth=depth, random_state=41)
-        rows.append(measure(candidate, name))  # Do not assign append's return value.
-        models[name] = candidate  # Keep fitted models separately from result rows.
-    for alpha in [0, 0.005, 0.01, 0.02, 0.05]:
-        name = f"alpha={alpha}"
-        candidate = DecisionTreeClassifier(ccp_alpha=alpha, random_state=41)
-        rows.append(measure(candidate, name))
-        models[name] = candidate
-    return pd.DataFrame(rows), models
+    # All data are arguments; this function does not depend on external datasets.
+    rows = []
+    settings = [(f"depth={depth}", {"max_depth": depth})
+                for depth in [1, 2, 4, None]]
+    settings += [(f"alpha={alpha}", {"ccp_alpha": alpha})
+                 for alpha in [0, 0.005, 0.01, 0.02, 0.05]]
+    for name, parameters in settings:
+        # ** supplies the dictionary entries as keyword arguments.
+        candidate = DecisionTreeClassifier(random_state=41, **parameters)
+        candidate.fit(X_train, y_train)
+        train_accuracy = accuracy_score(y_train, candidate.predict(X_train))
+        validation_accuracy = accuracy_score(y_val, candidate.predict(X_val))
+        # append changes the list; do not assign its return value to rows.
+        rows.append({"setting": name,
+                     "depth": candidate.get_depth(),
+                     "leaves": candidate.get_n_leaves(),
+                     "train_accuracy": train_accuracy,
+                     "validation_accuracy": validation_accuracy,
+                     "gap": train_accuracy - validation_accuracy})
+    return pd.DataFrame(rows)
 
 
-# 1. Recreate the article's A01 table: one fictional sample per row.
-a01 = pd.DataFrame({
+# Each row is one fictional sample. sample_id is an identifier, not a feature.
+samples = pd.DataFrame({
     "sample_id": [1, 2, 3, 4, 5, 6],
     "x1": [1, 2, 3, 4, 5, 6],
     "x2": [1, 2, 4, 3, 5, 6],
     "label": [0, 0, 0, 1, 1, 1],
 })
-left_gini = gini_from_counts([2, 0])
-right_gini = gini_from_counts([1, 3])
+left_gini, right_gini = gini([2, 0]), gini([1, 3])
 weighted_gini = (2 / 6) * left_gini + (4 / 6) * right_gini
-print("left / right / weighted Gini:", left_gini, right_gini, weighted_gini)
-# isclose compares floating-point results within a tolerance.
-assert np.isclose(left_gini, 0)
-assert np.isclose(right_gini, 0.375)
+print("Gini:", left_gini, right_gini, weighted_gini)
+# assert stops on a false condition; isclose compares floats within tolerance.
 assert np.isclose(weighted_gini, 0.25)
 
-# 2. Compare boundaries between all distinct adjacent x2 values.
-# sort_values sorts entire rows, preserving the input/target correspondence.
-sorted_a01 = a01.sort_values("x2")
-x2_sorted = sorted_a01["x2"].to_numpy()  # Series to a one-dimensional array.
-y_sorted = sorted_a01["label"].to_numpy()
+# Sorting whole rows preserves correspondence between features and targets.
+ordered = samples.sort_values("x2")
+x_sorted = ordered["x2"].to_numpy()
+y_sorted = ordered["label"].to_numpy()
 left_counts, right_counts = [0, 0], [3, 3]
-total = len(a01)
-parent_entropy = entropy_from_counts(right_counts)
-threshold_rows = []
-for i in range(total - 1):
+count = len(ordered)
+parent_entropy = entropy(right_counts)
+results = []
+for i in range(count - 1):
     label = int(y_sorted[i])
     left_counts[label] += 1
     right_counts[label] -= 1
-    left_count, right_count = i + 1, total - i - 1
-    threshold = (x2_sorted[i] + x2_sorted[i + 1]) / 2
-    weighted_gini = (
-        left_count / total * gini_from_counts(left_counts)
-        + right_count / total * gini_from_counts(right_counts)
-    )
-    weighted_entropy = (
-        left_count / total * entropy_from_counts(left_counts)
-        + right_count / total * entropy_from_counts(right_counts)
-    )
-    threshold_rows.append({
-        "threshold": threshold,
-        # copy preserves this iteration's counts when the lists change later.
-        "left_counts": left_counts.copy(),
-        "right_counts": right_counts.copy(),
-        "weighted_gini": weighted_gini,
-        "weighted_entropy": weighted_entropy,
-        "information_gain": parent_entropy - weighted_entropy,
-    })
-print(pd.DataFrame(threshold_rows).to_string(index=False))
-assert np.allclose(
-    [row["weighted_gini"] for row in threshold_rows],
-    [0.4, 0.25, 4 / 9, 0.25, 0.4],
-)
+    if x_sorted[i] == x_sorted[i + 1]:
+        continue  # Do not split between equal feature values.
+    threshold = (x_sorted[i] + x_sorted[i + 1]) / 2
+    left_weight, right_weight = (i + 1) / count, (count - i - 1) / count
+    weighted_gini = left_weight * gini(left_counts) + right_weight * gini(right_counts)
+    weighted_entropy = left_weight * entropy(left_counts) + right_weight * entropy(right_counts)
+    # Copies preserve this boundary's counts as later iterations change them.
+    results.append({"threshold": threshold, "left": left_counts.copy(),
+                    "right": right_counts.copy(), "weighted_gini": weighted_gini,
+                    "weighted_entropy": weighted_entropy,
+                    "information_gain": parent_entropy - weighted_entropy})
+print(pd.DataFrame(results).to_string(index=False))
+assert np.allclose([row["weighted_gini"] for row in results],
+                   [0.4, 0.25, 4 / 9, 0.25, 0.4])
 
-# 3. Fit a model for these six A01 samples. It is not tiny_model.
-X = a01[["x1", "x2"]]  # Exclude sample_id and the target from input features.
-y = a01["label"]
+# This model learns the six samples, not the illustrative tree in Section 3.
+X, y = samples[["x1", "x2"]], samples["label"]
 model = DecisionTreeClassifier(max_depth=2, random_state=41)
 model.fit(X, y)
 pred = model.predict(X)
-# Evaluating the same training inputs does not produce validation accuracy.
 print("training accuracy:", accuracy_score(y, pred))
-print("actual depth / leaves:", model.get_depth(), model.get_n_leaves())
+print("depth / leaves:", model.get_depth(), model.get_n_leaves())
 print(export_text(model, feature_names=list(X.columns)))
 
-# 4. Select the second sample as a two-dimensional, one-row input.
+# Keep the second sample as a two-dimensional, one-row input.
 one_row = X.iloc[1:2]
-print("input / prediction shape:", one_row.shape, pred[1:2].shape)
-for line in path_for(model, one_row, feature_names=list(X.columns)):
-    print(line)
+print("input / prediction shape:", one_row.shape, model.predict(one_row).shape)
+print("prediction:", model.predict(one_row))
+print("leaf ID:", model.apply(one_row))
+print("class order:", model.classes_)
+print("class probabilities:", model.predict_proba(one_row))
 indicator = model.decision_path(one_row)
 print("node-use matrix:", indicator.toarray())  # Expand only this small row.
-print("leaf ID:", model.apply(one_row))
 
-# 5. Attach names in training-column order before sorting importance.
+# Pair names in training-column order, then sort the pairs by importance.
 pairs = list(zip(X.columns, model.feature_importances_, strict=True))
-ordered_importance = sorted(pairs, key=lambda pair: pair[1], reverse=True)
-print("feature importance:", ordered_importance)
-for position, name in enumerate(X.columns):  # Positions begin at zero.
-    print(name, "used:", bool(np.any(model.tree_.feature == position)))
+print("feature importance:", sorted(pairs, key=lambda pair: pair[1], reverse=True))
 probe = DecisionTreeClassifier(random_state=41)
-pruning_path = probe.cost_complexity_pruning_path(X, y)
-print("candidate alphas:", pruning_path.ccp_alphas)
-
-# 6. Use this call only after preparing actual penguin training/validation data.
-# table, fitted_models = compare_settings(X_train, y_train, X_val, y_val)
-# print(table.to_string(index=False))
-# Defining compare_settings alone does not train a penguin model.
+print("candidate alphas:", probe.cost_complexity_pruning_path(X, y).ccp_alphas)
 ```
 
 </details>
 
-The key A01 output is below. Local verification used scikit-learn 1.8.0, NumPy 2.3.5, and pandas 2.2.3. API descriptions were checked against official documentation available on the article's date. These local version numbers do not identify the reader's installation or the original penguin exercise environment.
+The example was executed with scikit-learn 1.8.0, NumPy 2.3.5, and pandas 2.2.3, producing the following results:
 
 ```text
-left / right / weighted Gini: 0.0 0.375 0.25
+Gini: 0.0 0.375 0.25
 training accuracy: 1.0
-actual depth / leaves: 1 2
-node 0: x1 2 <= 3.5
-leaf 1, distribution {0: 1.0, 1: 0.0}, prediction 0
-node-use matrix: [[1 1 0]]
+depth / leaves: 1 2
+
+|--- x1 <= 3.50
+|   |--- class: 0
+|--- x1 >  3.50
+|   |--- class: 1
+
+input / prediction shape: (1, 2) (1,)
+prediction: [0]
 leaf ID: [1]
+class order: [0 1]
+class probabilities: [[1. 0.]]
+node-use matrix: [[1 1 0]]
 candidate alphas: [0.  0.5]
 ```
 
-`candidate alphas` contains pruning boundaries, not optimal validation scores. The training accuracy of 1.0 must not be presented as performance on new data.
+Although `max_depth=2` permits depth 2, the actual depth is 1 because `x1 <= 3.5` perfectly separates the two classes. The second sample has `x1=2`, reaches left leaf node 1, and is predicted as class 0. This is a different tree from the Section 4 example that reached node 3.
 
-## 14. Calculate the same Gini values in Rust
-
-The mathematics is the same in Python and Rust: convert class counts to proportions, subtract their squared sum from one, then weight child impurities by their sample shares. Types and operator notation differ.
-
-Python's `/` performs floating-point division even for integer operands. Rust's division between integers is integer division, so this example uses the **64-bit floating-point type `f64`** and values such as `2.0`. The `f64` method `.powi(2)` performs the squaring written as `**2` in Python.[^rust]
-
-`&[f64]` is a borrowed slice of floating-point values; it does not copy the whole array. `iter()` reads items one at a time, `map` transforms each item, and `sum` adds the results. `|&count|` extracts the numeric value from the referenced item.
-
-This is an **independent Rust program verifying the same A01 Gini calculation**, not a demonstration of training a decision-tree library in Rust.
-
-<details class="dt-code">
-<summary>Expand the complete Rust code</summary>
-
-```rust
-fn gini(counts: &[f64]) -> f64 {
-    // Check that the total is positive and finite.
-    let total: f64 = counts.iter().sum();
-    assert!(total.is_finite() && total > 0.0);
-    // all checks whether every item satisfies the condition.
-    assert!(counts.iter().all(|&count| count.is_finite() && count >= 0.0));
-
-    // Square each class proportion once. powi(2) uses integer exponent 2.
-    let squared_sum: f64 = counts
-        .iter()
-        .map(|&count| (count / total).powi(2))
-        .sum();
-    // With no trailing semicolon, the final expression is returned.
-    1.0 - squared_sum
-}
-
-fn main() {
-    // Use the same class counts as in Python.
-    let left_gini = gini(&[2.0, 0.0]);
-    let right_gini = gini(&[1.0, 3.0]);
-    // Floating-point division preserves the shares 2/6 and 4/6.
-    let weighted_gini =
-        (2.0 / 6.0) * left_gini + (4.0 / 6.0) * right_gini;
-
-    // abs computes absolute value; use a small floating-point tolerance.
-    assert!((left_gini - 0.0).abs() < 1e-12);
-    assert!((right_gini - 0.375).abs() < 1e-12);
-    assert!((weighted_gini - 0.25).abs() < 1e-12);
-    println!("Weighted Gini: {weighted_gini}"); // 0.25
-}
-```
-
-</details>
-
-## 15. Review code by asking what enters and what returns
-
-| Common confusion | What to check |
-| --- | --- |
-| `fit` receives training and validation data. | It receives training inputs and those subjects' targets. |
-| `fit` returns an evaluation table. | It returns the model itself; a separate function builds the table. |
-| `max_depth=3` means three levels in total. | Root depth is zero, so it allows up to four levels. |
-| Seven leaves mean seven classes or samples. | There are seven terminal nodes without children. |
-| Left means class 0. | Direction follows the condition; prediction uses leaf information. |
-| Three class-1 samples require adding $(3/4)^2$ three times. | The count is already in the proportion; add one term per class. |
-| Pruning made the tree simpler, so it improved the model. | Check complexity reduction and validation performance separately. |
-| `None` always marks an exercise blank. | `row=None` can mark an absent result; `max_depth=None` is a real setting. |
-| `model is not None` proves training is complete. | It only checks that the value is not `None`. |
-| `hasattr(model, "tree_")` proves this cell trained the model. | The attribute may remain from earlier training. |
-
-Numbers printed together in a decision-tree exercise answer different questions. **Gini compares split conditions during learning. Validation accuracy evaluates agreement between predictions and actual labels. A path shows the conditions applied to one input. Importance summarizes contributions to impurity reduction in the current tree.**
-
-When reading code, inspect the input type and shape, identify the operation, determine its return value, and follow the variable receiving it. Only then decide what conclusions the result supports.
+The output `[0, 0.5]` contains pruning boundary candidates, not an optimal alpha selected through validation. Likewise, training accuracy 1.0 means the model correctly predicts these six training samples. Assessing new-data performance requires comparing predictions with actual targets on samples not used in training.
 
 ## References
 
-The penguin configuration tables and the small tree's structure and class distribution come from the October 13, 2026 study record. A01 calculations and the Python example were checked separately. API behavior and calculation criteria were checked against these official sources.
-
-[^classifier]: scikit-learn, [DecisionTreeClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html). Creation, fitting, prediction, settings, ties, and inspection methods.
-[^tree]: scikit-learn, [Decision Trees](https://scikit-learn.org/stable/modules/tree.html). Tree learning, split criteria, Gini, and entropy.
-[^accuracy]: scikit-learn, [accuracy_score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html). Inputs and default return value.
-[^structure]: scikit-learn, [Understanding the decision tree structure](https://scikit-learn.org/stable/auto_examples/tree/plot_unveil_tree_structure.html). Nodes, leaves, `apply`, and `decision_path`.
+[^classifier]: scikit-learn, [DecisionTreeClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html). Model creation, fitting, prediction, parameters, and tie handling.
+[^tree]: scikit-learn, [Decision Trees](https://scikit-learn.org/stable/modules/tree.html). Training, splitting criteria, Gini, and entropy.
+[^accuracy]: scikit-learn, [accuracy_score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html). Accuracy inputs and return values.
+[^structure]: scikit-learn, [Understanding the decision tree structure](https://scikit-learn.org/stable/auto_examples/tree/plot_unveil_tree_structure.html). Nodes, `apply`, and `decision_path`.
 [^indexing]: pandas, [Indexing and selecting data](https://pandas.pydata.org/docs/user_guide/indexing.html). Position-based and label-based selection.
-[^csr]: SciPy, [csr_matrix](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html). Row-oriented sparse storage.
-[^implementation]: scikit-learn, [split-search implementation](https://github.com/scikit-learn/scikit-learn/blob/main/sklearn/tree/_splitter.pyx) and [class statistics and criteria](https://github.com/scikit-learn/scikit-learn/blob/main/sklearn/tree/_criterion.pyx). The article's loop explains the principle rather than copying the internal implementation.
-[^entropy]: SciPy, [entropy](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.entropy.html). Information content and entropy definitions.
-[^pruning]: scikit-learn, [Post pruning decision trees with cost complexity pruning](https://scikit-learn.org/stable/auto_examples/tree/plot_cost_complexity_pruning.html) and [Minimal Cost-Complexity Pruning](https://scikit-learn.org/stable/modules/tree.html#minimal-cost-complexity-pruning).
-[^selection]: scikit-learn, [Tuning the hyper-parameters of an estimator](https://scikit-learn.org/stable/modules/grid_search.html). Candidate configurations and cross-validation.
-[^pitfalls]: scikit-learn, [Common pitfalls and recommended practices](https://scikit-learn.org/stable/common_pitfalls.html). Consistent preprocessing and data leakage.
-[^importance]: scikit-learn, [Permutation feature importance](https://scikit-learn.org/stable/modules/permutation_importance.html). Impurity-based importance bias and interpretation limits.
-[^python]: Python, [Built-in functions](https://docs.python.org/3/library/functions.html). `zip`, `sorted`, and `enumerate`.
-[^rust]: Rust, [f64](https://doc.rust-lang.org/std/primitive.f64.html) and [Iterator](https://doc.rust-lang.org/std/iter/trait.Iterator.html). Floating-point powers and iterator operations.
+[^csr]: SciPy, [csr_matrix](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html). Compressed sparse row storage.
+[^implementation]: scikit-learn, [split search implementation](https://github.com/scikit-learn/scikit-learn/blob/main/sklearn/tree/_splitter.pyx) and [class statistics and criterion implementation](https://github.com/scikit-learn/scikit-learn/blob/main/sklearn/tree/_criterion.pyx). The example loop illustrates the principle rather than reproducing the internal implementation.
+[^entropy]: SciPy, [entropy](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.entropy.html). Information and entropy.
+[^pruning]: scikit-learn, [Cost complexity pruning](https://scikit-learn.org/stable/auto_examples/tree/plot_cost_complexity_pruning.html) and [Minimal Cost-Complexity Pruning](https://scikit-learn.org/stable/modules/tree.html#minimal-cost-complexity-pruning).
+[^selection]: scikit-learn, [Tuning the hyper-parameters of an estimator](https://scikit-learn.org/stable/modules/grid_search.html). Candidate settings and cross-validation.
+[^pitfalls]: scikit-learn, [Common pitfalls and recommended practices](https://scikit-learn.org/stable/common_pitfalls.html). Consistent preprocessing and leakage.
+[^importance]: scikit-learn, [Permutation feature importance](https://scikit-learn.org/stable/modules/permutation_importance.html). Interpretation and limitations of impurity-based importance.
+[^python]: Python, [Built-in functions](https://docs.python.org/3/library/functions.html). `zip` and `sorted`.
