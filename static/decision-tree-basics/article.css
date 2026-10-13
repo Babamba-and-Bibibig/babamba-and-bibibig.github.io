@@ -1,0 +1,23 @@
+/* Page-local styles: keep tables readable without changing the site theme. */
+article table, .content table {
+  width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
+}
+article th, article td, .content th, .content td {
+  overflow-wrap: anywhere;
+  word-break: normal;
+  vertical-align: top;
+}
+article td code, article th code { white-space: normal; }
+.katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+.dt-note {
+  margin: 1.25rem 0;
+  padding: 0.85rem 1rem;
+  border-inline-start: 3px solid currentColor;
+}
+details.dt-code { margin-block: 1.25rem; }
+details.dt-code > summary { cursor: pointer; font-weight: 650; padding-block: 0.6rem; }
+@media (max-width: 600px) {
+  article th, article td, .content th, .content td { padding: 0.4rem; font-size: 0.9rem; }
+}
