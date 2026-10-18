@@ -51,15 +51,11 @@ In regression, if we imagine repeatedly drawing training data and new data from 
 
 Noise refers to random variation that is difficult to predict from the input information currently available. This is a decomposition of squared error; it is not a formula that directly splits classification accuracy into three terms.
 
-References: scikit-learn's [bias–variance decomposition example](https://scikit-learn.org/stable/auto_examples/ensemble/plot_bias_variance.html) and [documentation on using training and validation scores to examine underfitting and overfitting](https://scikit-learn.org/stable/modules/learning_curve.html).
-
 #### The Trade-off Between Bias and Variance {#research-tradeoff .research-topic}
 
 A trade-off is a relationship in which improving one aspect can make another worse. Increasing model complexity allows a model to represent more complex relationships, but it also creates a risk of following chance fluctuations in the training data. Conversely, making a model too simple may make its predictions less variable while causing it to miss relevant relationships.
 
 Model complexity should therefore not be chosen solely by how well the model fits its training data. It is also necessary to check whether it predicts well on data that was not used for training. This does not mean that bias and variance always change in fixed directions as complexity increases.
-
-Reference: scikit-learn's [documentation on model complexity and validation curves](https://scikit-learn.org/stable/modules/learning_curve.html).
 
 #### How L1 and L2 Regularization Reduce Overfitting {#research-regularization .research-topic}
 
@@ -70,21 +66,16 @@ A loss function calculates how far predictions are from their targets. Weights a
 
 The regularization strength determines how much the penalty contributes. Whether a weight is positive or negative, a larger magnitude produces a larger penalty. Making weights larger to reduce the training error is therefore not always beneficial.
 
-References: scikit-learn's [documentation on Ridge and L2 regularization](https://scikit-learn.org/stable/modules/linear_model.html#ridge-regression-and-classification) and [Lasso and L1 regularization](https://scikit-learn.org/stable/modules/linear_model.html#lasso).
-
 Appropriate regularization can help reduce variance by limiting how closely the model fits its training data. Performance on new data may improve even if training performance decreases slightly. If regularization is too strong, however, the model may fail to learn relevant relationships and underfit.
-
-Reference: scikit-learn's [example of training and validation performance at different regularization strengths](https://scikit-learn.org/stable/auto_examples/model_selection/plot_train_error_vs_test_error.html).
 
 ### 2) My Answer
 
-My first suspicion would be overfitting: the model reached 99% accuracy on the training data but only 70% on the test data. It fits the data it learned from but does not predict new data well, so I would put this closer to a variance problem than a bias problem.
+The model has 99% accuracy on the training data but 70% on the test data, so I think this is overfitting.
+Overfitting is more of a variance problem than a bias problem.
 
-I learned that L1 and L2 regularization can help reduce this kind of overfitting. A model might be able to represent complex relationships, but it can still run into trouble if it tries too hard to match every small change in the training data. Regularization limits how closely it fits those details.
+We therefore need to reduce variance, and I learned that L1 and L2 regularization are often used to do this. As a model becomes more complex, its understanding of the problem improves. However, if it learns too closely from the data, overfitting occurs. L1 and L2 regularization reduce overfitting by lowering the model's complexity a little. With lower complexity, the model may miss detailed changes in the data, so there is a trade-off where accuracy can decrease.
 
-L1 and L2 regularization add a penalty to the loss function based on the size of the weights. L1 uses the sum of their absolute values, while L2 uses the sum of their squares. The model has to find weights that account for this penalty as well as the training error. My understanding is that L1 can make some weights 0 in the process, while L2 limits how large the weights become.
-
-If regularization is too strong, though, the model could miss relationships it needs to learn. It would be helpful if the model predicted new data better even with slightly lower training accuracy, but I do not think stronger regularization is always better.
+My understanding of regularization is that it deliberately adds a penalty term to the loss function to interfere with learning a little. The model cannot simply keep increasing its weights; it has to find the best weights again while also taking this penalty into account. This is how I understand it reduces variance.
 
 ## Question 2
 
@@ -107,8 +98,6 @@ An **ensemble** combines the predictions of several models. A single tree here m
 
 How classification results are combined varies by implementation. **The random forest classifier in scikit-learn averages each tree's predicted probabilities for each class, then selects the class with the highest average probability.** A class is a category that the model distinguishes.
 
-References: scikit-learn's [documentation on ensemble models](https://scikit-learn.org/stable/modules/ensemble.html) and [how random forest classification predictions are calculated](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#sklearn.ensemble.RandomForestClassifier.predict).
-
 #### Strengths and Weaknesses of Random Forests and Gradient Boosting {#research-ensemble-details .research-topic}
 
 ##### 1. Random Forests: Combining the Results of Separately Trained Trees {.research-detail}
@@ -121,8 +110,6 @@ Each tree learns to predict the original targets from the data it is given. For 
 
 - **Strengths:** Combining the results of different trees can reduce how strongly the final result depends on a single tree's prediction. Trees do not need to wait for earlier trees to finish training, so they can be trained in parallel.
 - **Points to watch:** Individual trees can still overfit the training data. If many trees make similar mistakes, averaging may not reduce those mistakes enough. Memory use and computation also increase with the number and size of the trees.
-
-Reference: scikit-learn's [documentation on how random forests work and support parallel processing](https://scikit-learn.org/stable/modules/ensemble.html#random-forests).
 
 ##### 2. Gradient Boosting: Correcting the Errors Remaining in the Overall Prediction {.research-detail}
 
@@ -139,14 +126,10 @@ For regression using squared error, the process starts from an initial predictio
 
 In general, the correction targets are calculated according to the loss function. They are obtained from **the negative gradient of the loss**, which indicates the direction and magnitude of a change in the current predictions that would reduce the loss. With squared-error regression, this leads to learning the residuals.
 
-Reference: scikit-learn's [documentation on gradient boosting regression](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html).
-
 - **Strengths:** New trees can improve predictive performance by correcting the parts that the current complete model does not predict well enough.
 - **Points to watch:** Each stage needs the preceding overall predictions, so the trees cannot all be trained independently as they can in a random forest. The learning rate, tree size, and number of trees need to be considered together. Repeated corrections may also fit chance fluctuations in the training data.
 
 Sequential training alone does not mean that boosting is always slower. Actual speed depends on the size of the data and the implementation. Neither method can be assumed to always have better predictive performance.
-
-Reference: scikit-learn's [comparison of random forests and histogram-based gradient boosting](https://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_hist_grad_boosting_comparison.html).
 
 #### What Happens If We Keep Adding Trees? {#research-number-of-trees .research-topic}
 
@@ -158,8 +141,6 @@ Once there are enough trees, adding more often produces smaller performance gain
 
 Random forests are not immune to overfitting. **Increasing the number of trees is different from making individual trees deeper.** Even after performance gains become small, adding trees increases the number of trees that must be stored and the computation needed to make predictions.
 
-References: Probst and Boulesteix's [paper on whether to tune the number of trees in random forests](https://jmlr.org/papers/v18/17-269.html) and scikit-learn's [documentation on random forest parameters](https://scikit-learn.org/stable/modules/ensemble.html#parameters).
-
 ##### 2. Gradient Boosting {.research-detail}
 
 Adding trees in gradient boosting means continuing to correct the current predictions. This can further reduce the training error, but predictive performance on new data may worsen if the model starts fitting chance fluctuations that exist only in the training data.
@@ -170,12 +151,7 @@ Training performance and **validation performance** should therefore be examined
 
 Adding many trees does not necessarily cause overfitting. Even with the same number of trees, results depend on the learning rate and the size of each tree, so these settings need to be considered together.
 
-References: scikit-learn's [early stopping example for gradient boosting](https://scikit-learn.org/stable/auto_examples/ensemble/plot_gradient_boosting_early_stopping.html) and [documentation on the relationship between the learning rate and the number of trees](https://scikit-learn.org/stable/modules/ensemble.html#shrinkage-via-learning-rate).
-
 ### 2) My Answer
 
-In a random forest, each decision tree learns to predict the target, and the results are then combined. For regression, we average the predicted values. In the scikit-learn classification model I learned about, we average the probabilities for each class. The trees can be trained in parallel because they do not have to wait for one another's training results.
-
-As the number of trees grows, there are more results to include in the average. Since the final result does not rely on just one tree, I would expect it to be less affected even if some trees fit the training data too closely.
-
-Gradient boosting trains trees in sequence so that each new tree helps correct the errors of the complete model built so far. For regression with squared error, the new tree learns the remaining residuals, and its predictions are multiplied by the learning rate before being added to the existing predictions. Continuing to correct the remaining errors could make the model fit the training data better, but if this goes on too long, I think it could start fitting random changes that only exist in that data. That makes me think I need to pay closer attention to whether I should keep adding trees when using boosting.
+A random forest runs several decision trees in parallel and uses the average of their results, while boosting combines decision trees in sequence to learn by correcting the previous model's errors.
+Because a random forest uses an average of several results, I think it would have some resistance to overfitting even with more trees. Boosting, on the other hand, immediately continues learning from the residuals to correct them, so I think it learns more directly. However, if we add more trees, it may learn the training data too closely, making overfitting relatively more likely than with a random forest.
