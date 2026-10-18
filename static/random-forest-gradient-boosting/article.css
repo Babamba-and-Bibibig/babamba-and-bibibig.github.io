@@ -1,0 +1,72 @@
+/* This file is loaded only by the forest/boosting article and its translation. */
+#main-content article .boost-figure {
+  max-width: 100%;
+  margin: 1.6rem auto;
+}
+#main-content article .boost-figure img {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 12px;
+}
+#main-content article .boost-figure figcaption {
+  max-width: 38rem;
+  margin: .8rem auto 0;
+  font-size: .94em;
+  line-height: 1.7;
+  color: var(--im-muted, #536173);
+}
+#main-content article .boost-demo {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 2200px;
+  margin: 1.5rem 0 .6rem;
+  border: 1px solid var(--im-border, #ccd5df);
+  border-radius: 12px;
+  background: #f5f8f6;
+}
+#main-content article .boost-math,
+#main-content article .boost-table {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#main-content article .boost-math {
+  margin: 1rem 0;
+  padding: .15rem 0;
+}
+#main-content article .boost-math .katex { font-size: 1.03em; }
+/* Zola/KaTeX creates these containers directly for $$ display equations.
+   Keep a wide equation scrollable inside the article and keep its hidden
+   MathML representation positioned inside that same scroll container. */
+#main-content article .katex-display {
+  position: relative;
+  max-width: 100%;
+  padding: .2rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+/* A long centered equation otherwise extends left of its scroll origin.
+   Give it its natural width; short equations still fill and center normally. */
+#main-content article .katex-display > .katex {
+  width: max-content;
+  min-width: 100%;
+}
+#main-content article table { font-variant-numeric: tabular-nums; }
+#main-content article th,
+#main-content article td {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 640px) {
+  #main-content article table {
+    display: block;
+    position: relative;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+}

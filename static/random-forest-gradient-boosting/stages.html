@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>트리 세 개로 집값을 보정하는 과정</title>
+  <style>
+    :root { color-scheme: light; --ink: #192d34; --muted: #52656b; --line: #d2dfdf; --paper: #f5f8f6; --blue: #135b91; --amber: #825110; --green: #1b6c4c; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 16px; background: var(--paper); color: var(--ink); font-family: system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; font-size: 16px; line-height: 1.65; }
+    main { max-width: 840px; margin: 0 auto; }
+    h1, h2, h3, h4, p { margin: 0; }
+    h1 { margin-top: 5px; font-size: clamp(1.4rem, 4vw, 1.85rem); line-height: 1.45; letter-spacing: -.025em; word-break: keep-all; overflow-wrap: anywhere; }
+    h2 { font-size: 1.3rem; line-height: 1.5; }
+    h3 { font-size: 1.07rem; line-height: 1.55; }
+    h4 { font-size: 1.08rem; }
+    p, li, dd, dt, summary { word-break: keep-all; overflow-wrap: anywhere; }
+    .eyebrow { color: var(--green); font-weight: 750; font-size: .88rem; letter-spacing: .02em; }
+    .intro { margin-top: 9px; color: var(--muted); }
+    .settings { display: flex; flex-wrap: wrap; gap: 6px 10px; margin-top: 13px; font-size: .87rem; }
+    .settings span { padding: 3px 9px; border: 1px solid var(--line); border-radius: 7px; background: #fff; }
+    .fixed-note { margin-top: 12px; font-size: .9rem; color: var(--muted); }
+    details { margin-top: 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+    summary { cursor: pointer; font-weight: 650; }
+    .data-note { margin: 9px 0 5px; color: var(--muted); font-size: .88rem; }
+    .data-wrap { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; margin-top: 8px; font-size: .89rem; font-variant-numeric: tabular-nums; }
+    th, td { padding: 7px 4px; border-bottom: 1px solid var(--line); text-align: center; }
+    th { color: var(--muted); font-weight: 650; }
+    td:first-child { font-weight: 750; }
+    .step-controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 21px; }
+    .step-button { min-width: 0; min-height: 64px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1px; padding: 8px 3px; border: 1px solid #b4c7c7; border-radius: 10px; background: #fff; color: var(--ink); font: inherit; font-size: .93rem; line-height: 1.45; cursor: pointer; }
+    .step-button strong { font-size: 1rem; }
+    .step-button small { font-size: .8rem; }
+    .step-button:hover { background: #e9f1ed; }
+    .step-button[aria-pressed="true"] { background: #174e3b; border-color: #174e3b; color: #fff; box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px #174e3b; }
+    button:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px solid #bd5d00; outline-offset: 4px; }
+    .keyboard-note { margin-top: 9px; color: var(--muted); font-size: .85rem; }
+    .state-head { display: flex; justify-content: space-between; gap: 14px; align-items: center; margin-top: 23px; }
+    .state-summary { margin-top: 4px; color: var(--muted); font-size: .92rem; }
+    .mse-badge { flex: 0 0 auto; min-width: 76px; padding: 7px 10px; border-radius: 10px; background: #e3eee7; color: #174e3b; text-align: center; font-variant-numeric: tabular-nums; }
+    .mse-badge span { display: block; font-size: .81rem; }
+    .mse-badge strong { display: block; font-size: 1.7rem; line-height: 1.2; }
+    .panel { margin-top: 16px; padding: 17px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+    .panel-note { margin-top: 7px; color: var(--muted); font-size: .93rem; }
+    .flow-label { display: flex; gap: 8px; align-items: baseline; }
+    .flow-label .number { flex: 0 0 auto; width: 27px; height: 27px; border-radius: 50%; background: #e8f0ec; color: #244f3d; text-align: center; font-size: .91rem; font-weight: 750; line-height: 27px; }
+    .vector { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 13px; font-variant-numeric: tabular-nums; }
+    .vector-item { padding: 6px 2px; border: 1px solid var(--line); border-radius: 7px; text-align: center; }
+    .vector-item span { display: block; color: var(--muted); font-size: .84rem; }
+    .vector-item strong { display: block; font-size: 1.18rem; }
+    .formula { display: flex; flex-wrap: wrap; gap: 2px 7px; align-items: baseline; margin-top: 11px; font-variant-numeric: tabular-nums; }
+    .formula > span { white-space: nowrap; }
+    .formula strong { color: #174e3b; }
+    .tree-boundary { max-width: 440px; margin: 14px auto 0; padding: 10px; border: 2px solid var(--blue); border-radius: 12px; background: #f2f7fc; }
+    .tree-boundary[data-tree="2"] { border-color: var(--amber); background: #fffbf1; }
+    .tree-boundary[data-tree="3"] { border-color: var(--green); background: #f1f9f3; }
+    .tree-name { color: var(--blue); font-weight: 750; text-align: center; }
+    .tree-boundary[data-tree="2"] .tree-name { color: var(--amber); }
+    .tree-boundary[data-tree="3"] .tree-name { color: var(--green); }
+    .tree-size { color: var(--muted); text-align: center; font-size: .85rem; }
+    .tree-svg { display: block; width: 100%; height: auto; max-width: 360px; margin: 4px auto 0; }
+    .leaf-means { display: grid; gap: 9px; margin-top: 10px; }
+    .leaf-means p { padding: 8px 11px; background: var(--paper); border-radius: 7px; font-size: .94rem; }
+    .leaf-means strong { display: block; }
+    .house-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+    .house { min-width: 0; padding: 13px; border: 1px solid var(--line); border-radius: 9px; background: #fbfcfb; }
+    .house-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+    .truth { color: var(--muted); font-size: .89rem; }
+    .house dl { display: grid; gap: 7px; margin: 12px 0 0; }
+    .house dl > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 7px; align-items: baseline; font-size: .94rem; }
+    dt { color: var(--muted); }
+    dd { margin: 0; font-variant-numeric: tabular-nums; text-align: right; }
+    .house .updated { margin: 2px -5px; padding: 5px; border-radius: 5px; background: #e9f1eb; }
+    .updated dt, .updated dd { color: #174e3b; font-weight: 750; }
+    .model-list { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin-top: 12px; padding: 0; list-style: none; }
+    .model-list li { flex: 1 1 125px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; text-align: center; }
+    .model-list strong, .model-list span { display: block; }
+    .model-list span { font-size: .86rem; color: var(--muted); }
+    .model-list .model-1 { border-color: var(--blue); border-width: 2px; }
+    .model-list .model-2 { border-color: var(--amber); border-width: 2px; }
+    .model-list .model-3 { border-color: var(--green); border-width: 2px; }
+    .model-icon { width: 45px; height: 30px; display: block; margin: 0 auto 3px; }
+    .reading-note { margin-top: 15px; font-size: .9rem; color: var(--muted); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    [hidden] { display: none !important; }
+    @media (max-width: 520px) {
+      body { padding: 12px; }
+      .panel { padding: 13px; }
+      .house-grid { grid-template-columns: minmax(0, 1fr); }
+      .state-head { gap: 8px; }
+      .state-head h2 { font-size: 1.18rem; }
+      .mse-badge { min-width: 67px; padding: 7px; }
+      .tree-boundary { padding: 8px 3px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+    @media print { body { padding: 0; } .step-controls, .keyboard-note { display: none; } .panel, .house { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+<main id="demo-root">
+  <header>
+    <p class="eyebrow" id="eyebrow"></p>
+    <h1 id="page-title"></h1>
+    <p class="intro" id="intro"></p>
+    <div class="settings" id="settings"></div>
+    <p class="fixed-note" id="fixed-note"></p>
+  </header>
+
+  <details>
+    <summary id="data-summary"></summary>
+    <p class="data-note" id="data-note"></p>
+    <div class="data-wrap"><table id="data-table"></table></div>
+  </details>
+
+  <div class="step-controls" id="step-controls" role="group"></div>
+  <p class="keyboard-note" id="keyboard-note"></p>
+  <p class="sr-only" id="live-status" role="status" aria-live="polite" aria-atomic="true"></p>
+
+  <div class="state-head">
+    <div><h2 id="state-title"></h2><p class="state-summary" id="state-summary"></p></div>
+    <div class="mse-badge"><span id="mse-label"></span><strong id="mse-value"></strong></div>
+  </div>
+
+  <section class="panel" id="initial-panel" aria-labelledby="initial-title">
+    <h3 id="initial-title"></h3>
+    <p class="panel-note" id="initial-note"></p>
+    <p class="formula"><span>(5 + 7 + 11 + 17) / 4</span><span>= <strong>10</strong></span></p>
+    <div class="vector" id="initial-vector"></div>
+  </section>
+
+  <section class="panel" id="target-panel" aria-labelledby="target-title">
+    <div class="flow-label"><span class="number">1</span><h3 id="target-title"></h3></div>
+    <p class="panel-note" id="target-note"></p>
+    <div class="vector" id="target-vector"></div>
+  </section>
+
+  <section class="panel" id="tree-panel" aria-labelledby="tree-title">
+    <div class="flow-label"><span class="number">2</span><h3 id="tree-title"></h3></div>
+    <p class="panel-note" id="fit-note"></p>
+    <div class="tree-boundary" id="tree-boundary">
+      <p class="tree-name" id="tree-name"></p>
+      <p class="tree-size" id="tree-size"></p>
+      <div id="tree-picture"></div>
+    </div>
+    <div class="leaf-means" id="leaf-means"></div>
+  </section>
+
+  <section class="panel" id="correction-panel" aria-labelledby="correction-title">
+    <div class="flow-label"><span class="number">3</span><h3 id="correction-title"></h3></div>
+    <p class="panel-note" id="predict-note"></p>
+    <div class="vector" id="correction-vector"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="houses-title">
+    <div class="flow-label"><span class="number" id="house-number">4</span><h3 id="houses-title"></h3></div>
+    <p class="panel-note" id="houses-note"></p>
+    <div class="house-grid" id="house-grid"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="mse-title">
+    <h3 id="mse-title"></h3>
+    <p class="panel-note" id="mse-note"></p>
+    <p class="formula" id="mse-formula"></p>
+  </section>
+
+  <section class="panel" aria-labelledby="model-title">
+    <h3 id="model-title"></h3>
+    <ul class="model-list" id="model-list"></ul>
+    <p class="panel-note" id="model-note"></p>
+  </section>
+  <p class="reading-note" id="reading-note"></p>
+  <noscript><p>이 예제는 JavaScript가 필요합니다. 단계별 잔차와 예측값은 본문의 정적 표에서도 확인할 수 있습니다. This example needs JavaScript; the article also contains static tables of all stages.</p></noscript>
+</main>
+<script>
+(() => {
+  'use strict';
+  // These are the fixed results of the article's four-house example.
+  // The page selects a recorded stage; it does not train a model.
+  const lang = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'ko';
+  const houses = ['A', 'B', 'C', 'D'];
+  const truth = [5, 7, 11, 17];
+  const inputs = [[0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 1, 1]];
+  const stages = [
+    { prediction: [10, 10, 10, 10], mse: 21 },
+    { prediction: [6, 6, 14, 14], mse: 5, target: [-5, -3, 1, 7], correction: [-4, -4, 4, 4], feature: 0, left: [0, 1], right: [2, 3], values: [-4, 4] },
+    { prediction: [4, 8, 12, 16], mse: 1, target: [-1, 1, -3, 3], correction: [-2, 2, -2, 2], feature: 1, left: [0, 2], right: [1, 3], values: [-2, 2] },
+    { prediction: [5, 7, 11, 17], mse: 0, target: [1, -1, -1, 1], correction: [1, -1, -1, 1], feature: 2, left: [1, 2], right: [0, 3], values: [-1, 1] }
+  ];
+  const copy = {
+    ko: {
+      title: '트리 세 개로 집값을 보정하는 과정', eyebrow: '학습용 가상 데이터 · 집값 단위: 억 원',
+      intro: '집 네 채의 예측이 어떻게 달라지는지, 초기 상태부터 세 번째 트리까지 차례로 살펴봅니다.',
+      settings: ['제곱오차 회귀', '학습률: 1', '각 트리의 최대 깊이: 1'],
+      fixed: '학습률 1인 예제에서 미리 계산한 결과입니다. 버튼은 단계별 결과를 펼쳐 보여줍니다.',
+      dataSummary: '집 네 채의 입력 정보 보기', dataNote: '0은 아니오, 1은 예입니다. 집값은 실제 통계가 아닌 가상 값입니다.',
+      headers: ['집', '역세권', '리모델링', '주차장', '집값'], features: ['역세권', '리모델링', '주차장'],
+      questions: ['역세권인가?', '리모델링했나?', '주차장이 있나?'],
+      controls: '확인할 부스팅 단계 선택', initial: '초기', step: n => `${n}단계`,
+      keyboard: '버튼을 누르거나, 버튼에 초점을 둔 뒤 좌우 방향키로 단계를 바꿀 수 있습니다.',
+      stateTitle: n => n === 0 ? '초기 상태: 모든 집을 10으로 예측' : `${n}단계: 트리 ${n}의 보정을 반영`,
+      stateSummary: n => `지금까지 학습한 보정 트리: ${n}개`, mseBadge: '학습 MSE',
+      initialTitle: '보정 트리 없이 평균에서 시작합니다', initialNote: '실제 집값 네 개의 평균을 모든 집의 초기 예측값으로 사용합니다.',
+      targetTitle: '현재 예측으로 잔차를 계산합니다', targetNote: '잔차 = 실제 집값 − 현재 전체 예측. 새 트리는 이 잔차를 학습 목표로 받습니다.',
+      treeTitle: '새 트리 하나를 전체 학습합니다', fitNote: 'fit(X, 잔차) 한 번으로 이 트리의 분할 조건과 두 리프의 보정값을 정합니다.',
+      treeName: n => `이번에 추가한 트리 ${n}`, treeSize: '완성된 트리 1개 = 루트 1개 + 리프 2개', root: '루트의 조건', leaf: '리프', no: '아니오', yes: '예',
+      group: names => `집 ${names}`, mean: '리프에 저장한 보정값',
+      correctionTitle: '완성된 트리로 보정값을 예측합니다', predictNote: 'predict(X)에 집 네 채의 입력 정보를 넣으면, 각 집이 도달한 리프의 값 네 개를 받습니다.',
+      housesTitle: n => n === 0 ? '집별 초기 예측과 잔차' : '각 집의 전체 예측을 갱신합니다',
+      housesNote: n => n === 0 ? '실제 집값에서 초기 예측 10을 빼면 첫 번째 트리의 학습 목표가 됩니다.' : '새 전체 예측 = 직전 전체 예측 + 새 트리의 보정값. 학습률이 1이므로 보정값을 그대로 더합니다.',
+      house: name => `집 ${name}`, truth: value => `실제 ${value}억 원`, prior: '현재 예측', target: '목표 잔차', correction: '새 트리 보정', updated: '전체 예측', remaining: '보정 후 잔차', initialResidual: '초기 잔차',
+      mseTitle: '네 집 전체의 평균제곱오차를 계산합니다', mseNote: '각 집의 잔차를 제곱하고, 합을 집의 수 4로 나눕니다. MSE의 단위는 (억 원)²입니다.',
+      modelTitle: '현재 전체 모델을 이루는 구성 요소', initialModel: '초기 예측 10', initialDetail: '상수 1개', modelName: n => `트리 ${n}`,
+      modelNote: n => n === 0 ? '아직 보정 트리가 없습니다. 다음 단계에서 첫 번째 새 트리를 학습합니다.' : '각 테두리는 자기 루트와 리프를 가진 별도의 트리입니다. 각 트리의 보정값을 초기 예측 10에 더해서 전체 예측을 구합니다.',
+      readingNote: '이 네 집은 학습에 사용한 데이터입니다. 학습 MSE가 0이어도 새 집의 가격을 정확하게 예측한다는 뜻은 아닙니다.',
+      live: (n, p, mse) => `${n}단계. 예측은 ${p.join(', ')}. 학습 MSE는 ${mse}.`
+    },
+    en: {
+      title: 'How three trees correct house-price predictions', eyebrow: 'Fictional learning example · prices in ₩100 million',
+      intro: 'Follow the predictions for four houses from the initial value through the third correction tree.',
+      settings: ['Squared-error regression', 'Learning rate: 1', 'Maximum depth per tree: 1'],
+      fixed: 'These results were calculated in advance with a learning rate of 1. The buttons reveal each recorded stage.',
+      dataSummary: 'Show the four houses and their inputs', dataNote: '0 means no; 1 means yes. These are fictional prices, not market statistics.',
+      headers: ['House', 'Near station', 'Renovated', 'Parking', 'Price'], features: ['Near station', 'Renovated', 'Parking'],
+      questions: ['Near a station?', 'Renovated?', 'Has parking?'],
+      controls: 'Choose a boosting stage', initial: 'Initial', step: n => `Stage ${n}`,
+      keyboard: 'Select a button, or focus a button and use the left and right arrow keys.',
+      stateTitle: n => n === 0 ? 'Initial state: predict 10 for every house' : `Stage ${n}: add tree ${n}’s corrections`,
+      stateSummary: n => `Correction trees trained so far: ${n}`, mseBadge: 'Train MSE',
+      initialTitle: 'Start from the mean, with no correction trees', initialNote: 'The mean of the four actual prices is the initial prediction for every house.',
+      targetTitle: 'Calculate residuals from the current predictions', targetNote: 'Residual = actual price − current ensemble prediction. These residuals become the new tree’s targets.',
+      treeTitle: 'Train one whole new tree', fitNote: 'One fit(X, residuals) call chooses this tree’s split and the correction stored in each of its two leaves.',
+      treeName: n => `New tree ${n}`, treeSize: '1 complete tree = 1 root + 2 leaves', root: 'Root condition', leaf: 'Leaf', no: 'No', yes: 'Yes',
+      group: names => `Houses ${names}`, mean: 'Correction stored in the leaf',
+      correctionTitle: 'Use the trained tree to predict corrections', predictNote: 'predict(X) receives the original inputs for all four houses and returns one leaf value for each house.',
+      housesTitle: n => n === 0 ? 'Initial prediction and residual for each house' : 'Update the ensemble prediction for each house',
+      housesNote: n => n === 0 ? 'Subtract the initial prediction of 10 from each actual price to obtain the first tree’s targets.' : 'New ensemble prediction = previous ensemble prediction + new tree’s correction. A learning rate of 1 applies the full correction.',
+      house: name => `House ${name}`, truth: value => `Actual: ${value}`, prior: 'Current prediction', target: 'Target residual', correction: 'Tree correction', updated: 'Ensemble prediction', remaining: 'New residual', initialResidual: 'Initial residual',
+      mseTitle: 'Calculate the mean squared error over all four houses', mseNote: 'Square each residual, add the four squares, then divide by 4. The MSE unit is (₩100 million)².',
+      modelTitle: 'Components of the current ensemble', initialModel: 'Initial value: 10', initialDetail: 'One constant', modelName: n => `Tree ${n}`,
+      modelNote: n => n === 0 ? 'There are no correction trees yet. The next stage trains the first new tree.' : 'Each border contains a separate tree with its own root and leaves. Add the trees’ corrections to the initial value of 10 to obtain the ensemble prediction.',
+      readingNote: 'These four houses are training data. A training MSE of 0 does not guarantee accurate prices for new houses.',
+      live: (n, p, mse) => `Stage ${n}. Predictions: ${p.join(', ')}. Training MSE: ${mse}.`
+    }
+  };
+  const t = copy[lang];
+  document.documentElement.lang = lang;
+  document.title = t.title;
+  const get = id => document.getElementById(id);
+  const set = (id, value) => { get(id).textContent = value; };
+  const signed = value => value > 0 ? `+${value}` : value < 0 ? `−${Math.abs(value)}` : '0';
+  const plain = value => value < 0 ? `−${Math.abs(value)}` : `${value}`;
+  const term = value => value < 0 ? `(−${Math.abs(value)})` : `${value}`;
+  const vector = values => values.map((value, i) => `<div class="vector-item"><span>${houses[i]}</span><strong>${signed(value)}</strong></div>`).join('');
+  const rows = entries => entries.map(([label, value, cls = '']) => `<div${cls ? ` class="${cls}"` : ''}><dt>${label}</dt><dd>${value}</dd></div>`).join('');
+  set('eyebrow', t.eyebrow); set('page-title', t.title); set('intro', t.intro); set('fixed-note', t.fixed);
+  get('settings').innerHTML = t.settings.map(label => `<span>${label}</span>`).join('');
+  set('data-summary', t.dataSummary); set('data-note', t.dataNote);
+  get('data-table').innerHTML = `<thead><tr>${t.headers.map(label => `<th scope="col">${label}</th>`).join('')}</tr></thead><tbody>${houses.map((house, i) => `<tr><th scope="row">${house}</th>${inputs[i].map(value => `<td>${value}</td>`).join('')}<td>${truth[i]}</td></tr>`).join('')}</tbody>`;
+  get('step-controls').setAttribute('aria-label', t.controls);
+  get('step-controls').innerHTML = stages.map((stage, i) => `<button type="button" class="step-button" data-stage="${i}" aria-pressed="${i === 0}"><strong>${i === 0 ? t.initial : t.step(i)}</strong><small>MSE ${stage.mse}</small></button>`).join('');
+  set('keyboard-note', t.keyboard); set('mse-label', t.mseBadge);
+  set('initial-title', t.initialTitle); set('initial-note', t.initialNote);
+  get('initial-vector').innerHTML = houses.map(house => `<div class="vector-item"><span>${house}</span><strong>10</strong></div>`).join('');
+  set('target-title', t.targetTitle); set('target-note', t.targetNote); set('tree-title', t.treeTitle); set('fit-note', t.fitNote); set('tree-size', t.treeSize);
+  set('correction-title', t.correctionTitle); set('predict-note', t.predictNote); set('mse-title', t.mseTitle); set('mse-note', t.mseNote);
+  set('model-title', t.modelTitle); set('reading-note', t.readingNote);
+
+  function treePicture(stage, n) {
+    const colors = ['#135b91', '#825110', '#1b6c4c'];
+    const color = colors[n - 1];
+    const leftNames = stage.left.map(i => houses[i]).join(', ');
+    const rightNames = stage.right.map(i => houses[i]).join(', ');
+    const desc = `${t.treeName(n)}. ${t.questions[stage.feature]} ${t.no}: ${leftNames}, ${signed(stage.values[0])}. ${t.yes}: ${rightNames}, ${signed(stage.values[1])}.`;
+    return `<svg class="tree-svg" viewBox="0 0 360 265" role="img" aria-labelledby="tree-svg-title tree-svg-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="tree-svg-title">${t.treeName(n)}</title><desc id="tree-svg-desc">${desc}</desc>
+      <g fill="none" stroke="${color}" stroke-width="2.5"><path d="M180 82 L90 164"/><path d="M180 82 L270 164"/></g>
+      <g fill="#fff" stroke="${color}" stroke-width="2"><rect x="62" y="9" width="236" height="73" rx="9"/><rect x="18" y="164" width="144" height="85" rx="9"/><rect x="198" y="164" width="144" height="85" rx="9"/></g>
+      <g font-family="inherit" text-anchor="middle" fill="#192d34"><text x="180" y="34" font-size="19">${t.root}</text><text x="180" y="64" font-size="23" font-weight="700">${t.questions[stage.feature]}</text>
+      <text x="80" y="125" font-size="20">${t.no}</text><text x="280" y="125" font-size="20">${t.yes}</text>
+      <text x="90" y="192" font-size="20">${t.leaf} · ${leftNames}</text><text x="270" y="192" font-size="20">${t.leaf} · ${rightNames}</text>
+      <text x="90" y="231" font-size="33" font-weight="750" fill="${color}">${signed(stage.values[0])}</text><text x="270" y="231" font-size="33" font-weight="750" fill="${color}">${signed(stage.values[1])}</text></g>
+    </svg>`;
+  }
+  function icon(n) {
+    const color = ['#135b91', '#825110', '#1b6c4c'][n - 1];
+    return `<svg class="model-icon" viewBox="0 0 45 30" aria-hidden="true"><path d="M22.5 7 L8 24 M22.5 7 L37 24" fill="none" stroke="${color}" stroke-width="2"/><g fill="#fff" stroke="${color}" stroke-width="2"><circle cx="22.5" cy="7" r="5"/><rect x="3" y="20" width="10" height="8" rx="2"/><rect x="32" y="20" width="10" height="8" rx="2"/></g></svg>`;
+  }
+  let selected = 0;
+  function selectStage(n, announce = true) {
+    selected = n;
+    const stage = stages[n];
+    const residual = truth.map((value, i) => value - stage.prediction[i]);
+    document.querySelectorAll('[data-stage]').forEach(button => button.setAttribute('aria-pressed', `${Number(button.dataset.stage) === n}`));
+    set('state-title', t.stateTitle(n)); set('state-summary', t.stateSummary(n)); set('mse-value', stage.mse);
+    get('initial-panel').hidden = n !== 0;
+    ['target-panel', 'tree-panel', 'correction-panel'].forEach(id => { get(id).hidden = n === 0; });
+    get('house-number').hidden = n === 0;
+    set('houses-title', t.housesTitle(n)); set('houses-note', t.housesNote(n));
+    if (n > 0) {
+      get('target-vector').innerHTML = vector(stage.target);
+      get('correction-vector').innerHTML = vector(stage.correction);
+      set('tree-name', t.treeName(n)); get('tree-boundary').dataset.tree = `${n}`;
+      get('tree-picture').innerHTML = treePicture(stage, n);
+      get('leaf-means').innerHTML = [stage.left, stage.right].map((indices, side) => `<p><strong>${t.group(indices.map(i => houses[i]).join(', '))}</strong>${t.mean}: (${indices.map(i => term(stage.target[i])).join(' + ')}) / 2 = ${signed(stage.values[side])}</p>`).join('');
+    }
+    get('house-grid').innerHTML = houses.map((house, i) => {
+      const entries = n === 0 ? [
+        [t.prior, '10', 'updated'], [t.initialResidual, `${truth[i]} − 10 = ${signed(residual[i])}`]
+      ] : [
+        [t.target, `${truth[i]} − ${stages[n - 1].prediction[i]} = ${signed(stage.target[i])}`],
+        [t.correction, signed(stage.correction[i])],
+        [t.updated, `${stages[n - 1].prediction[i]} + ${term(stage.correction[i])} = ${stage.prediction[i]}`, 'updated'],
+        [t.remaining, `${truth[i]} − ${stage.prediction[i]} = ${signed(residual[i])}`]
+      ];
+      return `<section class="house" data-house="${house}"><div class="house-head"><h4>${t.house(house)}</h4><span class="truth">${t.truth(truth[i])}</span></div><dl>${rows(entries)}</dl></section>`;
+    }).join('');
+    const squareSum = residual.reduce((sum, value) => sum + value * value, 0);
+    const squares = residual.map((value, i) => `<span>${i === 0 ? '(' : '+ '}${term(value)}<sup>2</sup>${i === 3 ? ') / 4' : ''}</span>`).join('');
+    get('mse-formula').innerHTML = `${squares}<span>= ${squareSum} / 4</span><span>= <strong>${stage.mse}</strong></span>`;
+    get('model-list').innerHTML = `<li><strong>${t.initialModel}</strong><span>${t.initialDetail}</span></li>` + stages.slice(1, n + 1).map((model, index) => `<li class="model-${index + 1}">${icon(index + 1)}<strong>${t.modelName(index + 1)}</strong><span>${t.features[model.feature]}</span></li>`).join('');
+    set('model-note', t.modelNote(n));
+    if (announce) set('live-status', t.live(n, stage.prediction, stage.mse));
+    requestAnimationFrame(reportHeight);
+  }
+  get('step-controls').addEventListener('click', event => {
+    const button = event.target.closest('[data-stage]');
+    if (button) selectStage(Number(button.dataset.stage));
+  });
+  get('step-controls').addEventListener('keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const n = event.key === 'Home' ? 0 : event.key === 'End' ? 3 : Math.max(0, Math.min(3, selected + (event.key === 'ArrowRight' ? 1 : -1)));
+    selectStage(n);
+    document.querySelector(`[data-stage="${n}"]`).focus({ preventScroll: true });
+  });
+  // Measure the content, not scrollHeight: the latter can retain an old iframe height.
+  let lastHeight = 0;
+  function reportHeight() {
+    if (window.parent === window) return;
+    const style = getComputedStyle(document.body);
+    const height = Math.ceil(get('demo-root').getBoundingClientRect().height + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + 2);
+    if (height !== lastHeight) {
+      lastHeight = height;
+      window.parent.postMessage({ type: 'boosting-demo-height', height }, window.location.origin);
+    }
+  }
+  selectStage(0, false);
+  if ('ResizeObserver' in window) new ResizeObserver(reportHeight).observe(get('demo-root'));
+  window.addEventListener('resize', reportHeight);
+  window.addEventListener('load', reportHeight);
+  document.fonts.ready.then(reportHeight);
+})();
+</script>
+</body>
+</html>

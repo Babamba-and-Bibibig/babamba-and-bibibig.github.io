@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="632" viewBox="0 0 520 632" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">The first correction tree contains three nodes</title><desc id="desc">The entire blue boundary is one decision tree. Root node 0 has depth 0 and tests station proximity &lt;= 0.5. A true result sends houses A and B, whose feature is 0, to leaf node 1, which outputs -4. A false result sends houses C and D, whose feature is 1, to leaf node 2, which outputs +4. Both leaves have depth 1. There is one split from root to leaf and three nodes in total.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L9 5 L1 9 Z" fill="#627c7c"/></marker></defs>
+<rect width="520" height="632" rx="14" fill="#f5f8f6"/>
+<g font-family="system-ui, -apple-system, BlinkMacSystemFont, Apple SD Gothic Neo, Malgun Gothic, Noto Sans CJK KR, sans-serif" text-anchor="middle">
+<text x="260" y="43" font-size="27" font-weight="750" fill="#192d34">One complete correction tree</text>
+<text x="260" y="79" font-size="23" font-weight="400" fill="#52656b">Its outputs are price corrections</text>
+<rect x="14" y="104" width="492" height="452" rx="10" fill="#eef6fb" stroke="#135b91" stroke-width="2"/>
+<text x="260" y="141" font-size="26" font-weight="750" fill="#135b91">Whole tree 1</text>
+<rect x="70" y="165" width="380" height="117" rx="10" fill="#fff" stroke="#135b91" stroke-width="2"/>
+<text x="260" y="197" font-size="24" font-weight="650" fill="#192d34">Root · node 0</text>
+<text x="260" y="230" font-size="26" font-weight="700" fill="#192d34">Near station ≤ 0.5</text>
+<text x="260" y="263" font-size="23" font-weight="400" fill="#52656b">Depth 0</text>
+<path d="M260 282 L136 369" fill="none" stroke="#135b91" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M260 282 L384 369" fill="none" stroke="#135b91" stroke-width="2.5" stroke-linejoin="round"/>
+<text x="115" y="327" font-size="22" font-weight="600" fill="#192d34">True · value 0</text>
+<text x="405" y="327" font-size="22" font-weight="600" fill="#192d34">False · value 1</text>
+<rect x="28" y="369" width="216" height="161" rx="10" fill="#fff" stroke="#135b91" stroke-width="2"/>
+<text x="136" y="403" font-size="24" font-weight="650" fill="#192d34">Leaf · node 1</text>
+<text x="136" y="436" font-size="23" font-weight="400" fill="#192d34">Houses A, B</text>
+<text x="136" y="478" font-size="36" font-weight="750" fill="#135b91">−4</text>
+<text x="136" y="515" font-size="23" font-weight="400" fill="#52656b">Depth 1</text>
+<rect x="276" y="369" width="216" height="161" rx="10" fill="#fff" stroke="#135b91" stroke-width="2"/>
+<text x="384" y="403" font-size="24" font-weight="650" fill="#192d34">Leaf · node 2</text>
+<text x="384" y="436" font-size="23" font-weight="400" fill="#192d34">Houses C, D</text>
+<text x="384" y="478" font-size="36" font-weight="750" fill="#135b91">+4</text>
+<text x="384" y="515" font-size="23" font-weight="400" fill="#52656b">Depth 1</text>
+<text x="260" y="592" font-size="27" font-weight="750" fill="#192d34">3 nodes · 1 decision tree</text>
+<text x="260" y="623" font-size="23" font-weight="400" fill="#52656b">One edge from the root to either leaf</text>
+</g></svg>
