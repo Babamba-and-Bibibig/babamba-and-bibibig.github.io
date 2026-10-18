@@ -1,6 +1,5 @@
 +++
 title = "Weekly Paper 04: Strengths and Weaknesses of Boosting and Bagging Models"
-description = "Examining the gap between training and test accuracy through bias, variance, and L1/L2 regularization, then comparing how random forests and gradient boosting combine trees and respond to adding more trees."
 date = 2026-10-18
 slug = "weekly-paper-04"
 +++
@@ -40,33 +39,18 @@ A model achieved 99% accuracy on the training data but 70% on the test data. Is 
 
 ### 1) Google Research Notes
 
-#### How Bias and Variance Work {#research-bias-variance .research-topic}
+#### 1. How Bias and Variance Work {#research-bias-variance .research-topic}
 
-- **Bias:** How far a model's average prediction deviates from the true relationship when the model is trained on different training datasets for the same problem. A model that is too simple may be unable to represent the relevant relationship, which can lead to high bias. Trying to predict a complex, curved relationship using only a straight line is one example. This failure to learn the relevant relationship well enough is called **underfitting**.
-- **Variance:** How much a model's prediction for the same input changes when the training data changes. If a complex model follows chance fluctuations that are specific to its training data, its predictions can become sensitive to which data it was trained on. This is related to **overfitting**, where a model fits the training data well but performs poorly on new data.
+A model's total prediction error consists of bias² + variance + noise (irreducible error).
 
-In regression, if we imagine repeatedly drawing training data and new data from the same data-generating process, we can break down the average squared error as follows.
+- **Bias:** Indicates how accurately the model reflects the training data.
+  - **How it works:** If a model is too simple (for example, predicting complex curved data with a straight line), it cannot learn the underlying relationships in the data, so the difference between actual and predicted values (bias) increases. This is called **underfitting**.
+- **Variance:** Indicates how much a model's predictions fluctuate (variability) when it is given different training data.
+  - **How it works:** If a model is too complex (for example, a high-degree polynomial or a deep neural network), it memorizes all the random noise in the data. It fits the training data perfectly, but its predictions swing wildly when new data comes in. This is **overfitting**.
 
-**Average squared error = Bias² + Variance + Noise**
+#### 2. The Bias–Variance Trade-off {#research-tradeoff .research-topic}
 
-Noise refers to random variation that is difficult to predict from the input information currently available. This is a decomposition of squared error; it is not a formula that directly splits classification accuracy into three terms.
-
-#### The Trade-off Between Bias and Variance {#research-tradeoff .research-topic}
-
-A trade-off is a relationship in which improving one aspect can make another worse. Increasing model complexity allows a model to represent more complex relationships, but it also creates a risk of following chance fluctuations in the training data. Conversely, making a model too simple may make its predictions less variable while causing it to miss relevant relationships.
-
-Model complexity should therefore not be chosen solely by how well the model fits its training data. It is also necessary to check whether it predicts well on data that was not used for training. This does not mean that bias and variance always change in fixed directions as complexity increases.
-
-#### How L1 and L2 Regularization Reduce Overfitting {#research-regularization .research-topic}
-
-A loss function calculates how far predictions are from their targets. Weights are values that multiply the inputs, and the model adjusts them during training. L1 and L2 regularization add a **penalty**, or extra cost, to the loss based on the size of the weights. The model chooses weights that make the sum of the prediction error and this cost smaller.
-
-- **L1 regularization:** Adds the sum of the absolute values of the weights, multiplied by the regularization strength, to the loss. Some weights can become exactly 0, reducing the number of features the model uses.
-- **L2 regularization:** Adds the sum of the squared weights, multiplied by the regularization strength, to the loss. It limits how large the weights become overall.
-
-The regularization strength determines how much the penalty contributes. Whether a weight is positive or negative, a larger magnitude produces a larger penalty. Making weights larger to reduce the training error is therefore not always beneficial.
-
-Appropriate regularization can help reduce variance by limiting how closely the model fits its training data. Performance on new data may improve even if training performance decreases slightly. If regularization is too strong, however, the model may fail to learn relevant relationships and underfit.
+Increasing model complexity reduces bias but increases variance. Conversely, reducing complexity decreases variance but increases bias. The goal of model training is to find the optimal balance that minimizes the sum of the two.
 
 ### 2) My Answer
 
@@ -83,73 +67,48 @@ Random forests and gradient boosting both combine multiple decision trees. How d
 
 ### 1) Google Research Notes
 
-#### The Main Differences in How Trees Are Combined {#research-ensemble-comparison .research-topic}
+#### 1. The Main Differences in How Trees Are Combined {#research-ensemble-comparison .research-topic}
 
-An **ensemble** combines the predictions of several models. A single tree here means one whole decision tree, containing internal nodes where splits are made and terminal nodes that produce predictions. Increasing the number of trees is different from increasing the number of nodes within one tree.
-
-| Aspect | Random Forest | Gradient Boosting |
+| Aspect | Random Forest | Boosting |
 | --- | --- | --- |
-| How trees are combined | Combines the results of multiple trees using a bagging-based approach | Adds corrections from new trees sequentially |
-| Training order | Each tree is trained without waiting for the results of other trees | The next tree is trained based on the predictions of the complete model built so far |
-| What each tree learns | Each tree learns to predict the original targets | Each tree learns corrections that reduce the errors of the current complete model |
-| How data is used | By default, rows are sampled with replacement, and features are randomly selected at each split | Uses the input features but recalculates the correction targets at each stage |
-| How predictions are combined | Averages predictions for regression; uses voting or probability averaging for classification | Accumulates corrections multiplied by the learning rate; for classification, converts the accumulated scores into probabilities and classes |
-| Main effect | Reduces prediction variance by combining multiple trees | Helps reduce bias by correcting the remaining errors |
+| Ensemble type | Bagging: Bootstrap + Aggregation | Sequential boosting |
+| Tree creation order | Independent: multiple trees are created simultaneously in parallel | Sequential: each new tree corrects the errors of the previous tree |
+| Training data | Different samples drawn with replacement (bootstrap sampling) + random feature selection | Trains with higher weights on data the previous model got wrong (large errors) |
+| How results are combined | Majority voting for classification or averaging for regression | Sums the weighted predictions of each tree |
+| Main purpose | Reduces variance: prevents overfitting and improves stability | Reduces bias: aims for high accuracy by reducing prediction errors |
 
-How classification results are combined varies by implementation. **The random forest classifier in scikit-learn averages each tree's predicted probabilities for each class, then selects the class with the highest average probability.** A class is a category that the model distinguishes.
+#### 2. Detailed Comparison {#research-ensemble-details .research-topic}
 
-#### Strengths and Weaknesses of Random Forests and Gradient Boosting {#research-ensemble-details .research-topic}
+##### ① Random Forest (Bagging-based) {.research-detail}
 
-##### 1. Random Forests: Combining the Results of Separately Trained Trees {.research-detail}
+- **How it works:** Multiple independent decision trees are created simultaneously using subsamples drawn with replacement from the original data. At each split node, only some features are randomly selected, rather than using all features, to make the trees more diverse.
+- **How results are combined:** The results from all trees are collected, and the final decision is made by majority vote for classification or by averaging for regression.
+- **Advantages:** Individual trees have a low risk of noise or overfitting, parallel processing is easy, and hyperparameter tuning is relatively easy.
 
-Bagging is short for **Bootstrap Aggregating**. Training datasets are created by **sampling with replacement**, which allows the same row from the original data to be selected more than once. Models are then trained separately, and their results are combined.
+##### ② Boosting (Boosting-based) {.research-detail}
 
-Random forests also add randomness to feature selection. Features are the input attributes used for prediction. Whenever a split condition is chosen within a tree, some features are selected at random as candidates. Differences in the rows and features considered can cause the trees to produce different predictions. Settings control how many rows and features are used.
+- **How it works:** After the first tree is created, greater weight is assigned to the data it did not predict well (errors). The second tree focuses on learning these highly weighted errors, and this process is repeated sequentially (for example, using gradient descent).
+- **How results are combined:** Weights are assigned to the trees' predictions in the order the trees were created, and the final prediction is obtained by accumulating them.
+- **Advantages:** Generally achieves higher predictive accuracy than random forests and learns complex patterns in the data well.
+- **Disadvantages:** Trees must be created sequentially, making parallel processing difficult and training time long. The risk of overfitting noisy data is relatively high.
 
-Each tree learns to predict the original targets from the data it is given. For a new input, each tree produces a prediction, and the complete model combines the results through averaging or voting.
+#### What Happens When More Trees Are Added {#research-number-of-trees .research-topic}
 
-- **Strengths:** Combining the results of different trees can reduce how strongly the final result depends on a single tree's prediction. Trees do not need to wait for earlier trees to finish training, so they can be trained in parallel.
-- **Points to watch:** Individual trees can still overfit the training data. If many trees make similar mistakes, averaging may not reduce those mistakes enough. Memory use and computation also increase with the number and size of the trees.
+##### 1. Bagging and Parallel Combination {.research-detail}
 
-##### 2. Gradient Boosting: Correcting the Errors Remaining in the Overall Prediction {.research-detail}
+Bagging, represented by random forests, is a parallel combination method that trains multiple trees independently and then averages their predictions or takes a majority vote.
 
-Gradient boosting trains each new tree based on **the predictions of the complete model**, which combines the trees built so far. It does not consider only the errors of the immediately preceding tree.
+- **There is no risk of overfitting.** Even if the number of trees is increased without limit, overfitting caused by increasing model complexity does not occur.
+- **Variance decreases, and error converges to a particular lower bound.** As trees are added, the randomness (noise) of individual trees cancels out, stabilizing predictions. Beyond a certain number of trees, performance reaches a plateau where it neither improves nor worsens.
+- **Only computing costs increase.** Performance stagnates while memory usage and computation time increase unnecessarily.
 
-For regression using squared error, the process starts from an initial prediction and repeats the following steps. A **residual** is the actual value minus the current prediction.
+##### 2. Boosting and Sequential Combination {.research-detail}
 
-1. Use the current complete model to predict values for the training data, then calculate the residual for each row.
-2. Train **one new decision tree** to predict these residuals using the original input features.
-3. Multiply the new tree's predictions by the learning rate and add them to the existing overall predictions. The learning rate determines how much of the new tree's correction is applied.
-4. Recalculate the residuals using the updated overall predictions, then train the next tree.
+Boosting, represented by Gradient Boosting, XGBoost, and LightGBM, is a sequential combination method in which the next tree corrects the errors of the previous tree.
 
-**New overall prediction = Existing overall prediction + Learning rate × New tree's prediction**
-
-In general, the correction targets are calculated according to the loss function. They are obtained from **the negative gradient of the loss**, which indicates the direction and magnitude of a change in the current predictions that would reduce the loss. With squared-error regression, this leads to learning the residuals.
-
-- **Strengths:** New trees can improve predictive performance by correcting the parts that the current complete model does not predict well enough.
-- **Points to watch:** Each stage needs the preceding overall predictions, so the trees cannot all be trained independently as they can in a random forest. The learning rate, tree size, and number of trees need to be considered together. Repeated corrections may also fit chance fluctuations in the training data.
-
-Sequential training alone does not mean that boosting is always slower. Actual speed depends on the size of the data and the implementation. Neither method can be assumed to always have better predictive performance.
-
-#### What Happens If We Keep Adding Trees? {#research-number-of-trees .research-topic}
-
-##### 1. Random Forests {.research-detail}
-
-If only the number of trees is increased while other settings, such as tree depth, stay the same, averaging more predictions tends to reduce the influence of a small number of trees. However, this does not eliminate mistakes that the trees have in common.
-
-Once there are enough trees, adding more often produces smaller performance gains. This does not mean that the actual validation score improves every time or becomes completely fixed after a certain point. Scores can rise and fall as trees are added.
-
-Random forests are not immune to overfitting. **Increasing the number of trees is different from making individual trees deeper.** Even after performance gains become small, adding trees increases the number of trees that must be stored and the computation needed to make predictions.
-
-##### 2. Gradient Boosting {.research-detail}
-
-Adding trees in gradient boosting means continuing to correct the current predictions. This can further reduce the training error, but predictive performance on new data may worsen if the model starts fitting chance fluctuations that exist only in the training data.
-
-Training performance and **validation performance** should therefore be examined together when adding trees. Validation data is not used directly for training; it is used to choose the model's settings. Its role is different from that of the test data used for the final evaluation.
-
-**Early stopping** stops training when validation performance has not improved enough for a specified number of iterations. It can help reduce unnecessary tree additions and overfitting. The number of trees and the learning rate can also be chosen based on validation performance, so early stopping is not the only option.
-
-Adding many trees does not necessarily cause overfitting. Even with the same number of trees, results depend on the learning rate and the size of each tree, so these settings need to be considered together.
+- **The risk of overfitting is very high.** If trees keep being added, the model learns even the tiniest amounts of noise and all the outliers in the training data.
+- **Bias becomes extremely low, but variance increases.** The model reaches a point where it memorizes the patterns in the data perfectly. Its training error approaches 0, but its predictive performance on new data (test data) deteriorates drastically.
+- **Early stopping is essential to prevent this.** Further trees must be prevented from being added once the loss on the validation data no longer decreases.
 
 ### 2) My Answer
 
