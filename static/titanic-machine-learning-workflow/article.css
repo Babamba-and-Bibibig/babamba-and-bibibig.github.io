@@ -1,0 +1,53 @@
+/* Applied only to this article and its English translation. */
+#main-content article .titanic-figure {
+  margin: 1.8rem auto;
+  max-width: 100%;
+}
+#main-content article .titanic-figure img {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 12px;
+}
+#main-content article .titanic-figure figcaption {
+  max-width: 38rem;
+  margin: .8rem auto 0;
+  font-size: .94em;
+  line-height: 1.7;
+}
+#main-content article .titanic-formula {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: .8rem 1rem;
+  border-left: 3px solid var(--accent-color, #ffb66d);
+  font-variant-numeric: tabular-nums;
+  line-height: 2;
+}
+#main-content article .titanic-code {
+  margin: 1.3rem 0;
+  max-width: 100%;
+}
+#main-content article .titanic-code > summary {
+  cursor: pointer;
+  padding: .8rem 0;
+  font-weight: 650;
+}
+#main-content article table {
+  font-variant-numeric: tabular-nums;
+}
+#main-content article th,
+#main-content article td {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 640px) {
+  #main-content article table {
+    display: block;
+    position: relative;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+}

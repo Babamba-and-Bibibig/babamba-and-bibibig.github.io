@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="1420" viewBox="0 0 560 1420" role="img" aria-labelledby="workflow-title workflow-desc" xml:lang="ko">
+  <title id="workflow-title">타이타닉 모델의 개발, 최종 평가와 제출 과정</title>
+  <desc id="workflow-desc">정답이 있는 승객 기록을 개발용 80%와 최종 평가용 20%로 먼저 나눈다. 개발용 영역 안에서 EDA와 특성 후보를 검토하고 교차 검증을 한다. 각 묶음의 훈련 행으로 전처리 기준과 모델을 학습하며, 내부 검증 행으로 평가한다. 개선은 이 영역 안에서만 반복한다. 설정을 확정하고 개발용 전체로 학습한 다음, 따로 보관한 20%로 최종 평가한다. 이후 정답이 있는 전체 데이터로 제출용 전처리와 모델을 다시 학습하고, 캐글 test.csv의 예측을 submission.csv로 저장한다. 80 대 20은 이 글에서 선택한 분할 비율이다.</desc>
+  <defs>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L9 5 L1 9 Z" fill="#75d6c4"/></marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L9 5 L1 9 Z" fill="#f1b47d"/></marker>
+  </defs>
+  <rect width="560" height="1420" rx="20" fill="#191f25"/>
+  <rect id="development-only" x="24" y="176" width="352" height="700" rx="18" fill="#202d32" stroke="#47746f" stroke-width="2"/>
+  <g fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path id="split-to-development" d="M280 116 V144 H200 V176" stroke="#75d6c4" marker-end="url(#arrow-teal)"/>
+    <path id="split-to-holdout" d="M280 144 H469 V176" stroke="#f1b47d" marker-end="url(#arrow-orange)"/>
+    <path id="development-to-eda" d="M200 236 V252 H224 V272" stroke="#75d6c4" marker-end="url(#arrow-teal)"/>
+    <path id="eda-to-cross-validation" d="M224 356 V414" stroke="#75d6c4" marker-end="url(#arrow-teal)"/>
+    <path id="cross-validation-to-settings" d="M224 678 V742" stroke="#75d6c4" marker-end="url(#arrow-teal)"/>
+    <path id="revise-within-development" d="M224 712 H68 V382 H164 V356" stroke="#75d6c4" marker-end="url(#arrow-teal)"/>
+    <path id="frozen-model-to-final-evaluation" d="M224 846 V904 H280 V938" stroke="#75d6c4" marker-end="url(#arrow-teal)"/>
+    <path id="reserved-holdout-to-final-evaluation" d="M469 308 V332 H516 V992 H468" stroke="#f1b47d" stroke-dasharray="8 7" marker-end="url(#arrow-orange)"/>
+    <path id="evaluation-to-submission-refit" d="M280 1046 V1092" stroke="#75d6c4" marker-end="url(#arrow-teal)"/>
+    <path id="submission-model-to-predictions" d="M280 1202 V1248" stroke="#75d6c4" marker-end="url(#arrow-teal)"/>
+  </g>
+  <g stroke-width="1.8">
+    <rect id="labeled-records" x="56" y="24" width="448" height="92" rx="14" fill="#29343d" stroke="#62727d"/>
+    <rect id="reserved-final-holdout" x="402" y="176" width="134" height="132" rx="14" fill="#352e29" stroke="#c99b73"/>
+    <rect id="eda-and-feature-candidates" x="96" y="272" width="256" height="84" rx="12" fill="#263c3f" stroke="#67a99f"/>
+    <rect id="cross-validation" x="96" y="414" width="256" height="264" rx="14" fill="#263c3f" stroke="#67a99f"/>
+    <rect id="fold-training-fit" x="112" y="480" width="224" height="80" rx="10" fill="#1e2c32" stroke="#65818a"/>
+    <rect id="fold-validation" x="112" y="598" width="224" height="60" rx="10" fill="#1e2c32" stroke="#65818a"/>
+    <rect id="settings-fixed-development-refit" x="96" y="742" width="256" height="104" rx="12" fill="#29373b" stroke="#77b1a9"/>
+    <rect id="final-evaluation" x="92" y="938" width="376" height="108" rx="14" fill="#352e29" stroke="#c99b73"/>
+    <rect id="refit-on-all-labeled-records" x="56" y="1092" width="448" height="110" rx="14" fill="#263c3f" stroke="#67a99f"/>
+    <rect id="predict-and-export" x="56" y="1248" width="448" height="136" rx="14" fill="#29343d" stroke="#62727d"/>
+  </g>
+  <path id="fold-training-to-validation" d="M224 560 V598" fill="none" stroke="#75d6c4" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <rect x="83" y="366" width="74" height="31" rx="5" fill="#202d32"/>
+
+  <g text-anchor="middle" font-family="Noto Sans KR, Pretendard, Noto Sans CJK KR, Apple SD Gothic Neo, Malgun Gothic, system-ui, sans-serif">
+    <text x="280" y="79" font-size="27" font-weight="600" fill="#f1f5f5">정답이 있는 승객 기록</text>
+    <text x="200" y="222" font-size="28" font-weight="700" fill="#f1f5f5">개발용 80%</text>
+    <text x="469" y="212" font-size="23" font-weight="600" fill="#f1f5f5">최종 평가용</text>
+    <text x="469" y="253" font-size="32" font-weight="700" fill="#f4c497">20%</text>
+    <text x="469" y="284" font-size="22" font-weight="500" fill="#d8cbbf">따로 보관</text>
+    <text x="224" y="323" font-size="26" font-weight="600" fill="#f1f5f5">EDA · 특성 후보</text>
+    <text x="224" y="454" font-size="28" font-weight="700" fill="#f1f5f5">교차 검증</text>
+    <text x="224" y="513" font-size="25" font-weight="500" fill="#f1f5f5">묶음별 훈련 행</text>
+    <text x="224" y="544" font-size="24" font-weight="600" fill="#f1f5f5">전처리·모델 학습</text>
+    <text x="224" y="636" font-size="25" font-weight="600" fill="#f1f5f5">내부 검증 평가</text>
+    <text x="120" y="389" font-size="24" font-weight="600" fill="#8dddd0">개선</text>
+    <text x="224" y="782" font-size="28" font-weight="700" fill="#f1f5f5">설정 확정</text>
+    <text x="224" y="820" font-size="23" font-weight="500" fill="#c5d5d8">개발용 전체로 학습</text>
+    <text x="280" y="980" font-size="29" font-weight="700" fill="#f1f5f5">최종 평가</text>
+    <text x="280" y="1018" font-size="24" font-weight="500" fill="#e0cdbd">남겨 둔 20%로 확인</text>
+    <text x="280" y="1138" font-size="28" font-weight="700" fill="#f1f5f5">제출용 모델 재학습</text>
+    <text x="280" y="1176" font-size="24" font-weight="500" fill="#c5d5d8">정답 있는 전체 데이터</text>
+    <text x="280" y="1292" font-size="28" font-weight="700" fill="#f1f5f5">캐글 test.csv 예측</text>
+    <text x="280" y="1329" font-size="23" font-weight="500" fill="#c5d5d8">PassengerId · Survived</text>
+    <text x="280" y="1364" font-size="27" font-weight="600" fill="#8dddd0">submission.csv</text>
+  </g>
+</svg>
