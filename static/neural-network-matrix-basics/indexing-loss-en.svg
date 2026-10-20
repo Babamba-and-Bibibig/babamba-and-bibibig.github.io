@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="800" viewBox="0 0 680 800" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">Use y to select one true-class cell from each row</title><desc id="desc">Pair row indices [0,1,2,3] with targets [0,1,1,0]. Each selected probability is about 0.7311 and each loss about 0.3133.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>
+<style>text{font-family:"Noto Sans KR","Noto Sans CJK KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums} .num{font-family:ui-monospace,SFMono-Regular,Consolas,"DejaVu Sans Mono",monospace}</style>
+<rect width="680" height="800" rx="18" fill="#f6f8fc"/>
+<text x="28" y="41" fill="#16243b" font-size="24" font-weight="700" text-anchor="start" xml:space="preserve">Use y to select one true-class cell from each row</text>
+<text x="28" y="79" fill="#52627b" font-size="20" font-weight="400" text-anchor="start" xml:space="preserve" class="num">correct_p = probabilities[row_indices, y]</text>
+<text x="180" y="134" fill="#6d28d9" font-size="19" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">probabilities (4, 2)</text>
+<text x="437" y="134" fill="#1d4ed8" font-size="23" font-weight="700" text-anchor="middle" xml:space="preserve">y</text>
+<text x="583" y="134" fill="#0f766e" font-size="17" font-weight="700" text-anchor="middle" xml:space="preserve">Selected cell</text>
+<rect x="74" y="193" width="112" height="49" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1"/>
+<text x="130.0" y="225.2" fill="#0f766e" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0.7311</text>
+<rect x="186" y="193" width="112" height="49" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="242.0" y="225.2" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0.2689</text>
+<text x="62" y="223.5" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">0</text>
+<rect x="74" y="242" width="112" height="49" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="130.0" y="274.2" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0.2689</text>
+<rect x="186" y="242" width="112" height="49" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1"/>
+<text x="242.0" y="274.2" fill="#0f766e" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0.7311</text>
+<text x="62" y="272.5" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">1</text>
+<rect x="74" y="291" width="112" height="49" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="130.0" y="323.2" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0.2689</text>
+<rect x="186" y="291" width="112" height="49" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1"/>
+<text x="242.0" y="323.2" fill="#0f766e" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0.7311</text>
+<text x="62" y="321.5" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">2</text>
+<rect x="74" y="340" width="112" height="49" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1"/>
+<text x="130.0" y="372.2" fill="#0f766e" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0.7311</text>
+<rect x="186" y="340" width="112" height="49" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="242.0" y="372.2" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0.2689</text>
+<text x="62" y="370.5" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">3</text>
+<text x="130.0" y="181" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">col 0: same</text>
+<text x="242.0" y="181" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">col 1: different</text>
+<rect x="415" y="193" width="45" height="49" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="437.5" y="225.2" fill="#1d4ed8" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="415" y="242" width="45" height="49" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="437.5" y="274.2" fill="#1d4ed8" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<rect x="415" y="291" width="45" height="49" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="437.5" y="323.2" fill="#1d4ed8" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<rect x="415" y="340" width="45" height="49" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="437.5" y="372.2" fill="#1d4ed8" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="583" y="225" fill="#0f766e" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(0, 0)</text>
+<text x="583" y="274" fill="#0f766e" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(1, 1)</text>
+<text x="583" y="323" fill="#0f766e" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(2, 1)</text>
+<text x="583" y="372" fill="#0f766e" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(3, 0)</text>
+<text x="30" y="174" fill="#52627b" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">row</text>
+<rect x="28" y="425" width="624" height="112" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="46" y="456" fill="#1d4ed8" font-size="20" font-weight="700" text-anchor="start" xml:space="preserve" class="num">row_indices:  [0, 1, 2, 3]</text>
+<text x="46" y="489" fill="#0f766e" font-size="20" font-weight="700" text-anchor="start" xml:space="preserve" class="num">y:            [0, 1, 1, 0]</text>
+<text x="46" y="518" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">Match the row and column indices at the same position.</text>
+<line x1="340" y1="545" x2="340" y2="565" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="28" y="580" width="624" height="129" rx="12" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+<text x="46" y="611" fill="#6d28d9" font-size="17" font-weight="700" text-anchor="start" xml:space="preserve" class="num">correct_p ≈ [0.7311, 0.7311, 0.7311, 0.7311]</text>
+<text x="46" y="649" fill="#16243b" font-size="18" font-weight="400" text-anchor="start" xml:space="preserve" class="num">−log → [0.3133, 0.3133, 0.3133, 0.3133]</text>
+<text x="46" y="686" fill="#6d28d9" font-size="21" font-weight="700" text-anchor="start" xml:space="preserve">Mean of the four losses ≈ 0.3133</text>
+<text x="28" y="749" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">Use y to evaluate the true class. pred is the predicted class.</text>
+<text x="28" y="774" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">For incorrect predictions, the two indices select different cells.</text>
+</svg>

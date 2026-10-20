@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="695" viewBox="0 0 680 695" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">Add the same two biases to every sample row</title><desc id="desc">Add b2=[1,0] to each row of H @ W2. The first column receives 1 and the second receives 0, yielding S.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>
+<style>text{font-family:"Noto Sans KR","Noto Sans CJK KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums} .num{font-family:ui-monospace,SFMono-Regular,Consolas,"DejaVu Sans Mono",monospace}</style>
+<rect width="680" height="695" rx="18" fill="#f6f8fc"/>
+<text x="28" y="41" fill="#16243b" font-size="24" font-weight="700" text-anchor="start" xml:space="preserve">Add the same two biases to every sample row</text>
+<text x="28" y="76" fill="#52627b" font-size="21" font-weight="400" text-anchor="start" xml:space="preserve" class="num">S = H @ W2 + b2</text>
+<text x="154" y="127" fill="#b45309" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">H @ W2</text>
+<text x="496" y="127" fill="#0f766e" font-size="24" font-weight="700" text-anchor="middle" xml:space="preserve">S</text>
+<text x="154" y="157" fill="#52627b" font-size="17" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">(4, 2)</text>
+<text x="496" y="157" fill="#52627b" font-size="17" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">(4, 2)</text>
+<rect x="91" y="196" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="122.5" y="226.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="154" y="196" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="185.5" y="226.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="79" y="225.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">0</text>
+<rect x="91" y="242" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="122.5" y="272.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">−1</text>
+<rect x="154" y="242" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="185.5" y="272.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<text x="79" y="271.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">1</text>
+<rect x="91" y="288" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="122.5" y="318.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">−1</text>
+<rect x="154" y="288" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="185.5" y="318.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<text x="79" y="317.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">2</text>
+<rect x="91" y="334" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="122.5" y="364.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="154" y="334" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="185.5" y="364.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="79" y="363.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">3</text>
+<rect x="432" y="196" width="63" height="46" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1"/>
+<text x="463.5" y="226.7" fill="#0f766e" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<rect x="495" y="196" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="526.5" y="226.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="420" y="225.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">0</text>
+<rect x="432" y="242" width="63" height="46" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1"/>
+<text x="463.5" y="272.7" fill="#0f766e" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="495" y="242" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="526.5" y="272.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<text x="420" y="271.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">1</text>
+<rect x="432" y="288" width="63" height="46" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1"/>
+<text x="463.5" y="318.7" fill="#0f766e" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="495" y="288" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="526.5" y="318.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<text x="420" y="317.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">2</text>
+<rect x="432" y="334" width="63" height="46" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1"/>
+<text x="463.5" y="364.7" fill="#0f766e" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<rect x="495" y="334" width="63" height="46" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="526.5" y="364.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="420" y="363.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">3</text>
+<text x="463.5" y="184" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">same</text>
+<text x="526.5" y="184" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">different</text>
+<text x="312" y="226" fill="#1d4ed8" font-size="19" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">+ [1, 0]</text>
+<text x="312" y="272" fill="#1d4ed8" font-size="19" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">+ [1, 0]</text>
+<text x="312" y="318" fill="#1d4ed8" font-size="19" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">+ [1, 0]</text>
+<text x="312" y="364" fill="#1d4ed8" font-size="19" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">+ [1, 0]</text>
+<text x="154" y="414" fill="#52627b" font-size="17" font-weight="400" text-anchor="middle" xml:space="preserve">Weighted sums</text>
+<text x="496" y="414" fill="#52627b" font-size="17" font-weight="400" text-anchor="middle" xml:space="preserve">Sums + biases</text>
+<rect x="28" y="443" width="624" height="134" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="48" y="475" fill="#1d4ed8" font-size="19" font-weight="700" text-anchor="start" xml:space="preserve" class="num">b2.shape = (2,)</text>
+<text x="48" y="510" fill="#16243b" font-size="18" font-weight="400" text-anchor="start" xml:space="preserve">First column: −1 + 1 = 0    Second: 1 + 0 = 1</text>
+<text x="48" y="548" fill="#0f766e" font-size="21" font-weight="700" text-anchor="start" xml:space="preserve" class="num">(4, 2) + (2,) → (4, 2)</text>
+<text x="28" y="619" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">Broadcasting determines how arrays with different shapes align.</text>
+<text x="28" y="644" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">Here, the same two b2 values apply to every row.</text>
+<text x="28" y="669" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">No separate array with four copies of b2 needs to be created.</text>
+</svg>

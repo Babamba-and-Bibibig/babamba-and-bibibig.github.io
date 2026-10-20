@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="620" viewBox="0 0 680 620" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">한 행과 한 열을 계산하면 결과 한 칸이 된다</title><desc id="desc">X의 행 번호 1과 W1의 열 번호 1을 선택한다. 같은 순서의 숫자를 곱해 더하면 Z1의 행 1, 열 1 값인 1이 된다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>
+<style>text{font-family:"Noto Sans KR","Noto Sans CJK KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums} .num{font-family:ui-monospace,SFMono-Regular,Consolas,"DejaVu Sans Mono",monospace}</style>
+<rect width="680" height="620" rx="18" fill="#f6f8fc"/>
+<text x="28" y="41" fill="#16243b" font-size="24" font-weight="700" text-anchor="start" xml:space="preserve">한 행과 한 열을 계산하면 결과 한 칸이 된다</text>
+<text x="28" y="75" fill="#52627b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">행·열 번호는 0부터 시작한다. b1 = [0, 0]이다.</text>
+<text x="96" y="122" fill="#1d4ed8" font-size="24" font-weight="700" text-anchor="middle" xml:space="preserve">X</text>
+<text x="96" y="149" fill="#52627b" font-size="17" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">(4, 2)</text>
+<text x="336" y="122" fill="#b45309" font-size="24" font-weight="700" text-anchor="middle" xml:space="preserve">W1</text>
+<text x="336" y="149" fill="#52627b" font-size="17" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">(2, 2)</text>
+<text x="568" y="122" fill="#0f766e" font-size="24" font-weight="700" text-anchor="middle" xml:space="preserve">Z1</text>
+<text x="568" y="149" fill="#52627b" font-size="17" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">(4, 2)</text>
+<rect x="40" y="201" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="68.0" y="230.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="96" y="201" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="124.0" y="230.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="28" y="229.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">0</text>
+<rect x="40" y="245" width="56" height="44" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="68.0" y="274.7" fill="#1d4ed8" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="96" y="245" width="56" height="44" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="124.0" y="274.7" fill="#1d4ed8" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<text x="28" y="273.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">1</text>
+<rect x="40" y="289" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="68.0" y="318.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<rect x="96" y="289" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="124.0" y="318.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="28" y="317.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">2</text>
+<rect x="40" y="333" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="68.0" y="362.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<rect x="96" y="333" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="124.0" y="362.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<text x="28" y="361.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">3</text>
+<text x="68.0" y="189" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">x1</text>
+<text x="124.0" y="189" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">x2</text>
+<rect x="280" y="201" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="308.0" y="230.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<rect x="336" y="201" width="56" height="44" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1"/>
+<text x="364.0" y="230.7" fill="#b45309" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">−1</text>
+<text x="268" y="229.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">x1</text>
+<rect x="280" y="245" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="308.0" y="274.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">−1</text>
+<rect x="336" y="245" width="56" height="44" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1"/>
+<text x="364.0" y="274.7" fill="#b45309" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<text x="268" y="273.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">x2</text>
+<text x="308.0" y="189" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">j=0</text>
+<text x="364.0" y="189" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">j=1</text>
+<rect x="512" y="201" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="540.0" y="230.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="568" y="201" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="596.0" y="230.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="500" y="229.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">0</text>
+<rect x="512" y="245" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="540.0" y="274.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">−1</text>
+<rect x="568" y="245" width="56" height="44" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1"/>
+<text x="596.0" y="274.7" fill="#0f766e" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<text x="500" y="273.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">1</text>
+<rect x="512" y="289" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="540.0" y="318.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<rect x="568" y="289" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="596.0" y="318.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">−1</text>
+<text x="500" y="317.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">2</text>
+<rect x="512" y="333" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="540.0" y="362.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="568" y="333" width="56" height="44" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="596.0" y="362.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="500" y="361.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">3</text>
+<text x="540.0" y="189" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">j=0</text>
+<text x="596.0" y="189" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">j=1</text>
+<text x="207" y="273" fill="#52627b" font-size="32" font-weight="700" text-anchor="middle" xml:space="preserve">@</text>
+<text x="451" y="273" fill="#52627b" font-size="31" font-weight="700" text-anchor="middle" xml:space="preserve">=</text>
+<text x="96" y="402" fill="#1d4ed8" font-size="17" font-weight="700" text-anchor="middle" xml:space="preserve">샘플 한 개</text>
+<text x="337" y="324" fill="#b45309" font-size="16" font-weight="700" text-anchor="middle" xml:space="preserve">뉴런 한 개의 가중치</text>
+<text x="568" y="402" fill="#0f766e" font-size="17" font-weight="700" text-anchor="middle" xml:space="preserve">결과 한 칸</text>
+<rect x="28" y="434" width="624" height="101" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="46" y="465" fill="#16243b" font-size="20" font-weight="400" text-anchor="start" xml:space="preserve" class="num">Z1[1, 1] = 0 × (−1) + 1 × 1 + 0</text>
+<text x="46" y="506" fill="#0f766e" font-size="20" font-weight="700" text-anchor="start" xml:space="preserve" class="num">             = 0 + 1 + 0 = 1</text>
+<text x="28" y="569" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">왼쪽의 특징 2개와 오른쪽의 가중치 2개가 순서대로 짝을 이룬다.</text>
+<text x="28" y="594" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">다른 칸도 같은 방법으로 계산한다. (4, 2) @ (2, 2) → (4, 2)</text>
+</svg>

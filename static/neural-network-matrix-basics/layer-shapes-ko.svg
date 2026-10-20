@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="970" viewBox="0 0 680 970" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">층을 지나도 샘플 수는 그대로 유지된다</title><desc id="desc">샘플 2개, 입력 특징 4개에서 은닉 뉴런 5개, 6개와 출력 뉴런 3개를 통과한다. 가중치는 (4,5), (5,6), (6,3)이며 편향 포함 파라미터는 82개다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>
+<style>text{font-family:"Noto Sans KR","Noto Sans CJK KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums} .num{font-family:ui-monospace,SFMono-Regular,Consolas,"DejaVu Sans Mono",monospace}</style>
+<rect width="680" height="970" rx="18" fill="#f6f8fc"/>
+<text x="28" y="41" fill="#16243b" font-size="24" font-weight="700" text-anchor="start" xml:space="preserve">층을 지나도 샘플 수는 그대로 유지된다</text>
+<text x="28" y="78" fill="#52627b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">앞의 XOR와 별개로, 층의 크기를 확인하는 예제다.</text>
+<rect x="28" y="114" width="624" height="152" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="44" y="129" width="31" height="31" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1"/>
+<text x="59" y="152" fill="#1d4ed8" font-size="18" font-weight="700" text-anchor="middle" xml:space="preserve">1</text>
+<text x="89" y="153" fill="#1d4ed8" font-size="21" font-weight="700" text-anchor="start" xml:space="preserve">첫 번째 은닉층: 뉴런 5개</text>
+<text x="132" y="191" fill="#52627b" font-size="18" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">X_demo</text>
+<text x="132" y="224" fill="#1d4ed8" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(2, 4)</text>
+<text x="337" y="191" fill="#52627b" font-size="18" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">W1_demo</text>
+<text x="337" y="224" fill="#1d4ed8" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(4, 5)</text>
+<text x="548" y="191" fill="#52627b" font-size="18" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">H1_demo</text>
+<text x="548" y="224" fill="#1d4ed8" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(2, 5)</text>
+<text x="230" y="224" fill="#1d4ed8" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">@</text>
+<text x="441" y="224" fill="#1d4ed8" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">→</text>
+<text x="49" y="252" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">가중치 + 편향: 4 × 5 + 5 = 25</text>
+<rect x="28" y="295" width="624" height="152" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="44" y="310" width="31" height="31" rx="8" fill="#ccfbf1" stroke="#0f766e" stroke-width="1"/>
+<text x="59" y="333" fill="#0f766e" font-size="18" font-weight="700" text-anchor="middle" xml:space="preserve">2</text>
+<text x="89" y="334" fill="#0f766e" font-size="21" font-weight="700" text-anchor="start" xml:space="preserve">두 번째 은닉층: 뉴런 6개</text>
+<text x="132" y="372" fill="#52627b" font-size="18" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">H1_demo</text>
+<text x="132" y="405" fill="#0f766e" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(2, 5)</text>
+<text x="337" y="372" fill="#52627b" font-size="18" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">W2_demo</text>
+<text x="337" y="405" fill="#0f766e" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(5, 6)</text>
+<text x="548" y="372" fill="#52627b" font-size="18" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">H2_demo</text>
+<text x="548" y="405" fill="#0f766e" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(2, 6)</text>
+<text x="230" y="405" fill="#0f766e" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">@</text>
+<text x="441" y="405" fill="#0f766e" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">→</text>
+<text x="49" y="433" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">가중치 + 편향: 5 × 6 + 6 = 36</text>
+<rect x="28" y="476" width="624" height="152" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="44" y="491" width="31" height="31" rx="8" fill="#ede9fe" stroke="#6d28d9" stroke-width="1"/>
+<text x="59" y="514" fill="#6d28d9" font-size="18" font-weight="700" text-anchor="middle" xml:space="preserve">3</text>
+<text x="89" y="515" fill="#6d28d9" font-size="21" font-weight="700" text-anchor="start" xml:space="preserve">출력층: 뉴런 3개</text>
+<text x="132" y="553" fill="#52627b" font-size="18" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">H2_demo</text>
+<text x="132" y="586" fill="#6d28d9" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(2, 6)</text>
+<text x="337" y="553" fill="#52627b" font-size="18" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">W3_demo</text>
+<text x="337" y="586" fill="#6d28d9" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(6, 3)</text>
+<text x="548" y="553" fill="#52627b" font-size="18" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">S_demo</text>
+<text x="548" y="586" fill="#6d28d9" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">(2, 3)</text>
+<text x="230" y="586" fill="#6d28d9" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">@</text>
+<text x="441" y="586" fill="#6d28d9" font-size="21" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">→</text>
+<text x="49" y="614" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">가중치 + 편향: 6 × 3 + 3 = 21</text>
+<line x1="340" y1="272" x2="340" y2="287" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="340" y1="453" x2="340" y2="468" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="28" y="658" width="624" height="124" rx="12" fill="#ffedd5" stroke="#fed7aa" stroke-width="1"/>
+<text x="47" y="691" fill="#b45309" font-size="18" font-weight="700" text-anchor="start" xml:space="preserve">이전 결과의 열 k가 다음 입력의 특징 k가 된다.</text>
+<text x="47" y="728" fill="#16243b" font-size="18" font-weight="400" text-anchor="start" xml:space="preserve" class="num">H1_demo[i, 2] × W2_demo[2, j]</text>
+<text x="47" y="759" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">이 곱은 H2_demo[i, j]를 만드는 합의 한 항이다.</text>
+<text x="28" y="827" fill="#16243b" font-size="21" font-weight="700" text-anchor="start" xml:space="preserve">편향까지 세면 전체 파라미터는 82개다.</text>
+<text x="28" y="866" fill="#0f766e" font-size="24" font-weight="700" text-anchor="start" xml:space="preserve" class="num">25 + 36 + 21 = 82</text>
+<text x="28" y="919" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">행렬곱 뒤에는 각 층의 편향을 더한다. 두 은닉층에는 ReLU도 적용한다.</text>
+<text x="28" y="944" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">샘플은 계속 2개다. 각 단계의 열 수는 그 층의 뉴런 수다.</text>
+</svg>

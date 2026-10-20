@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="720" viewBox="0 0 680 720" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">같은 샘플을 서로 다른 좌표로 표시한다</title><desc id="desc">원본 X에는 네 점이 있다. 은닉층 H에는 원본의 샘플 0과 3이 같은 좌표 (0,0)에 겹친다. 원본의 두 경계는 은닉좌표에서 직선 하나로 표현된다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>
+<style>text{font-family:"Noto Sans KR","Noto Sans CJK KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums} .num{font-family:ui-monospace,SFMono-Regular,Consolas,"DejaVu Sans Mono",monospace}</style>
+<rect width="680" height="720" rx="18" fill="#f6f8fc"/>
+<text x="28" y="41" fill="#16243b" font-size="24" font-weight="700" text-anchor="start" xml:space="preserve">같은 샘플을 서로 다른 좌표로 표시한다</text>
+<text x="28" y="77" fill="#52627b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">원본 X를 덮어쓰지 않고, H에 계산한 새 값을 표시한다.</text>
+<rect x="30" y="110" width="297" height="328" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="178" y="142" fill="#1d4ed8" font-size="23" font-weight="700" text-anchor="middle" xml:space="preserve">X</text>
+<line x1="71" y1="166" x2="71" y2="391" stroke="#e2e8f0" stroke-width="1"/>
+<line x1="57" y1="382" x2="292" y2="382" stroke="#e2e8f0" stroke-width="1"/>
+<text x="71" y="408" fill="#52627b" font-size="15" font-weight="400" text-anchor="middle" xml:space="preserve">0</text>
+<text x="54" y="387" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">0</text>
+<line x1="163.5" y1="166" x2="163.5" y2="391" stroke="#e2e8f0" stroke-width="1"/>
+<line x1="57" y1="289.5" x2="292" y2="289.5" stroke="#e2e8f0" stroke-width="1"/>
+<line x1="256" y1="166" x2="256" y2="391" stroke="#e2e8f0" stroke-width="1"/>
+<line x1="57" y1="197" x2="292" y2="197" stroke="#e2e8f0" stroke-width="1"/>
+<text x="256" y="408" fill="#52627b" font-size="15" font-weight="400" text-anchor="middle" xml:space="preserve">1</text>
+<text x="54" y="202" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">1</text>
+<line x1="57" y1="382" x2="293" y2="382" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="71" y1="395" x2="71" y2="164" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="298" y="409" fill="#16243b" font-size="18" font-weight="700" text-anchor="middle" xml:space="preserve">x1</text>
+<text x="70" y="162" fill="#16243b" font-size="18" font-weight="700" text-anchor="middle" xml:space="preserve">x2</text>
+<rect x="353" y="110" width="297" height="328" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="501" y="142" fill="#0f766e" font-size="23" font-weight="700" text-anchor="middle" xml:space="preserve">H</text>
+<line x1="394" y1="166" x2="394" y2="391" stroke="#e2e8f0" stroke-width="1"/>
+<line x1="380" y1="382" x2="615" y2="382" stroke="#e2e8f0" stroke-width="1"/>
+<text x="394" y="408" fill="#52627b" font-size="15" font-weight="400" text-anchor="middle" xml:space="preserve">0</text>
+<text x="377" y="387" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">0</text>
+<line x1="486.5" y1="166" x2="486.5" y2="391" stroke="#e2e8f0" stroke-width="1"/>
+<line x1="380" y1="289.5" x2="615" y2="289.5" stroke="#e2e8f0" stroke-width="1"/>
+<line x1="579" y1="166" x2="579" y2="391" stroke="#e2e8f0" stroke-width="1"/>
+<line x1="380" y1="197" x2="615" y2="197" stroke="#e2e8f0" stroke-width="1"/>
+<text x="579" y="408" fill="#52627b" font-size="15" font-weight="400" text-anchor="middle" xml:space="preserve">1</text>
+<text x="377" y="202" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">1</text>
+<line x1="380" y1="382" x2="616" y2="382" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="394" y1="395" x2="394" y2="164" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="621" y="409" fill="#16243b" font-size="18" font-weight="700" text-anchor="middle" xml:space="preserve">h1</text>
+<text x="393" y="162" fill="#16243b" font-size="18" font-weight="700" text-anchor="middle" xml:space="preserve">h2</text>
+<line x1="58.05" y1="302.45" x2="185.7" y2="174.79999999999998" stroke="#6d28d9" stroke-width="2" stroke-dasharray="6 5"/>
+<line x1="150.55" y1="394.95" x2="278.20000000000005" y2="267.3" stroke="#6d28d9" stroke-width="2" stroke-dasharray="6 5"/>
+<line x1="381.05" y1="276.55" x2="499.45" y2="394.95" stroke="#6d28d9" stroke-width="2" stroke-dasharray="6 5"/>
+<circle cx="71" cy="382" r="7" fill="#1d4ed8" stroke="white" stroke-width="1.5"/>
+<text x="83" y="370" fill="#1d4ed8" font-size="17" font-weight="700" text-anchor="start" xml:space="preserve">0</text>
+<line x1="64" y1="190" x2="78" y2="204" stroke="#b45309" stroke-width="3"/>
+<line x1="78" y1="190" x2="64" y2="204" stroke="#b45309" stroke-width="3"/>
+<text x="84" y="189" fill="#b45309" font-size="17" font-weight="700" text-anchor="start" xml:space="preserve">1</text>
+<line x1="249" y1="375" x2="263" y2="389" stroke="#b45309" stroke-width="3"/>
+<line x1="263" y1="375" x2="249" y2="389" stroke="#b45309" stroke-width="3"/>
+<text x="268" y="370" fill="#b45309" font-size="17" font-weight="700" text-anchor="start" xml:space="preserve">2</text>
+<circle cx="256" cy="197" r="7" fill="#1d4ed8" stroke="white" stroke-width="1.5"/>
+<text x="268" y="189" fill="#1d4ed8" font-size="17" font-weight="700" text-anchor="start" xml:space="preserve">3</text>
+<circle cx="394" cy="382" r="12" fill="white" stroke="#1d4ed8" stroke-width="2"/>
+<circle cx="394" cy="382" r="7" fill="#1d4ed8" stroke="white" stroke-width="1.5"/>
+<text x="410" y="367" fill="#1d4ed8" font-size="17" font-weight="700" text-anchor="start" xml:space="preserve">0, 3</text>
+<line x1="387" y1="190" x2="401" y2="204" stroke="#b45309" stroke-width="3"/>
+<line x1="401" y1="190" x2="387" y2="204" stroke="#b45309" stroke-width="3"/>
+<text x="407" y="189" fill="#b45309" font-size="17" font-weight="700" text-anchor="start" xml:space="preserve">1</text>
+<line x1="572" y1="375" x2="586" y2="389" stroke="#b45309" stroke-width="3"/>
+<line x1="586" y1="375" x2="572" y2="389" stroke="#b45309" stroke-width="3"/>
+<text x="591" y="370" fill="#b45309" font-size="17" font-weight="700" text-anchor="start" xml:space="preserve">2</text>
+<text x="178" y="468" fill="#6d28d9" font-size="19" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">x2 = x1 ± 0.5</text>
+<text x="501" y="468" fill="#6d28d9" font-size="19" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">h1 + h2 = 0.5</text>
+<rect x="28" y="493" width="624" height="87" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="47" y="522" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">점 옆의 숫자는 샘플 번호다. 0과 3은 H의 (0, 0)에 겹친다.</text>
+<text x="47" y="551" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">H의 점이 세 곳에 보이지만 샘플은 여전히 네 개다.</text>
+<circle cx="43" cy="614" r="7" fill="#1d4ed8"/>
+<text x="61" y="620" fill="#16243b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">클래스 0: 같다</text>
+<line x1="270" y1="607" x2="284" y2="621" stroke="#b45309" stroke-width="3"/>
+<line x1="284" y1="607" x2="270" y2="621" stroke="#b45309" stroke-width="3"/>
+<text x="295" y="620" fill="#16243b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">클래스 1: 다르다</text>
+<text x="28" y="669" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">점선은 두 클래스의 점수가 같은 경계다. 색과 정답은 바뀌지 않는다.</text>
+<text x="28" y="694" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">0.5는 미리 지정한 이 예제의 가중치·편향에서 나오는 기준이다.</text>
+</svg>

@@ -1,0 +1,68 @@
+/* This stylesheet is limited to the matrix article and its translation. */
+#main-content article .nn-figure {
+  margin: 1.9rem auto;
+  width: 100%;
+  max-width: 680px;
+}
+#main-content article .nn-figure a {
+  display: block;
+  border: none;
+  box-shadow: none;
+  background: none;
+}
+#main-content article .nn-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+#main-content article .nn-figure figcaption {
+  margin: .85rem auto 0;
+  font-size: .94em;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#main-content article .nn-math {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 1.3rem 0;
+  padding: .45rem .6rem;
+  font-variant-numeric: tabular-nums;
+}
+#main-content article .nn-math .katex-display {
+  margin: .7em 0;
+}
+#main-content article .nn-demo {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid #64748b;
+  border-radius: 12px;
+  background: #f8fafc;
+  margin: 1.5rem 0 .6rem;
+}
+#main-content article .nn-small {
+  font-size: .92em;
+}
+#main-content article table {
+  font-variant-numeric: tabular-nums;
+}
+#main-content article th,
+#main-content article td {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 680px) {
+  #main-content article table {
+    display: block;
+    position: relative;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  #main-content article .nn-math {
+    font-size: .9em;
+  }
+}

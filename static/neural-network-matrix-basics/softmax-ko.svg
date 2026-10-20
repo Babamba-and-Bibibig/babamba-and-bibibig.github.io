@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="1120" viewBox="0 0 680 1120" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">Softmax: 한 행의 점수를 확률로 계산한다</title><desc id="desc">행 번호 1의 점수 [0,1]에서 최댓값 1을 빼면 [-1,0]이다. exp를 적용한 [0.3679,1]의 각 값을 행 합 1.3679로 나누면 [0.2689,0.7311]이 된다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>
+<style>text{font-family:"Noto Sans KR","Noto Sans CJK KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums} .num{font-family:ui-monospace,SFMono-Regular,Consolas,"DejaVu Sans Mono",monospace}</style>
+<rect width="680" height="1120" rx="18" fill="#f6f8fc"/>
+<text x="28" y="41" fill="#16243b" font-size="24" font-weight="700" text-anchor="start" xml:space="preserve">Softmax: 한 행의 점수를 확률로 계산한다</text>
+<text x="28" y="77" fill="#52627b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">둘째 샘플, S의 행 번호 1을 끝까지 계산한다.</text>
+<rect x="28" y="105" width="624" height="130" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="44" y="122" width="30" height="30" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1"/>
+<text x="59" y="144" fill="#1d4ed8" font-size="18" font-weight="700" text-anchor="middle" xml:space="preserve">1</text>
+<text x="90" y="144" fill="#1d4ed8" font-size="20" font-weight="700" text-anchor="start" xml:space="preserve">행의 최댓값을 구한다</text>
+<text x="48" y="181" fill="#16243b" font-size="19" font-weight="400" text-anchor="start" xml:space="preserve" class="num">[0, 1]  →  max = 1</text>
+<text x="48" y="208" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve" class="num">S.max(axis=1, keepdims=True)</text>
+<text x="627" y="226" fill="#1d4ed8" font-size="16" font-weight="700" text-anchor="end" xml:space="preserve" class="num">(4, 2) → (4, 1)</text>
+<rect x="28" y="260" width="624" height="130" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="44" y="277" width="30" height="30" rx="8" fill="#ffedd5" stroke="#b45309" stroke-width="1"/>
+<text x="59" y="299" fill="#b45309" font-size="18" font-weight="700" text-anchor="middle" xml:space="preserve">2</text>
+<text x="90" y="299" fill="#b45309" font-size="20" font-weight="700" text-anchor="start" xml:space="preserve">그 행의 두 점수에서 1을 뺀다</text>
+<text x="48" y="336" fill="#16243b" font-size="19" font-weight="400" text-anchor="start" xml:space="preserve" class="num">[0 − 1, 1 − 1] = [−1, 0]</text>
+<text x="48" y="363" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve" class="num">shifted = S − row_max</text>
+<text x="627" y="381" fill="#b45309" font-size="16" font-weight="700" text-anchor="end" xml:space="preserve" class="num">(4, 2) − (4, 1) → (4, 2)</text>
+<rect x="28" y="415" width="624" height="130" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="44" y="432" width="30" height="30" rx="8" fill="#ccfbf1" stroke="#0f766e" stroke-width="1"/>
+<text x="59" y="454" fill="#0f766e" font-size="18" font-weight="700" text-anchor="middle" xml:space="preserve">3</text>
+<text x="90" y="454" fill="#0f766e" font-size="20" font-weight="700" text-anchor="start" xml:space="preserve">각 숫자에 exp를 적용한다</text>
+<text x="48" y="491" fill="#16243b" font-size="19" font-weight="400" text-anchor="start" xml:space="preserve" class="num">[exp(−1), exp(0)] ≈ [0.3679, 1]</text>
+<text x="48" y="518" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve" class="num">exp_scores = np.exp(shifted)</text>
+<text x="627" y="536" fill="#0f766e" font-size="16" font-weight="700" text-anchor="end" xml:space="preserve" class="num">(4, 2) → (4, 2)</text>
+<rect x="28" y="570" width="624" height="145" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<rect x="44" y="587" width="30" height="30" rx="8" fill="#ede9fe" stroke="#6d28d9" stroke-width="1"/>
+<text x="59" y="609" fill="#6d28d9" font-size="18" font-weight="700" text-anchor="middle" xml:space="preserve">4</text>
+<text x="90" y="609" fill="#6d28d9" font-size="20" font-weight="700" text-anchor="start" xml:space="preserve">그 행의 합을 구하고 각각 나눈다</text>
+<text x="48" y="646" fill="#16243b" font-size="19" font-weight="400" text-anchor="start" xml:space="preserve" class="num">0.3679 + 1 = 1.3679</text>
+<text x="48" y="673" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve" class="num">[0.3679 / 1.3679, 1 / 1.3679]</text>
+<text x="627" y="706" fill="#6d28d9" font-size="16" font-weight="700" text-anchor="end" xml:space="preserve" class="num">(4, 2) / (4, 1) → (4, 2)</text>
+<line x1="340" y1="242" x2="340" y2="255" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="340" y1="397" x2="340" y2="410" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="340" y1="552" x2="340" y2="565" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="340" y1="721" x2="340" y2="742" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="28" y="777" fill="#6d28d9" font-size="21" font-weight="700" text-anchor="start" xml:space="preserve">네 샘플의 최종 확률</text>
+<text x="627" y="777" fill="#52627b" font-size="18" font-weight="400" text-anchor="end" xml:space="preserve" class="num">(4, 2)</text>
+<rect x="186" y="823" width="124" height="43" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="248.0" y="852.55" fill="#16243b" font-size="23" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0.7311</text>
+<rect x="310" y="823" width="124" height="43" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="372.0" y="852.55" fill="#16243b" font-size="23" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0.2689</text>
+<text x="174" y="850.5" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">0</text>
+<rect x="186" y="866" width="124" height="43" rx="0" fill="#ede9fe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="248.0" y="895.55" fill="#6d28d9" font-size="23" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0.2689</text>
+<rect x="310" y="866" width="124" height="43" rx="0" fill="#ede9fe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="372.0" y="895.55" fill="#6d28d9" font-size="23" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0.7311</text>
+<text x="174" y="893.5" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">1</text>
+<rect x="186" y="909" width="124" height="43" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="248.0" y="938.55" fill="#16243b" font-size="23" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0.2689</text>
+<rect x="310" y="909" width="124" height="43" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="372.0" y="938.55" fill="#16243b" font-size="23" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0.7311</text>
+<text x="174" y="936.5" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">2</text>
+<rect x="186" y="952" width="124" height="43" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="248.0" y="981.55" fill="#16243b" font-size="23" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0.7311</text>
+<rect x="310" y="952" width="124" height="43" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="372.0" y="981.55" fill="#16243b" font-size="23" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0.2689</text>
+<text x="174" y="979.5" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">3</text>
+<text x="248.0" y="811" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">같다</text>
+<text x="372.0" y="811" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">다르다</text>
+<text x="470" y="891" fill="#6d28d9" font-size="26" font-weight="700" text-anchor="start" xml:space="preserve">←</text>
+<text x="510" y="890" fill="#6d28d9" font-size="16" font-weight="700" text-anchor="start" xml:space="preserve">이 행을 계산했다</text>
+<text x="28" y="1069" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">각 행의 확률 합은 1이다. 다른 샘플의 점수를 함께 더하지 않는다.</text>
+<text x="28" y="1094" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">표시는 소수 넷째 자리까지 반올림했으며, 계산은 원래 정밀도로 수행한다.</text>
+</svg>

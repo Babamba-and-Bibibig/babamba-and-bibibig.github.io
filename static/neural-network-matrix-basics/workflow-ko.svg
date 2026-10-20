@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="980" viewBox="0 0 680 980" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">네 샘플의 입력에서 예측과 손실까지</title><desc id="desc">입력 X, 가중합 Z1, ReLU 출력 H, 출력 점수 S를 순서대로 계산한다. S에서 argmax로 예측을 고르거나 Softmax와 정답 y로 손실을 계산한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>
+<style>text{font-family:"Noto Sans KR","Noto Sans CJK KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums} .num{font-family:ui-monospace,SFMono-Regular,Consolas,"DejaVu Sans Mono",monospace}</style>
+<rect width="680" height="980" rx="18" fill="#f6f8fc"/>
+<text x="28" y="41" fill="#16243b" font-size="24" font-weight="700" text-anchor="start" xml:space="preserve">네 샘플의 입력에서 예측과 손실까지</text>
+<text x="28" y="74" fill="#52627b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">모든 샘플에 같은 가중치와 편향을 적용한다.</text>
+<rect x="52" y="110" width="576" height="77" rx="12" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1"/>
+<text x="75" y="141" fill="#1d4ed8" font-size="26" font-weight="700" text-anchor="start" xml:space="preserve">X</text>
+<text x="593" y="141" fill="#1d4ed8" font-size="20" font-weight="700" text-anchor="end" xml:space="preserve" class="num">(4, 2)</text>
+<text x="75" y="169" fill="#16243b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">원본 입력 · 샘플 4개 × 특징 2개</text>
+<rect x="52" y="238" width="576" height="77" rx="12" fill="#ffedd5" stroke="#b45309" stroke-width="1"/>
+<text x="75" y="269" fill="#b45309" font-size="26" font-weight="700" text-anchor="start" xml:space="preserve">Z1</text>
+<text x="593" y="269" fill="#b45309" font-size="20" font-weight="700" text-anchor="end" xml:space="preserve" class="num">(4, 2)</text>
+<text x="75" y="297" fill="#16243b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">은닉층의 가중합 + 편향</text>
+<rect x="52" y="366" width="576" height="77" rx="12" fill="#ccfbf1" stroke="#0f766e" stroke-width="1"/>
+<text x="75" y="397" fill="#0f766e" font-size="26" font-weight="700" text-anchor="start" xml:space="preserve">H</text>
+<text x="593" y="397" fill="#0f766e" font-size="20" font-weight="700" text-anchor="end" xml:space="preserve" class="num">(4, 2)</text>
+<text x="75" y="425" fill="#16243b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">ReLU를 적용한 은닉층 출력</text>
+<rect x="52" y="494" width="576" height="77" rx="12" fill="#ede9fe" stroke="#6d28d9" stroke-width="1"/>
+<text x="75" y="525" fill="#6d28d9" font-size="26" font-weight="700" text-anchor="start" xml:space="preserve">S</text>
+<text x="593" y="525" fill="#6d28d9" font-size="20" font-weight="700" text-anchor="end" xml:space="preserve" class="num">(4, 2)</text>
+<text x="75" y="553" fill="#16243b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">‘같다’와 ‘다르다’의 출력 점수</text>
+<line x1="340" y1="195" x2="340" y2="226" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="363" y="215" fill="#52627b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve" class="num">X @ W1 + b1</text>
+<line x1="340" y1="323" x2="340" y2="354" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="363" y="343" fill="#52627b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve" class="num">maximum(0, Z1)</text>
+<line x1="340" y1="451" x2="340" y2="482" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="363" y="471" fill="#52627b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve" class="num">H @ W2 + b2</text>
+<path d="M 340 574 V 603 H 183 V 622" fill="none" stroke="#52627b" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 340 603 H 497 V 622" fill="none" stroke="#52627b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="28" y="638" width="310" height="96" rx="12" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1"/>
+<text x="49" y="668" fill="#1d4ed8" font-size="19" font-weight="700" text-anchor="start" xml:space="preserve" class="num">argmax(axis=1)</text>
+<text x="49" y="698" fill="#16243b" font-size="18" font-weight="400" text-anchor="start" xml:space="preserve" class="num">pred = [0, 1, 1, 0]</text>
+<text x="49" y="721" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">샘플마다 클래스 하나</text>
+<rect x="363" y="638" width="289" height="96" rx="12" fill="#ede9fe" stroke="#6d28d9" stroke-width="1"/>
+<text x="385" y="668" fill="#6d28d9" font-size="21" font-weight="700" text-anchor="start" xml:space="preserve">Softmax</text>
+<text x="385" y="698" fill="#16243b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">클래스별 확률 (4, 2)</text>
+<text x="385" y="722" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">각 행의 확률 합 = 1</text>
+<line x1="507" y1="738" x2="507" y2="759" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="363" y="773" width="289" height="76" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="385" y="800" fill="#6d28d9" font-size="16" font-weight="700" text-anchor="start" xml:space="preserve">y로 정답 확률 4개 선택</text>
+<text x="385" y="830" fill="#16243b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve" class="num">−log → mean → 0.3133</text>
+<text x="42" y="791" fill="#52627b" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">예측은 최고 점수의 위치를 고른다.</text>
+<text x="42" y="819" fill="#52627b" font-size="15" font-weight="400" text-anchor="start" xml:space="preserve">손실은 실제 정답의 확률을 평가한다.</text>
+<rect x="28" y="880" width="624" height="70" rx="12" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+<text x="45" y="906" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">이 예제의 가중치는 사람이 미리 지정했다.</text>
+<text x="45" y="931" fill="#52627b" font-size="16" font-weight="400" text-anchor="start" xml:space="preserve">가중치를 수정하지 않으므로 학습을 수행한 것은 아니다.</text>
+</svg>

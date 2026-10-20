@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>행렬곱의 한 칸을 계산하기</title>
+  <style>
+    :root{color-scheme:light;--ink:#14283b;--muted:#516374;--line:#d6e0e8;--blue:#126293;--blue-bg:#e6f3fe;--orange:#96420a;--orange-bg:#fff0df;--green:#176040;--green-bg:#e5f6ec}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;max-width:100%;width:100%;background:#f7fafc;color:var(--ink)}
+    body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;font-size:15px;line-height:1.65}
+    button{font:inherit;cursor:pointer}
+    button:focus-visible{outline:3px solid #075cad;outline-offset:3px}
+    code,.number{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-variant-numeric:tabular-nums}
+    code{overflow-wrap:anywhere}
+    main{padding:22px 18px;max-width:850px;margin:0 auto;min-width:0}
+    h1{font-size:1.35rem;letter-spacing:-.025em;line-height:1.35;margin:0 0 8px}
+    .intro{margin:0 0 18px;color:var(--muted)}
+    .stages{display:flex;gap:8px;margin-bottom:14px}
+    .stages button{flex:1;border:1px solid #aabccb;background:#fff;border-radius:10px;padding:10px 8px;color:var(--ink);font-weight:650;line-height:1.5}
+    .stages button[aria-pressed="true"]{background:#163b57;border-color:#163b57;color:#fff}
+    .stages code{display:block;font-size:.85rem;font-weight:400;white-space:normal}
+    .hint{color:var(--muted);margin:0 0 12px;font-size:.9rem}
+    .matrices{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr);gap:5px;align-items:start}
+    .matrix{min-width:0;background:#fff;border:1px solid var(--line);padding:12px 6px 10px;border-radius:10px}
+    .matrix h2{font-size:1rem;text-align:center;margin:0 0 1px;line-height:1.4}
+    .shape{text-align:center;color:var(--muted);font-size:.78rem;margin:0 0 8px}
+    .operator{align-self:center;text-align:center;font-size:1.1rem;font-weight:700}
+    table{border-collapse:separate;border-spacing:3px;margin:0 auto;width:100%;font-variant-numeric:tabular-nums;text-align:center;table-layout:fixed}
+    th{font-weight:500;color:var(--muted);font-size:.72rem;line-height:1.35;overflow-wrap:anywhere}
+    th:first-child{width:27px}
+    td{height:38px;border:1px solid var(--line);border-radius:5px;background:#fff;font-size:1rem;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+    td.selected-row{background:var(--blue-bg);border-color:#75afd5;color:#074b78;font-weight:750}
+    td.selected-column{background:var(--orange-bg);border-color:#d3945c;color:#823204;font-weight:750}
+    .result td{border:0;background:transparent;padding:0}
+    .result button{width:100%;height:38px;border:1px solid #aac6b7;border-radius:5px;background:#f8fffb;color:var(--green);font-family:inherit;font-size:1rem}
+    .result button[aria-pressed="true"]{color:#fff;background:var(--green);border:2px solid #0d4b30;font-weight:750}
+    .bias{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;align-items:center;margin:12px 0 8px;color:var(--muted);font-size:.9rem}
+    .bias span{border:1px solid var(--line);border-radius:5px;padding:1px 7px;background:#fff}
+    .bias span.active-bias{border-color:#d3945c;background:var(--orange-bg);color:var(--orange);font-weight:700}
+    .shape-equation{border:1px solid var(--line);border-radius:8px;background:#fff;padding:9px 8px;text-align:center;margin:0;font-size:.83rem;overflow-wrap:anywhere}
+    .selection{margin:18px 0 8px;font-weight:700;line-height:1.5}
+    .selection small{display:block;font-weight:450;color:var(--muted);margin-top:3px;font-size:.9rem}
+    .calculation{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 16px;min-width:0}
+    .step{padding:10px 0;border-bottom:1px solid #e5edf3}
+    .step:first-child{padding-top:0}
+    .step:last-child{padding-bottom:0;border-bottom:0}
+    .step-label{font-weight:650;font-size:.9rem;margin:0 0 5px;color:var(--muted)}
+    .expression{font-size:1.08rem;margin:5px 0;line-height:1.8;overflow-wrap:anywhere}
+    .term-label{display:inline-block;min-width:32px;color:var(--muted);font-size:.87rem}
+    .input-token{color:var(--blue);background:var(--blue-bg);border-radius:4px;padding:2px 5px}
+    .weight-token{color:var(--orange);background:var(--orange-bg);border-radius:4px;padding:2px 5px}
+    .output-token{color:var(--green);background:var(--green-bg);border-radius:4px;padding:2px 5px;font-weight:700}
+    .explanation{font-size:.88rem;color:var(--muted);margin:5px 0 0}
+    .next{display:flex;gap:8px;justify-content:flex-end;margin:12px 0 0}
+    .next button{border:1px solid #aac0d0;border-radius:8px;padding:6px 12px;background:#fff;color:var(--ink)}
+    .meaning{font-size:.9rem;margin:16px 0 0;color:var(--muted)}
+    .noscript{border:1px solid #d49e4c;padding:12px;border-radius:8px;background:#fff8e6}
+    @media(max-width:590px){main{padding:18px 12px}.matrices{grid-template-columns:1fr;gap:8px}.matrix{max-width:300px;width:100%;margin:auto;padding:12px}.operator{font-size:1.25rem;line-height:1.2}.matrix h2{font-size:1.03rem}td,.result button{height:40px}th:first-child{width:42px}th{font-size:.83rem}.shape{font-size:.87rem}.stages button{font-size:.92rem}.stages code{font-size:.77rem}.shape-equation{font-size:.8rem}.calculation{padding:14px 12px}}
+    @media(prefers-reduced-motion:no-preference){.result button,.stages button{transition:background-color .15s,color .15s}}
+  </style>
+</head>
+<body>
+<main>
+  <h1 id="title">행렬곱의 한 칸을 계산하기</h1>
+  <p class="intro" id="intro">결과 행렬의 숫자를 누르면, 그 숫자를 만든 입력 한 행과 가중치 한 열이 표시됩니다.</p>
+  <div class="stages" role="group" aria-label="계산할 층" id="stages">
+    <button type="button" data-stage="hidden" aria-pressed="true"><span id="hidden-label">은닉층</span><code>X @ W1 + b1</code></button>
+    <button type="button" data-stage="output" aria-pressed="false"><span id="output-label">출력층</span><code>H @ W2 + b2</code></button>
+  </div>
+  <p class="hint" id="hint">표의 행·열 번호는 0부터 시작합니다. 초록색 결과 칸을 선택하세요.</p>
+  <div class="matrices" id="matrices"></div>
+  <p class="bias" id="bias"></p>
+  <p class="shape-equation"><code>(4, 2) @ (2, 2) + (2,) → (4, 2)</code></p>
+  <section aria-live="polite" aria-atomic="true" id="details"></section>
+  <div class="next">
+    <button type="button" id="previous">이전 칸</button>
+    <button type="button" id="next">다음 칸</button>
+  </div>
+  <p class="meaning" id="meaning"></p>
+  <noscript><p class="noscript">이 계산기의 버튼은 JavaScript가 켜져 있어야 작동합니다. 본문의 행렬 그림과 계산식으로 같은 과정을 확인할 수 있습니다. / Enable JavaScript to use the buttons. The article's figures show the same calculations.</p></noscript>
+</main>
+<script>
+(() => {
+  'use strict';
+  const en = new URLSearchParams(location.search).get('lang') === 'en';
+  document.documentElement.lang = en ? 'en' : 'ko';
+  const copy = en ? {
+    title:'Calculate one cell of a matrix product',
+    intro:'Select a result cell to highlight the input row and weight column that produce it.',
+    stages:'Layer to calculate',hidden:'Hidden layer',output:'Output layer',
+    hint:'Row and column indices start at 0. Select a green result cell.',
+    input:'Inputs X',hiddenInput:'Hidden outputs H',weights:'Weights',result:'Result',
+    rows:'row',neuron:'unit',same:'same',different:'different',sample:'Sample',
+    selected:(i,j,hidden)=>`Sample ${i + 1} · ${hidden ? 'hidden' : 'output'} unit ${j + 1}`,
+    arrayPosition:'Array position',
+    multiply:'1. Multiply each input by its corresponding weight',
+    add:'2. Add the two products',bias:'3. Add this unit’s bias',
+    relu:'4. Apply ReLU to this value',reluNegative:'This value is negative, so ReLU returns 0.',
+    reluPositive:'This value is 0 or positive, so ReLU leaves it unchanged.',
+    scoreNote:'This is a class score. It is not a probability.',
+    previous:'Previous cell',next:'Next cell',biasVector:'Bias',
+    meaning:'All four samples use the same weights and biases. X holds original inputs, H holds computed hidden features, and S holds class scores. Equal numbers can have different roles.',
+    cell:(symbol,i,j,value)=>`${symbol}, row ${i}, column ${j}, value ${value}`
+  } : {
+    title:'행렬곱의 한 칸을 계산하기',
+    intro:'결과 행렬의 숫자를 누르면, 그 숫자를 만든 입력 한 행과 가중치 한 열이 표시됩니다.',
+    stages:'계산할 층',hidden:'은닉층',output:'출력층',
+    hint:'표의 행·열 번호는 0부터 시작합니다. 초록색 결과 칸을 선택하세요.',
+    input:'입력 X',hiddenInput:'은닉 출력 H',weights:'가중치',result:'결과',
+    rows:'행',neuron:'뉴런',same:'같다',different:'다르다',sample:'샘플',
+    selected:(i,j,hidden)=>`${i + 1}번째 샘플 · ${j + 1}번째 ${hidden ? '은닉' : '출력'} 뉴런`,
+    arrayPosition:'배열 위치',
+    multiply:'1. 입력마다 해당 가중치를 곱한다',
+    add:'2. 두 곱셈 결과를 더한다',bias:'3. 이 뉴런의 편향을 더한다',
+    relu:'4. 이 값에 ReLU를 적용한다',reluNegative:'음수이므로 ReLU가 0으로 바꿉니다.',
+    reluPositive:'0 이상이므로 ReLU가 그대로 둡니다.',
+    scoreNote:'이 값은 클래스의 점수입니다. 확률은 아닙니다.',
+    previous:'이전 칸',next:'다음 칸',biasVector:'편향',
+    meaning:'네 샘플은 같은 가중치와 편향을 사용합니다. X는 원본 입력, H는 계산한 은닉 특징, S는 클래스별 점수입니다. 숫자가 같아도 역할은 다를 수 있습니다.',
+    cell:(symbol,i,j,value)=>`${symbol}, 행 ${i}, 열 ${j}, 값 ${value}`
+  };
+  const $ = id => document.getElementById(id);
+  document.title = copy.title;
+  for (const key of ['title','intro','hint','previous','next','meaning']) $(key).textContent = copy[key];
+  $('hidden-label').textContent = copy.hidden;
+  $('output-label').textContent = copy.output;
+  $('stages').setAttribute('aria-label',copy.stages);
+  const layers = {
+    hidden:{input:[[0,0],[0,1],[1,0],[1,1]],weights:[[1,-1],[-1,1]],bias:[0,0],inputSymbol:'X',weightSymbol:'W1',biasSymbol:'b1',resultSymbol:'Z1',featureSymbols:['x1','x2']},
+    output:{input:[[0,0],[0,1],[1,0],[0,0]],weights:[[-1,1],[-1,1]],bias:[1,0],inputSymbol:'H',weightSymbol:'W2',biasSymbol:'b2',resultSymbol:'S',featureSymbols:['h1','h2']}
+  };
+  let stage = 'hidden';
+  let selectedRow = 1;
+  let selectedColumn = 1;
+  const fmt = n => n < 0 ? `(${n.toString().replace('-','−')})` : String(n);
+  function matrixPanel(label,symbol,values,kind,columnLabels) {
+    const section = document.createElement('section');
+    section.className = 'matrix';
+    const h = document.createElement('h2');
+    h.textContent = `${label}${label.endsWith(symbol) ? '' : ' ' + symbol}`;
+    section.appendChild(h);
+    const shape = document.createElement('p');
+    shape.className='shape';
+    shape.textContent=`shape (${values.length}, ${values[0].length})`;
+    section.appendChild(shape);
+    const table = document.createElement('table');
+    table.setAttribute('aria-label',h.textContent);
+    table.className=kind==='result'?'result':'';
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    const rowLabel = document.createElement('th');
+    rowLabel.textContent=copy.rows;
+    rowLabel.scope='col';
+    headRow.appendChild(rowLabel);
+    columnLabels.forEach((label,j)=>{
+      const th=document.createElement('th');
+      th.scope='col';
+      th.append(document.createTextNode(label),document.createElement('br'),document.createTextNode(`[${j}]`));
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    values.forEach((row,i)=>{
+      const tr=document.createElement('tr');
+      const th=document.createElement('th');
+      th.scope='row';
+      th.textContent=String(i);
+      tr.appendChild(th);
+      row.forEach((value,j)=>{
+        const td=document.createElement('td');
+        td.dataset.row=i;
+        td.dataset.column=j;
+        if (kind==='input' && i===selectedRow) td.className='selected-row';
+        if (kind==='weight' && j===selectedColumn) td.className='selected-column';
+        if (kind==='result') {
+          const button=document.createElement('button');
+          button.type='button';
+          button.dataset.row=i;
+          button.dataset.column=j;
+          button.textContent=String(value).replace('-','−');
+          button.setAttribute('aria-label',copy.cell(symbol,i,j,value));
+          button.setAttribute('aria-pressed',String(i===selectedRow&&j===selectedColumn));
+          button.addEventListener('click',()=>select(i,j,true));
+          button.addEventListener('keydown',event=>{
+            let nextRow=i,nextColumn=j;
+            if(event.key==='ArrowUp') nextRow=(i+3)%4;
+            else if(event.key==='ArrowDown') nextRow=(i+1)%4;
+            else if(event.key==='ArrowLeft') nextColumn=(j+1)%2;
+            else if(event.key==='ArrowRight') nextColumn=(j+1)%2;
+            else return;
+            event.preventDefault();
+            select(nextRow,nextColumn,true);
+          });
+          td.appendChild(button);
+        } else td.textContent=String(value).replace('-','−');
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    section.appendChild(table);
+    return section;
+  }
+  function select(i,j,restoreFocus=false) {
+    selectedRow=i;
+    selectedColumn=j;
+    render();
+    if(restoreFocus) document.querySelector(`.result button[data-row="${i}"][data-column="${j}"]`).focus({preventScroll:true});
+  }
+  function render() {
+    const layer=layers[stage];
+    const hidden=stage==='hidden';
+    const outputs=layer.input.map(row=>[0,1].map(j=>row.reduce((sum,x,k)=>sum+x*layer.weights[k][j],0)+layer.bias[j]));
+    const container=$('matrices');
+    container.replaceChildren();
+    const unitLabels=hidden?[`${copy.neuron} 1`,`${copy.neuron} 2`]:[copy.same,copy.different];
+    container.appendChild(matrixPanel(hidden?copy.input:copy.hiddenInput,layer.inputSymbol,layer.input,'input',layer.featureSymbols));
+    const times=document.createElement('span');times.className='operator';times.textContent='@';times.setAttribute('aria-hidden','true');container.appendChild(times);
+    container.appendChild(matrixPanel(copy.weights,layer.weightSymbol,layer.weights,'weight',unitLabels));
+    const equals=document.createElement('span');equals.className='operator';equals.textContent='→';equals.setAttribute('aria-hidden','true');container.appendChild(equals);
+    container.appendChild(matrixPanel(copy.result,layer.resultSymbol,outputs,'result',unitLabels));
+    const b=$('bias');
+    b.replaceChildren(document.createTextNode(`${copy.biasVector} ${layer.biasSymbol} = `));
+    layer.bias.forEach((value,j)=>{
+      const item=document.createElement('span');
+      item.className=j===selectedColumn?'active-bias':'';
+      item.textContent=`[${j}] ${value}`;
+      b.appendChild(item);
+    });
+    const i=selectedRow,j=selectedColumn;
+    const products=layer.input[i].map((x,k)=>x*layer.weights[k][j]);
+    const total=products.reduce((a,b)=>a+b,0);
+    const result=outputs[i][j];
+    const terms=layer.input[i].map((x,k)=>`<p class="expression"><span class="term-label">${layer.featureSymbols[k]}</span> <span class="input-token number">${fmt(x)}</span> × <span class="weight-token number">${fmt(layer.weights[k][j])}</span> = <span class="number">${fmt(products[k])}</span></p>`).join('');
+    $('details').innerHTML=`
+      <h2 class="selection">${copy.selected(i,j,hidden)}<small>${copy.arrayPosition}: <code>${layer.resultSymbol}[${i}, ${j}]</code></small></h2>
+      <div class="calculation">
+        <div class="step"><p class="step-label">${copy.multiply}</p>${terms}</div>
+        <div class="step"><p class="step-label">${copy.add}</p><p class="expression number">${fmt(products[0])} + ${fmt(products[1])} = ${fmt(total)}</p></div>
+        <div class="step"><p class="step-label">${copy.bias}</p><p class="expression"><span class="number">${fmt(total)} + </span><span class="weight-token number">${fmt(layer.bias[j])}</span> = <span class="output-token number">${fmt(result)}</span></p><p class="explanation"><code>${layer.biasSymbol}[${j}] = ${layer.bias[j]}</code> · <code>${layer.resultSymbol}[${i}, ${j}] = ${result}</code></p>${hidden?'':`<p class="explanation">${copy.scoreNote}</p>`}</div>
+        ${hidden?`<div class="step"><p class="step-label">${copy.relu}</p><p class="expression"><code>H[${i}, ${j}] = max(0, ${result}) = </code><span class="output-token number">${Math.max(0,result)}</span></p><p class="explanation">${result<0?copy.reluNegative:copy.reluPositive}</p></div>`:''}
+      </div>`;
+    document.querySelectorAll('[data-stage]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.stage===stage)));
+    requestHeight();
+  }
+  document.querySelectorAll('[data-stage]').forEach(button=>button.addEventListener('click',()=>{stage=button.dataset.stage;render();}));
+  function move(delta){const index=(selectedRow*2+selectedColumn+delta+8)%8;select(Math.floor(index/2),index%2);}
+  $('previous').addEventListener('click',()=>move(-1));
+  $('next').addEventListener('click',()=>move(1));
+  let heightFrame=0;
+  let lastHeight=0;
+  function requestHeight(){
+    if(heightFrame) return;
+    heightFrame=requestAnimationFrame(()=>{
+      heightFrame=0;
+      // Measure the content, not the iframe viewport: this permits shrinking, too.
+      const height=Math.ceil(document.querySelector('main').getBoundingClientRect().height)+2;
+      if(window.parent!==window && height!==lastHeight){
+        lastHeight=height;
+        const targetOrigin=location.origin==='null'?'*':location.origin;
+        window.parent.postMessage({type:'matrix-lab-height',height},targetOrigin);
+      }
+    });
+  }
+  if('ResizeObserver' in window) new ResizeObserver(requestHeight).observe(document.querySelector('main'));
+  window.addEventListener('resize',requestHeight);
+  window.addEventListener('load',requestHeight);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(requestHeight);
+  render();
+})();
+</script>
+</body>
+</html>

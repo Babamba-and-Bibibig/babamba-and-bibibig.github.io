@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="528" viewBox="0 0 680 528" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">ReLU는 각 칸의 음수만 0으로 바꾼다</title><desc id="desc">Z1의 음수 두 칸은 H에서 0이 된다. 0과 양수는 그대로이며 행 4개와 열 2개가 유지된다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/></marker></defs>
+<style>text{font-family:"Noto Sans KR","Noto Sans CJK KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums} .num{font-family:ui-monospace,SFMono-Regular,Consolas,"DejaVu Sans Mono",monospace}</style>
+<rect width="680" height="528" rx="18" fill="#f6f8fc"/>
+<text x="28" y="41" fill="#16243b" font-size="24" font-weight="700" text-anchor="start" xml:space="preserve">ReLU는 각 칸의 음수만 0으로 바꾼다</text>
+<text x="28" y="76" fill="#52627b" font-size="21" font-weight="400" text-anchor="start" xml:space="preserve" class="num">H = np.maximum(0, Z1)</text>
+<text x="171" y="132" fill="#b45309" font-size="23" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">Z1  (4, 2)</text>
+<text x="518" y="132" fill="#0f766e" font-size="23" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">H  (4, 2)</text>
+<rect x="104" y="186" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="138.0" y="217.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="172" y="186" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="206.0" y="217.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="92" y="216.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">0</text>
+<rect x="104" y="234" width="68" height="48" rx="0" fill="#ffe4e6" stroke="#cbd5e1" stroke-width="1"/>
+<text x="138.0" y="265.7" fill="#be123c" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">−1</text>
+<rect x="172" y="234" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="206.0" y="265.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<text x="92" y="264.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">1</text>
+<rect x="104" y="282" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="138.0" y="313.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<rect x="172" y="282" width="68" height="48" rx="0" fill="#ffe4e6" stroke="#cbd5e1" stroke-width="1"/>
+<text x="206.0" y="313.7" fill="#be123c" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">−1</text>
+<text x="92" y="312.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">2</text>
+<rect x="104" y="330" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="138.0" y="361.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="172" y="330" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="206.0" y="361.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="92" y="360.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">3</text>
+<text x="138.0" y="174" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">z1</text>
+<text x="206.0" y="174" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">z2</text>
+<rect x="450" y="186" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="484.0" y="217.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="518" y="186" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="552.0" y="217.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="438" y="216.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">0</text>
+<rect x="450" y="234" width="68" height="48" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1"/>
+<text x="484.0" y="265.7" fill="#0f766e" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="518" y="234" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="552.0" y="265.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<text x="438" y="264.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">1</text>
+<rect x="450" y="282" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="484.0" y="313.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">1</text>
+<rect x="518" y="282" width="68" height="48" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1"/>
+<text x="552.0" y="313.7" fill="#0f766e" font-size="22" font-weight="700" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="438" y="312.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">2</text>
+<rect x="450" y="330" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="484.0" y="361.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<rect x="518" y="330" width="68" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="552.0" y="361.7" fill="#16243b" font-size="22" font-weight="400" text-anchor="middle" xml:space="preserve" class="num">0</text>
+<text x="438" y="360.0" fill="#52627b" font-size="15" font-weight="400" text-anchor="end" xml:space="preserve">3</text>
+<text x="484.0" y="174" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">h1</text>
+<text x="552.0" y="174" fill="#52627b" font-size="16" font-weight="400" text-anchor="middle" xml:space="preserve">h2</text>
+<line x1="250" y1="210" x2="401" y2="210" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="250" y1="258" x2="401" y2="258" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="250" y1="306" x2="401" y2="306" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="250" y1="354" x2="401" y2="354" stroke="#52627b" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="28" y="412" width="624" height="78" rx="12" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="47" y="442" fill="#52627b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">−1 → 0     0 → 0     1 → 1</text>
+<text x="47" y="470" fill="#52627b" font-size="17" font-weight="400" text-anchor="start" xml:space="preserve">숫자 8개를 각각 처리한다. 샘플을 합치거나 지우지 않는다.</text>
+</svg>
