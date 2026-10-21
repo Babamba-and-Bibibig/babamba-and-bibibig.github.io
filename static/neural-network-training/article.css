@@ -1,0 +1,73 @@
+/* These rules are loaded only by this article and its English translation. */
+#main-content article .nt-figure {
+  margin: 2rem auto;
+  width: 100%;
+  max-width: 760px;
+}
+#main-content article .nt-figure a {
+  display: block;
+  border: none;
+  box-shadow: none;
+  background: none;
+}
+#main-content article .nt-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+#main-content article .nt-figure figcaption {
+  margin: .9rem auto 0;
+  font-size: .94em;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#main-content article .nt-math {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 1.35rem 0;
+  padding: .45rem .65rem;
+  font-variant-numeric: tabular-nums;
+}
+#main-content article .nt-math .katex-display { margin: .7em 0; }
+#main-content article table { font-variant-numeric: tabular-nums; }
+#main-content article th,
+#main-content article td {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+#main-content article .nt-details {
+  max-width: 100%;
+  margin: 1.5rem 0;
+  border: 1px solid #64748b;
+  border-radius: 10px;
+  padding: .9rem 1rem;
+}
+#main-content article .nt-details > summary {
+  cursor: pointer;
+  font-weight: 650;
+  line-height: 1.7;
+}
+#main-content article .nt-detail-body { padding-top: .5rem; }
+#main-content article .nt-details pre { max-height: 42rem; overflow: auto; }
+@media (max-width: 680px) {
+  #main-content article table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  #main-content article th,
+  #main-content article td {
+    min-width: 6rem;
+    overflow-wrap: normal;
+  }
+  #main-content article th code,
+  #main-content article td code {
+    white-space: nowrap;
+  }
+  #main-content article .nt-math { font-size: .9em; }
+  #main-content article .nt-details { padding: .75rem .6rem; }
+}
