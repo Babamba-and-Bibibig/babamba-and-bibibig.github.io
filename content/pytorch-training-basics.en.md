@@ -1,6 +1,6 @@
 +++
 title = "Your First PyTorch Training Loop: Shapes, Backpropagation, and Optimizers"
-description = "Connect tensor shapes to manual regression updates and minibatch classification. Illustrated explanations cover broadcasting, Linear weight layout, epoch loss, and passing an optimizer factory with lambda."
+description = "Learn tensor shapes, object identity, and gradient recording separately before connecting them to regression training, minibatch classification, and optimizer comparisons."
 date = 2026-10-23T16:00:00+09:00
 slug = "pytorch-training-basics"
 
@@ -10,39 +10,44 @@ toc = true
 styles = ["pytorch-training-basics/article.css"]
 +++
 
-Suppose a model takes one input number and predicts another number. It must produce one prediction per sample, compare it with that sample's target, and update the weights and biases used for prediction. Code running without an error is not enough. Arrange 100 predictions and 100 targets incorrectly, and the code can compare values that do not belong to the same sample.
+Suppose we want to predict one number from another. A model multiplies the input by a weight and adds a bias. When predictions differ from targets, we modify the weight and bias. Three questions matter: **which numbers are being compared, where calculation results are stored, and what information determines the updates**.
 
-We will first use **synthetic regression data** to examine tensor shapes and one training update. Then we will train a small neural network on **two-moon classification data**. Both datasets are generated to study the computations. They are not measurements of a production system's predictive performance.
+Even with 100 predictions and 100 targets, incorrect tensor shapes can compare every combination instead of matching samples. Also, two subtraction expressions can produce equal numbers while differing in whether they modify an existing tensor or create a new one.
 
-Start with the complete flow, then follow what the code creates at each stage. The examples require a Python environment with `torch`, `scikit-learn`, and `matplotlib` installed.
+We use synthetic regression data and a two-moon classification dataset, not measurements of production performance. The examples assume you can read Python variable assignments, function calls, and basic loops, and have `torch`, `scikit-learn`, and `matplotlib` installed. PyTorch features and additional syntax are explained where needed. Code blocks can run from top to bottom; the complete regression example also includes its own data creation.
 
-## 1. What does training calculate, and what does it change?
+## 1. Separate the stages of training
 
-A **sample** is one data case. A **feature** is one input item describing a sample. **Parameters** are the numbers training modifies. Here they are **weights**, which multiply inputs, and **biases**, which are added to the results.
+A **sample** is one data case, and a **feature** is one input item describing it. A **weight** multiplies an input; a **bias** is added to the result. Such numbers modified during training are called **parameters**.
 
-| Name | Role | Does this training procedure modify it? |
-| --- | --- | --- |
-| Input | Data the model uses for prediction. | No. |
-| Target | The reference data used to judge predictions. | No. |
-| Prediction | The result calculated with the current parameters. | Recomputing with different parameters can produce a different result. |
-| Loss | A value measuring how poorly predictions match targets. | We do not reduce it by directly assigning it a smaller number. |
-| Gradient | The rate at which loss changes when a particular parameter changes slightly. | Backpropagation calculates it. |
-| Optimizer | An object that uses gradients and an update rule to modify parameters. | It modifies weights and biases. |
+| Name | Role in this example |
+| --- | --- |
+| Input | Data used to calculate a prediction. |
+| Target | The comparison reference corresponding to each input. |
+| Prediction | The result calculated with the current weights and biases. |
+| Loss | A numerical measure of how poorly predictions match targets. |
+| Gradient | The rate at which loss changes when a particular parameter changes slightly. |
+| Optimizer | A tool that uses gradients to update parameters according to a specified rule. |
 
-The **forward pass** calculates predictions and loss from inputs. **Backpropagation** follows those computation relationships backward from the loss to obtain gradients. Backpropagation does not itself update the weights.
+The **forward pass** calculates predictions from inputs. We then calculate loss using predictions and targets, obtain parameter gradients through **backpropagation**, and finally update parameters using those gradients. Backpropagation and parameter updates are separate operations.
 
-<figure class="pt-figure">
-<img src="/pytorch-training-basics/workflow.svg" alt="Each batch clears previous gradients, calculates predictions and loss, runs backward, and updates parameters. Targets enter the loss calculation.">
-<figcaption>One batch of training. backward calculates gradients; step modifies parameters. The next batch uses the updated parameters.</figcaption>
-</figure>
+```text
+Prepare inputs and targets → prepare weights and biases
+    ↓
+predictions → loss → gradients → update weights and biases
+    ↑                                       |
+    └──────── calculate again with new values ┘
+```
 
-A **batch** is a group of samples processed together. An **epoch** is one pass through the training dataset. The basic loops in this article perform one backward pass and one parameter update per batch. Sample count, model-call count, and parameter count are different quantities.
+A **batch** is a group of samples processed together. One pass through all training samples is an **epoch**. We first process the whole regression dataset as one batch, then introduce smaller batches.
 
-## 2. Element count is not tensor dimensionality
+## 2. Inspect tensor values, shape, and dimensionality separately
 
-A **Tensor** is the PyTorch data type for storing and calculating with numbers in a structured arrangement. `shape` gives the size of each dimension, `ndim` gives the number of dimensions, and `numel()` returns the total number of elements. `dtype` specifies the element data type.
+A **Tensor** is the PyTorch data type for storing and calculating with numbers in a structured arrangement. `torch.tensor(...)` creates a tensor from supplied numbers. An actual item created in a program, such as a tensor, is an **object**. A variable is a name referring to that object.
 
-In this table, `a`, `b`, `c`, and `d` each represent one number.
+`shape` gives the size of each dimension, `ndim` gives the number of dimensions, and `numel()` returns the total element count. `dtype` specifies how individual elements are represented. Information read without parentheses, such as `shape`, is an **attribute**. A function called through an object, such as `numel()`, is a **method**.
+
+Each of `a`, `b`, `c`, and `d` below represents one number.
 
 | Arrangement | Shape | Dimensions | Elements |
 | --- | --- | ---: | ---: |
@@ -51,301 +56,430 @@ In this table, `a`, `b`, `c`, and `d` each represent one number.
 | `[[a]]` | `(1, 1)` | 2 | 1 |
 | `[[a, b], [c, d]]` | `(2, 2)` | 2 | 4 |
 
-The comma in `(1,)` is Python syntax for a one-element tuple. A tensor containing one number is not necessarily a zero-dimensional tensor.
+The comma in `(1,)` is Python syntax for a one-item tuple. Containing one number does not make a tensor zero-dimensional. Start by inspecting shape without any training settings.
 
 ```python
-import torch  # Use tensors and automatic differentiation.
-from torch import nn  # Use model layers and loss classes.
+import torch  # Import PyTorch tensor operations.
 
-w = torch.randn(1, requires_grad=True)  # A one-dimensional training tensor with one element.
-print(w.shape, w.ndim, w.numel())  # torch.Size([1]) 1 1
+values = torch.tensor([2.0])  # Store one number in a one-dimensional arrangement.
+print(values.shape)  # torch.Size([1]): shape (1,).
+print(values.ndim)  # 1: one dimension.
+print(values.numel())  # 1: one element too.
 ```
 
-`requires_grad=True` enables gradient tracking for later computations involving this tensor. It does not change the shape or calculate a gradient immediately.
+For input `X` shaped `(500, 2)`, this article uses **rows for samples** and **columns for features**. There are 500 samples, each with two features, in a two-dimensional tensor.
 
-Now suppose input `X` has shape `(500, 2)`. In this article, **each row is one sample** and **each column is one feature**. There are 500 samples with two features each. `X` itself is a two-dimensional tensor.
+A model description saying “two-dimensional input features” may mean two features. One sample can have shape `(2,)`, and a batch can have shape `(N, 2)`, where `N` is the sample count. **Feature count and tensor dimensionality are different measurements.**
 
-However, a model description saying “two-dimensional input” may mean two input features. A single such sample without a batch dimension has shape `(2,)`; a collection has shape `(N, 2)`, where `N` is the sample count. **Do not treat feature count and tensor dimensionality as the same thing.**
+## 3. Match each input row with its target row
 
-## 3. Generate regression data and understand unsqueeze
+**Regression** predicts numerical values. We create targets by adding small amounts of noise to `2*x + 1`. **Noise** is an added value that makes targets deviate slightly from the rule. The coefficients `2` and `1` generate the targets; they are not the model's initial weight and bias.
 
-**Regression** predicts numerical values, such as quantities. Here we create targets by adding a little noise to `2*x + 1`. We do not give those coefficients to the model as its learned parameters. The model learns a weight and bias from input–target pairs.
+### 3.1. Prepare the input shape first
 
-First, distinguish the functions involved.
-
-| Code | Purpose | Shape in this example |
-| --- | --- | --- |
-| `torch.manual_seed(42)` | Sets the initial state of PyTorch's random number generator. | A setting used to reproduce the random experiment below. |
-| `torch.linspace(0, 1, 100)` | Creates 100 evenly spaced numbers, including both endpoints. | `(100,)` |
-| `x.unsqueeze(1)` | Adds a dimension of size one at position 1. | `(100,) → (100, 1)` |
-| `torch.randn(100, 1)` | Draws values from the standard normal distribution. | `(100, 1)` |
-
-Dimension positions start at zero. The `1` in `unsqueeze(1)` specifies **where the new dimension goes**, not how many numbers to add. Element values and the number of elements stay unchanged.[^shape]
+`torch.linspace(start, end, count)` generates evenly spaced numbers including both endpoints. `unsqueeze(dim)` returns a tensor with a size-one dimension inserted at the specified position. Dimension positions start at zero. Element values and element count stay unchanged.[^shape]
 
 <figure class="pt-figure">
-<img src="/pytorch-training-basics/unsqueeze.svg" alt="Applying unsqueeze 0 to a length-N tensor produces one row and N columns. Applying unsqueeze 1 produces N rows and one column.">
-<figcaption>This regression problem needs one feature per sample. We use (N, 1), with N sample rows, rather than (1, N), with all values in one row.</figcaption>
+<img src="/pytorch-training-basics/unsqueeze.svg" alt="unsqueeze(0) changes (N,) to (1,N); unsqueeze(1) changes it to (N,1).">
+<figcaption>We need N samples with one feature each, so we use (N, 1). Shape (1, N) would put N features into one sample row.</figcaption>
 </figure>
 
 ```python
-torch.manual_seed(42)  # Reproduce the sequence of random operations in the same environment.
-
-x = torch.linspace(0, 1, 100)  # 100 input numbers, with spacing 1/99.
-x2 = x.unsqueeze(1)  # Represent 100 samples with one feature each: (100, 1).
-noise = 0.05 * torch.randn(100, 1)  # Noise added to each sample's target.
-y2 = 2 * x2 + 1 + noise  # Training targets, not model predictions.
+x = torch.linspace(0, 1, 100)  # 100 numbers including zero and one: (100,).
+x2 = x.unsqueeze(1)  # 100 samples with one feature each: (100, 1).
 ```
 
-The standard normal distribution has mean zero and standard deviation one. **Standard deviation** measures how widely values are spread around their mean. Multiplying by `0.05` makes the noise distribution's standard deviation `0.05`. It does not restrict every noise value to the interval from `-0.05` to `0.05`. The mean of the 100 values actually drawn need not be exactly zero either.
+The `1` in `unsqueeze(1)` is **the new dimension's position**, not a count of new elements. `x` remains `(100,)`; the returned `x2` is `(100, 1)`. Calling `x.unsqueeze(1)` and ignoring the result does not change `x`'s shape.
 
-`manual_seed` affects random number generation, not the evenly spaced values from `linspace`. The same seed does not guarantee identical results across different PyTorch versions, devices, and computation methods.[^random]
+### 3.2. Add randomly generated noise
 
-The tensor returned by `unsqueeze` shares the original tensor's underlying storage. Such a result is called a **view**. Calling `x.unsqueeze(1)` and ignoring its return value leaves the original variable `x` with shape `(100,)`. The code above gives the returned view the name `x2`.
+**Random numbers** are values drawn using a defined random-generation procedure. `torch.manual_seed(42)` sets its starting state. It helps reproduce an experiment executed in the same order and environment. The number `42` has no special significance.
 
-## 4. A valid operation is not necessarily the intended operation
-
-Our regression prediction multiplies an input by a weight and adds a bias. Because each sample needs one prediction, **the intended prediction shape is `(100, 1)`, matching the targets**.
-
-`*` multiplies corresponding elements, while `@` follows matrix-multiplication rules appropriate to the tensor dimensions. They are not interchangeable just because an operation runs.
+`torch.randn(100, 1)` draws from the **standard normal distribution**, with mean zero and standard deviation one, and returns a `(100, 1)` tensor. Standard deviation measures spread around the mean. Multiplying by `0.05` gives the noise distribution a standard deviation of `0.05`; it does not confine all values between `-0.05` and `0.05`.[^random]
 
 ```python
-w = torch.randn(1, requires_grad=True)  # One weight element, shape (1,).
-b = torch.zeros(1, requires_grad=True)  # One bias element, shape (1,).
-
-wrong_pred = x2 @ w + b  # (100, 1) @ (1,) → (100,). This operation is valid.
-wrong_error = wrong_pred - y2  # (100,) - (100, 1) → (100, 100).
-print(wrong_error.shape)  # torch.Size([100, 100])
+torch.manual_seed(42)  # Set the starting state for subsequent random operations.
+noise = 0.05 * torch.randn(100, 1)  # One noise value per sample: (100, 1).
+y2 = 2 * x2 + 1 + noise  # The targets corresponding to the input rows: (100, 1).
 ```
 
-Multiplying a two-dimensional matrix by a one-dimensional vector produces a one-dimensional result in this case. Memorizing only the **two-dimensional-by-two-dimensional rule**, `(k, m) @ (m, n) → (k, n)`, misses this behavior.[^shape]
+```text
+first input row  → first target row, including the first noise value
+second input row → second target row, including the second noise value
+...
+x2 (100, 1)                       y2 (100, 1)
+```
 
-The subtraction then uses **broadcasting**. Dimension sizes are compared from the right; each pair must match or contain a size of one. Missing leading dimensions are treated as size one. This does not mean the data must physically be copied.
+`linspace` does not use randomness, so the seed does not affect it. The observed mean of 100 random values need not be exactly zero. A shared seed alone also cannot guarantee identical results across different devices or PyTorch versions.
 
-During subtraction, predictions of shape `(100,)` are treated like `(1, 100)`. Every row of targets `(100, 1)` is compared with all 100 predictions, producing `(100, 100)`. We needed 100 matched errors, but calculated all 10,000 combinations instead.
+<details>
+<summary>Additional detail: does unsqueeze copy the numbers?</summary>
+
+`x2` shares the underlying numerical storage with `x`. A tensor that presents shared storage with a different arrangement is called a **view**. Although the variables have different shapes, modifying an element through one changes the value visible through the other. Here we only adjust the shape; we do not modify the input values.
+
+</details>
+
+## 4. An operation can run while comparing the wrong samples
+
+Specify the intended output first. We need one prediction for each of 100 samples, so the prediction should have shape **`(100, 1)`**, matching the targets.
+
+`*` is elementwise multiplication. `@` is matrix multiplication: it multiplies matching entries of a left-hand row and a right-hand column, then adds the products. For two-dimensional inputs, `(rows, shared_size) @ (shared_size, columns)` requires matching shared sizes and produces `(rows, columns)`. But when the right operand is a one-dimensional vector, this example produces a one-dimensional result.[^shape]
+
+We are only checking shape here, so the weight and bias have no training settings. `torch.zeros(1)` creates a `(1,)` tensor containing one zero.
+
+```python
+w = torch.randn(1)  # One weight value: (1,).
+b = torch.zeros(1)  # One bias value: (1,).
+wrong_pred = x2 @ w + b  # (100, 1) @ (1,) → (100,).
+print(wrong_pred.shape)  # torch.Size([100]), not the intended (100, 1).
+```
+
+### 4.1. How broadcasting changes the subtraction
+
+**Broadcasting** is the shape-matching rule used in elementwise operations on differently sized tensors. Compare dimensions from the right: their sizes must match or one must be one. Missing leading dimensions are treated as size one. The calculation acts as though a value is used at multiple positions; it does not require physically copying the data.
+
+```text
+prediction: (100,)     → treated like (1, 100) because a leading dimension is missing
+target:     (100, 1)   → one target per row
+result:     (100, 100) → each target is compared with all 100 predictions
+```
 
 <figure class="pt-figure">
-<img src="/pytorch-training-basics/broadcasting.svg" alt="One row of predictions and one column of targets create a three-by-three grid of all differences. Two matching columns create only the three corresponding differences.">
-<figcaption>Only three samples are shown. The upper calculation compares every combination; the lower calculation compares each prediction with its own target.</figcaption>
+<img src="/pytorch-training-basics/broadcasting.svg" alt="A row of predictions and a column of targets produce all combinations. Two matching columns compare corresponding rows.">
+<figcaption>Only three samples are shown. We need the lower one-to-one comparison, not the upper all-combinations comparison.</figcaption>
 </figure>
 
-Treating the weight as `(1, 1)` preserves the intended output shape.
+```python
+wrong_error = wrong_pred - y2  # Compare every combination of 100 predictions and 100 targets.
+print(wrong_error.shape)  # torch.Size([100, 100]): 10,000 errors.
+```
+
+### 4.2. Produce and check the intended shape
+
+Using a `(1, 1)` weight in the calculation preserves a `(100, 1)` output. Below, `assert` stops execution when its condition is false. `torch.allclose` checks whether tensor values match while allowing small floating-point differences.
 
 ```python
 y_hat = x2 @ w.unsqueeze(1) + b  # (100, 1) @ (1, 1) → (100, 1).
-assert y_hat.shape == y2.shape  # Stop rather than calculate loss on mismatched shapes.
-
-same_pred = x2 * w + b  # Equivalent here because there is only one input feature and weight.
-assert torch.allclose(y_hat, same_pred)  # Compare values allowing small floating-point differences.
+assert y_hat.shape == y2.shape  # Check prediction and target shapes.
+same_pred = x2 * w + b  # Equivalent in this particular one-feature problem.
+assert torch.allclose(y_hat, same_pred)  # Also compare the calculated values.
 ```
 
-`assert` raises an error when its condition is false. `allclose` compares values while allowing small floating-point differences. With multiple input features, `*` and `@` generally do different calculations. Matching shapes also cannot fix samples that are in different orders. **Check both the shapes and which elements correspond.**
+With multiple features, `*` and `@` generally differ. Matching shapes do not fix targets arranged in the wrong sample order. Check **intended output shape → actual output shape → correspondence between samples**.
 
-## 5. What do Sigmoid, ReLU, and Softmax change?
+## 5. Distinguish value transformations by their calculation units
 
-An **activation function** transforms values, including intermediate neural-network outputs. These three functions preserve input shape but differ in which values they calculate together.[^activation]
+An **activation function** transforms values, including intermediate neural-network outputs. A **class** is a category to predict. **Logits** are class scores before conversion to probabilities; they may be negative.
 
-| Function | Calculation unit | Result |
+| Function | Which values are calculated together? | Result |
 | --- | --- | --- |
-| Sigmoid | Each element independently. | Maps each value between zero and one. The total need not sum to one. |
-| ReLU | Each element independently. | Replaces negative values with zero and leaves the rest unchanged. Results can exceed one. |
-| Softmax | Values together along a specified dimension. | Here, converts each sample's class scores into probabilities summing to one. |
+| Sigmoid | Transforms each element independently. | Each value is between zero and one; the total need not be one. |
+| ReLU | Transforms each element independently. | Changes negatives to zero and preserves the rest. |
+| Softmax | Calculates across one sample's class scores. | That sample's probabilities sum to one. |
+
+### 5.1. Inspect Sigmoid and ReLU first
+
+`torch.sigmoid` and `torch.relu` return tensors with the input shape. The following input is `(2, 3)`, so both outputs are `(2, 3)`.[^activation]
 
 ```python
-z = torch.tensor([[-2.0, 0.0, 3.0], [1.0, -4.0, 2.0]])  # Shape (2, 3).
-
-sigmoid_manual = 1 / (1 + torch.exp(-z))  # Elementwise Sigmoid formula.
-sigmoid_builtin = torch.sigmoid(z)  # The built-in function used in practice.
-
-relu_manual = torch.where(z > 0, z, 0.0)  # Choose z where the condition is true, otherwise zero.
-relu_builtin = torch.relu(z)  # Returns [[0, 0, 3], [1, 0, 2]].
+z = torch.tensor([[-2.0, 0.0, 3.0], [1.0, -4.0, 2.0]])  # Values to compare: (2, 3).
+sigmoid_out = torch.sigmoid(z)  # Apply Sigmoid to each element.
+relu_out = torch.relu(z)  # Result: [[0, 0, 3], [1, 0, 2]].
 ```
 
-`exp(z)` means the mathematical constant `e` raised to the power `z`. The constant is approximately `2.71828`. `torch.exp` applies this calculation to each tensor element. `torch.where(condition, value_if_true, value_if_false)` chooses the value at each position.
-
-Mathematically, Sigmoid maps finite inputs to values strictly between zero and one. Limited computer precision can represent extreme results as zero or one. The exponential in the manual formula can also overflow, so use built-in functions in actual models. `torch.clamp(z, min=0)` also clips negatives to zero, but do not assume every manually assembled expression has exactly the same derivative conventions as built-in ReLU.
-
-### Softmax operates across the classes of one sample
-
-A **class** is a category to predict. **Logits** are class scores before conversion to probabilities; they may be negative. Each row of `logits2` below is one sample, and each column is one class score.
+To write the calculations directly, first introduce two more functions. `torch.exp(z)` raises `e` to the power of each element; `e` is the mathematical constant approximately `2.71828`. `torch.where(condition, value_if_true, value_if_false)` chooses a value at each position according to the condition.
 
 ```python
-logits2 = torch.tensor([[2.0, 0.5, 0.3], [0.2, 2.5, 0.1]])  # (2, 3).
-
-row_max = logits2.amax(dim=1, keepdim=True)  # One maximum per row: (2, 1).
-shifted = logits2 - row_max  # Subtract the same maximum within each row: (2, 3).
-exp_logits = torch.exp(shifted)  # Elementwise exponential: (2, 3).
-row_sums = exp_logits.sum(dim=1, keepdim=True)  # One sum per row: (2, 1).
-probs_manual = exp_logits / row_sums  # Divide each row by its own sum: (2, 3).
-
-probs = torch.softmax(logits2, dim=1)  # Perform the same operation with the built-in function.
-assert torch.allclose(probs_manual, probs)  # Verify matching results.
+sigmoid_manual = 1 / (1 + torch.exp(-z))  # The Sigmoid formula.
+relu_manual = torch.where(z > 0, z, 0.0)  # Keep positive values and use zero otherwise.
+assert torch.allclose(sigmoid_out, sigmoid_manual)  # Check values for this input.
+assert torch.allclose(relu_out, relu_manual)  # Check the transformation's output values.
 ```
 
-`amax` is a method that finds maximum values. In this table, `dim=1` means calculating across the class-score columns. `keepdim=True` retains the reduced dimension with size one. Thus the column size falls from three to one, changing `(2, 3)` into `(2, 1)`.
+ReLU leaves values above one unchanged. Mathematically, Sigmoid maps finite inputs strictly between zero and one, but limited precision can represent extreme results as zero or one. A manually calculated exponential can also have problems with large inputs, so use built-in functions in actual models. The comparison above checks output values; it does not claim identical derivative behavior at every point.
+
+### 5.2. Softmax's dim chooses which values are grouped
+
+Rows of `logits2` represent samples and columns represent classes. There are two samples with three class scores each. In `torch.softmax(logits2, dim=1)`, `dim=1` means calculating across those class-score columns. The shape stays `(2, 3)`.
+
+```python
+logits2 = torch.tensor([[2.0, 0.5, 0.3], [0.2, 2.5, 0.1]])  # Scores: (2, 3).
+probs = torch.softmax(logits2, dim=1)  # Produce three class probabilities per row.
+```
+
+The calculation is **exponentiate each score → add values within its row → divide each value by its row's sum**. `.sum(dim=1, keepdim=True)` reduces the columns but retains that dimension with size one. The sums therefore have shape `(2, 1)`, not `(2,)`.
 
 <figure class="pt-figure">
-<img src="/pytorch-training-basics/softmax.svg" alt="A two-by-three array of exponentials has one sum per row, stored as two-by-one. Each original row is divided by its own sum.">
-<figcaption>a through f are values after exponentiation. The first row is divided by s1 and the second by s2. Scores from different samples are not summed together.</figcaption>
+<img src="/pytorch-training-basics/softmax.svg" alt="Divide exponentials in each row by their own row sum. Store two row sums with shape (2,1).">
+<figcaption>a through f are exponentiated values. The first row uses s₁ and the second s₂, keeping samples separate.</figcaption>
 </figure>
 
-Subtracting the row maximum avoids sending large positive values into the exponential. Subtracting the same value from every score in a row leaves the Softmax probabilities unchanged. With shape `(samples, classes)`, use `dim=1`; `dim=-1`, meaning the final dimension, is equivalent here. For a one-dimensional vector of class scores, use `dim=0` or `dim=-1`.
-
-## 6. Creating a loss object and calculating loss are different operations
-
-`nn.MSELoss` and `nn.CrossEntropyLoss` are **classes**: definitions used to create objects. Parentheses after the class name create a loss object. Calling that object with predictions and targets performs the actual calculation.
-
 ```python
-loss_fn = nn.MSELoss()  # Create the loss object. No predictions have been compared yet.
-pred = torch.tensor([2.5, 0.0, 2.0])  # Three predictions.
-target = torch.tensor([3.0, -0.5, 2.0])  # Their corresponding targets.
-
-loss = loss_fn(pred, target)  # Call the object to obtain a loss tensor.
-manual_loss = (pred - target).square().mean()  # Write the same calculation directly.
-assert torch.allclose(loss, manual_loss)  # The result is approximately 0.1667.
+exp_logits = torch.exp(logits2)  # Use small scores to inspect the calculation: (2, 3).
+row_sums = exp_logits.sum(dim=1, keepdim=True)  # One sum per row: (2, 1).
+probs_manual = exp_logits / row_sums  # Divide by the corresponding sum: (2, 3).
+assert torch.allclose(probs, probs_manual)  # Compare against the built-in function.
 ```
 
-**MSE, mean squared error**, subtracts matching values, squares the errors, and averages all elements. `.square()` is the method for elementwise squaring; its name is not `.squared()`.
+`dim=-1` means the last dimension, so it equals `dim=1` for this input. A one-dimensional vector containing only class scores uses `dim=0` or `dim=-1`.
+
+<details>
+<summary>Additional detail: calculating directly with large scores</summary>
+
+The manual example above uses small scores to expose the steps. Exponentiating large positive numbers can exceed the computer's numerical range. Subtracting each row's maximum first makes the exponential inputs nonpositive.
+
+`.amax(dim=1, keepdim=True)` returns one maximum per row with shape `(2, 1)`. Subtracting the same value from every score in a row scales all its exponentials by the same factor. That factor cancels between numerator and denominator, leaving the probabilities unchanged.
+
+```python
+row_max = logits2.amax(dim=1, keepdim=True)  # Row maxima: (2, 1).
+shifted = logits2 - row_max  # Subtract each row's maximum from that row.
+exp_shifted = torch.exp(shifted)  # Avoid exponentiating large positive values.
+shifted_sums = exp_shifted.sum(dim=1, keepdim=True)  # Row sums.
+probs_stable = exp_shifted / shifted_sums  # Calculate probabilities.
+assert torch.allclose(probs, probs_stable)  # Compare with the original Softmax output.
+```
+
+</details>
+
+## 6. Separate the loss calculation from using its implementation
+
+### 6.1. MSE squares errors and averages them
+
+**MSE, mean squared error**, subtracts matching predictions and targets, squares the differences, and averages them. `.square()` squares each element; `.mean()` averages all elements.
 
 ```text
-prediction - target  [2.5-3.0, 0.0-(-0.5), 2.0-2.0]
-errors               [-0.5, 0.5, 0.0]
-squared errors       [0.25, 0.25, 0.0]
-mean                 (0.25 + 0.25 + 0.0) / 3 = 0.166666...
+predictions: [2.5, 0.0, 2.0]       targets: [3.0, -0.5, 2.0]
+errors:      [-0.5, 0.5, 0.0]
+squares:     [0.25, 0.25, 0.0]
+mean:        (0.25 + 0.25 + 0.0) / 3 = 0.166666...
 ```
 
-`nn.MSELoss(pred, target)` puts data in the object-construction call and is not the intended usage. `nn.MSELoss()(pred, target)` performs construction followed by calculation, but two separate lines make the distinction clearer.
+```python
+pred = torch.tensor([2.5, 0.0, 2.0])  # Three predictions.
+target = torch.tensor([3.0, -0.5, 2.0])  # Three targets in the same order.
+manual_loss = (pred - target).square().mean()  # Create a loss tensor with shape ().
+```
 
-Default MSE averages **all output elements**. With multiple output values per sample, dividing only by the number of samples is a different calculation.[^loss]
+Default MSE averages **all output elements**. With multiple outputs per sample, its denominator is not just the sample count. The method is `.square()`, not `.squared()`.[^loss]
 
-### CrossEntropyLoss with integer class targets
+### 6.2. Creating a loss object is separate from calculating loss
 
-For classification, we compare each sample's class scores with its target class index. Let `N` denote sample count and `C` class count.
+In Python, a **class** is a definition used to create objects. This is a different meaning from “class” as a classification category. `nn.MSELoss` is a class that creates loss-calculation objects. First create one with `nn.MSELoss()`, then supply predictions and targets to calculate a loss.
 
-| Object | Shape | Type and contents |
-| --- | --- | --- |
-| `logits` | `(N, C)` | Floating-point class scores. Do not apply Softmax first. |
-| `labels` | `(N,)` | `torch.long` integers from `0` through `C-1`. |
-| Default mean loss | `()` | A zero-dimensional tensor containing one number. |
+```text
+nn.MSELoss()           → create the loss-calculation object
+loss_fn                → the variable referring to that object
+loss_fn(pred, target)  → calculate loss using actual predictions and targets
+```
 
 ```python
-labels = torch.tensor([0, 1], dtype=torch.long)  # Sample one is class 0; sample two is class 1.
-ce_fn = nn.CrossEntropyLoss()  # Create the classification loss object.
-ce = ce_fn(logits2, labels)  # Pass the original scores from the previous section, not probs.
+from torch import nn  # Import the part providing layer and loss classes.
+
+loss_fn = nn.MSELoss()  # Prepare the tool; no data have been compared yet.
+loss = loss_fn(pred, target)  # This call performs the actual loss calculation.
+assert torch.allclose(loss, manual_loss)  # It matches the manually calculated MSE.
+```
+
+Do not put data into the construction call as `nn.MSELoss(pred, target)`. `nn.MSELoss()(pred, target)` combines construction and calling, but two lines make their roles clearer.
+
+### 6.3. Classification loss takes original scores and target indices
+
+`nn.CrossEntropyLoss` creates a classification-loss object. Here we provide **one correct class index per sample**. Assigning a lower probability to the correct class produces a larger loss. The tool includes the necessary calculations, so pass **logits without applying Softmax first**.[^loss]
+
+`N` is sample count and `C` is class count. `torch.long` is a 64-bit integer type suitable for class indices; it is the same as `torch.int64`.
+
+| Item | Shape | Meaning |
+| --- | --- | --- |
+| `logits` | `(N, C)` | Floating-point scores for each sample and class. |
+| `labels` | `(N,)` | One target index per sample, from 0 through C−1. |
+| Default result | `()` | One number averaging the sample losses. |
+
+```python
+labels = torch.tensor([0, 1], dtype=torch.long)  # First sample: class 0; second: class 1.
+ce_fn = nn.CrossEntropyLoss()  # Create the loss-calculation object.
+ce = ce_fn(logits2, labels)  # Pass the earlier scores, not probs.
 print(ce)  # tensor(0.2577)
 ```
 
-Under this setup, a lower probability assigned to the correct class produces a larger loss. Integer-label cross-entropy is equivalent to combining `LogSoftmax` with `NLLLoss`; it uses the negative logarithm of the correct-class probability. The default setup returns the mean across samples.[^loss]
+`labels.long()` converts an existing tensor to this integer type. No extra conversion is needed when it was specified during creation. Probability-distribution targets are also supported, but this article uses integer indices.
 
-`labels.long()` converts the data type to `torch.int64`. No additional conversion is needed when the labels are already `torch.long`. CrossEntropyLoss is not limited to integer targets: it also supports class-probability targets. This article uses the `(N,)` integer-target mode.
+<details>
+<summary>Additional detail: names for the internal cross-entropy operations</summary>
 
-## 7. backward calculates gradients; updates inside no_grad change values
+Let `p` be the correct class's probability. The sample loss in this setup is `-log(p)`. Here `log` is the natural logarithm, the inverse of the exponential introduced earlier: if `exp(a)=p`, then `log(p)=a`. Loss is zero when the probability is one and grows as the probability approaches zero.
 
-Automatic differentiation uses the computation relationships recorded during the forward pass. Weights and biases produce predictions, and predictions produce loss. By following those relationships backward, it can calculate how loss depends on each parameter. The differentiation rule connecting intermediate effects is the **chain rule**.[^autograd]
+`LogSoftmax` calculates the natural logarithms of class probabilities. `NLLLoss` selects the correct-class entry and negates it to obtain the loss. CrossEntropyLoss with integer labels is equivalent to connecting those operations. In actual code, use `nn.CrossEntropyLoss()` rather than assembling the functions separately.
+
+</details>
+
+## 7. Automatic differentiation calculates gradients from recorded operations
+
+So far we have calculated prediction and loss values. We now need **gradients for deciding how to modify the weights**. **Automatic differentiation** is PyTorch's feature for obtaining those gradients using the calculation relationships.
+
+There are two stages. While calculating predictions and loss, PyTorch records which operations were applied to which tensors. Later it follows that record backward from the loss to calculate gradients. Not having calculated a gradient yet is different from having no computation record.
+
+| Feature | When it is used | What it does |
+| --- | --- | --- |
+| `requires_grad=True` | When preparing a trainable tensor. | Enables later gradient calculation for that tensor. |
+| `loss.backward()` | After calculating loss. | Uses recorded relationships to calculate gradients. |
+| `w.grad` | After gradient calculation. | Stores gradients corresponding to the elements of `w`. |
+
+`True` is the Boolean value for true. `None` represents the absence of a value. A `.grad` value of `None` does not mean the weight or its gradient is zero.
+
+```python
+w = torch.randn(1, requires_grad=True)  # Now enable gradient calculation for the weight.
+b = torch.zeros(1, requires_grad=True)  # The bias is also trainable.
+y_hat = x2 @ w.unsqueeze(1) + b  # Predictions: (100, 1), with operations recorded.
+loss = (y_hat - y2).square().mean()  # Mean loss: ().
+print(w.grad)  # None: backward has not run yet.
+loss.backward()  # Calculate weight and bias gradients for the current loss.
+print(w.grad.shape, b.grad.shape)  # Both are torch.Size([1]).
+```
 
 ```text
-Forward:    w, b → prediction → loss L
-Backward:   start from loss L → follow prediction computations → w.grad, b.grad
-Update:     use those gradients to modify the existing w and b values
+forward:  w, b → predictions → loss
+backward: loss → computations producing predictions → weight and bias gradients
 ```
 
-| Code | What it does | What it does not do |
-| --- | --- | --- |
-| `loss.backward()` | Calculates parameter gradients and accumulates them into `.grad`. | Does not update parameter values. |
-| `w.grad` | Contains the derivative of the current loss with respect to each element of `w`. | Does not give the distance to an optimal weight. |
-| `with torch.no_grad():` | Excludes operations in the block from reverse-mode gradient recording. | Does not erase already stored `.grad` values. |
-| `w.grad = None` | Clears the stored gradient. | Does not set the weight itself to zero. |
+One loss value can depend differently on each parameter, so each parameter has its own gradient. The differentiation rule linking the effects of intermediate calculations is the **chain rule**. `backward()` carries out that calculation without modifying the values of `w` and `b`.[^autograd]
 
-A loss can be one number while depending differently on many weights. Each weight therefore has its own gradient. `w.grad` has the same shape as `w`.
+Another forward and backward pass adds new gradients to existing `.grad` values. To update independently for each batch, clear the old gradients. `w.grad = None` **clears only the gradient storage and preserves the weight**.
 
-A directly created starting tensor such as `w` or `b`, rather than the result of another differentiable operation, is a **leaf tensor**. Leaf tensors with `requires_grad=True` store `.grad` by default. `w.unsqueeze(1)` is an intermediate result connected to the original `w`. Using that view in prediction still lets the gradient reach `w`. Using a view at the point of calculation, rather than replacing the training variable with it, keeps this distinction clear.
+<details>
+<summary>Additional detail: which tensor stores the gradient?</summary>
 
-Running a new forward pass and then `backward()` again adds gradients to existing `.grad` values. To update separately using each batch's gradients, as in this article, clear them between batches.
+The `w` and `b` above were created directly as starting tensors, rather than as results of other differentiable operations. Such tensors are called **leaf tensors**. Leaf tensors with `requires_grad=True` store `.grad` by default.
 
-## 8. Updating weights: modifying an existing tensor or assigning a new one
+`w.unsqueeze(1)` is an intermediate tensor derived from `w`. Using it in prediction still allows gradients to follow the connection to the original `w`. Intermediate tensors do not all retain `.grad` by default. Keep the original variable `w` and use the result of `w.unsqueeze(1)` where the shape is needed.
 
-`w -= lr * w.grad` and `w = w - lr * w.grad` calculate the same subtraction result when given the same current values and gradients. In PyTorch, however, they differ in **whether they modify the existing tensor or create a new tensor and bind the variable to it**.
+</details>
 
-A Python variable is a name referring to an object. Two tensors containing equal numbers are different from two names referring to the same tensor.
+## 8. Equal calculated values do not mean the same tensor was modified
 
-| Code | Meaning for a PyTorch tensor |
-| --- | --- |
-| `w = w - lr * w.grad` | Binds the name `w` to the new tensor produced by subtraction. |
-| `w -= lr * w.grad` | Modifies the values of the existing `w` tensor. |
+This section examines **tensor values and variable references** without training or differentiation. Compare `w -= 0.5` with `w = w - 0.5`. Equal starting values produce equal subtraction results. The difference is whether the original tensor changes.
 
-Inside `no_grad`, `w = w - ...` creates a new subtraction-result tensor without gradient tracking. Replacing the training variable with that result changes the connection needed for later training. In the same position, `w -= ...` preserves the existing object's `requires_grad=True` setting while changing its values.
+First, `same_object = w` does not copy the tensor: it makes two names refer to one tensor. Python's `is` operator tests whether two names refer to **the same object**.
+
+### 8.1. -= changes the existing tensor's values
 
 ```python
-original = torch.tensor([2.0], requires_grad=True)  # The training tensor object.
-same_object = original  # Refer to the same object; do not copy it.
-
-with torch.no_grad():
-    original -= 0.1  # Modify the existing tensor's values.
-
-assert original is same_object  # is tests whether both names refer to the same object.
-assert original.requires_grad  # Gradient tracking remains enabled.
-
-with torch.no_grad():
-    replacement = original - 0.1  # Create a new tensor as the subtraction result.
-
-assert replacement is not original  # It is a different object.
-assert not replacement.requires_grad  # This operation result was created inside no_grad.
+w = torch.tensor([2.0])  # Create a tensor containing 2.0.
+same_object = w  # Give that same tensor another name; do not create a new tensor.
+w -= 0.5  # Change the existing tensor's value from 2.0 to 1.5.
+print(w)  # tensor([1.5000])
+print(same_object)  # tensor([1.5000]): the same tensor exposes the changed value.
+print(w is same_object)  # True: these names still refer to one object.
 ```
 
-This explanation concerns **updating parameters after backward has finished**. Overwriting needed intermediate values during a forward pass can break backpropagation. The behavior of `-=` also depends on the data type. Do not apply PyTorch tensor identity behavior to ordinary Python numbers.[^assignment]
+```text
+before: w ───────────┐       after: w ───────────┐
+                    ├→ tensor [2.0]             ├→ same tensor [1.5]
+        same_object ┘              same_object ┘
+```
 
-### Typing mistake: do not reverse the symbols
+### 8.2. w = w - ... connects w to a new tensor
 
-`w =- lr * w.grad` is not another update method. It is an example of **accidentally reversing the symbols in `-=`**. Separating the assignment and minus signs makes it clearer: `w = -lr * w.grad`.
-
-| Case | Code | Meaning |
-| --- | --- | --- |
-| Intended update | `w -= lr * w.grad` | Subtract `lr * w.grad` from the current weight. |
-| Reversed-symbol mistake | `w = -lr * w.grad` | Assign `-(lr * w.grad)` as the new value, omitting subtraction from the current weight. |
-
-`-=` is one operator with **minus followed by equals**. `= -` is an assignment with **equals followed by unary minus**. The second line can still run as valid Python syntax, so this typing mistake need not produce a syntax error.
-
-## 9. Train regression by updating the parameters directly
-
-The following code runs the regression procedure in one block. The **learning rate** `lr` scales the overall size of the gradient-based update. The basic rule subtracts the learning rate times the gradient from the current weight.
+Reset the starting value to `2.0` so that both cases start from the same value.
 
 ```python
-import torch  # Use tensors and automatic differentiation.
+w = torch.tensor([2.0])  # Start the second comparison from 2.0 as well.
+same_object = w  # Both names refer to the same tensor.
+w = w - 0.5  # Create the subtraction-result tensor and connect only w to it.
+print(w)  # tensor([1.5000]): the new tensor's value.
+print(same_object)  # tensor([2.]): the original tensor was not modified.
+print(w is same_object)  # False: these are now different objects.
+```
 
-torch.manual_seed(42)  # Set the random generation sequence.
+```text
+after: w ───────────→ new tensor [1.5]
+       same_object ─→ original tensor [2.0]
+```
+
+Reading `w` produces `1.5` in both cases. Reading `same_object`, which also referred to the original tensor, exposes the difference. **Equality of numbers and identity of objects are separate questions.** This describes PyTorch tensor subtraction behavior. Applying `-=` to an ordinary Python number does not modify the existing number object.[^assignment]
+
+Reversing the symbols as `w =- 0.5` means `w = -0.5`. It assigns negative 0.5 instead of subtracting 0.5 from the current value. If an update was intended, that is a typing mistake.
+
+## 9. Learn how to disable recording, then connect it to training
+
+### 9.1. Executing a calculation and recording it are different operations
+
+Section 7 explained that automatic differentiation records forward-pass relationships. Use `torch.no_grad()` when **numerical calculations should run without recording them for backward**. It does not distinguish modifying a tensor from assigning a new tensor.
+
+Python's `with` syntax applies setup when entering a defined block and handles cleanup when leaving it. Here, `with torch.no_grad():` disables recording for **the indented lines below it**. When the indentation ends, the preceding recording setting is restored.[^no_grad]
+
+First, perform the same multiplication three times without updating a weight, so only recording behavior differs.
+
+```python
+source = torch.tensor([2.0], requires_grad=True)  # A starting tensor for gradient calculation.
+recorded = source * 2  # Multiply with recording enabled.
+
+with torch.no_grad():
+    unrecorded = source * 2  # Perform the multiplication without a differentiation record.
+
+recorded_again = source * 2  # The earlier recording setting has been restored outside the block.
+print(recorded.requires_grad)  # True
+print(unrecorded.requires_grad)  # False
+print(recorded_again.requires_grad)  # True
+print(source.requires_grad)  # True: the original tensor's setting did not change.
+```
+
+All three multiplications produce the number `4`. What differs is **whether the operation producing that result was recorded for differentiation**. `no_grad` does not erase an existing `.grad` value or permanently disable the original tensor's `requires_grad` setting.
+
+### 9.2. Why use it around a weight update?
+
+This training procedure calculates the gradient of the current loss with respect to the current weights, then uses it to update those weights. **We are not trying to include the update operation itself in the next backward calculation.** Recording is therefore disabled during the update. PyTorch raises an error if we try to modify such a trainable starting tensor directly while recording is enabled.[^autograd]
+
+```text
+recording enabled: calculate predictions → calculate loss → backward calculates gradients
+recording disabled: use existing gradients to change the existing weight and bias values
+after the block: clear gradients and record new operations during the next forward pass
+```
+
+The two choices do different jobs. **`-=` keeps the original tensor and changes its values.** **`no_grad` excludes the update operation from differentiation recording.** Neither one is the meaning of the other.
+
+Creating a new subtraction result with `w = w - ...` inside `no_grad` produces a result without gradient tracking. Rebinding `w` to it replaces the original training tensor. Below, we keep the original `w` and `b` and update their values. This is an update after backward, not permission to overwrite arbitrary intermediate values needed during a forward pass.
+
+### 9.3. Connect the complete regression loop
+
+The **learning rate** `lr` scales the gradient-based update. The basic rule here is `new value = current value - lr × gradient`. The gradient is not the distance to an optimum, so an excessive learning rate can increase loss.
+
+Also separate recording for display from training. `loss.item()` extracts a Python number from a one-element tensor. `losses = []` creates an empty list, and `.append(...)` adds a value at its end. The extracted number is for logging; backward uses the original `loss` tensor. `range(500)` makes the loop run 500 times.
+
+```python
+import torch  # This block can run the regression experiment on its own.
+
+torch.manual_seed(42)  # Set the random-generation starting state.
 x2 = torch.linspace(0, 1, 100).unsqueeze(1)  # Inputs: (100, 1).
 y2 = 2 * x2 + 1 + 0.05 * torch.randn(100, 1)  # Targets: (100, 1).
-
 w = torch.randn(1, requires_grad=True)  # One weight shared by all samples.
 b = torch.zeros(1, requires_grad=True)  # One bias shared by all samples.
-lr = 0.3  # Learning rate for this example.
-losses = []  # A Python list used to record losses.
+lr = 0.3  # Learning rate for this experiment.
+losses = []  # Store loss numbers.
 
 for step in range(500):
-    y_hat = x2 @ w.unsqueeze(1) + b  # Forward pass: (100, 1).
-    assert y_hat.shape == y2.shape  # Check the intended matching shape.
-    loss = (y_hat - y2).square().mean()  # Loss tensor with shape ().
-    losses.append(loss.item())  # Keep a Python number for plotting or inspection.
+    y_hat = x2 @ w.unsqueeze(1) + b  # Predict using current parameters: (100, 1).
+    assert y_hat.shape == y2.shape  # Reject an unintended comparison shape.
+    loss = (y_hat - y2).square().mean()  # Mean loss: ().
+    losses.append(loss.item())  # Record the loss computed before the update.
+    loss.backward()  # Calculate gradients for the current loss.
 
-    loss.backward()  # Calculate w and b gradients for the current loss.
     with torch.no_grad():
-        w -= lr * w.grad  # Update the existing weight's value.
-        b -= lr * b.grad  # Update the existing bias's value.
+        w -= lr * w.grad  # Update the original weight without recording the update.
+        b -= lr * b.grad  # Update the original bias the same way.
 
-    w.grad = None  # Prevent old gradients from accumulating in the next iteration.
-    b.grad = None  # Clear the bias gradient as well.
+    w.grad = None  # Avoid accumulating old gradients in the next iteration.
+    b.grad = None  # Clear the bias gradient too.
 
-print(f"w={w.item():.3f}, b={b.item():.3f}")  # Inspect the learned parameters.
+print("w:", w.item(), "b:", b.item())  # Inspect the learned numbers.
 ```
 
-`.item()` extracts a Python number from a one-element tensor. It is suitable for recording values, but that Python number cannot be used for backpropagation. Call backward on the original `loss` tensor.
+Each iteration uses all 100 samples, making it one full-batch training update. There is one weight and one bias, but all 100 samples contribute to loss and gradient computation. **Parameter count and amount of computation are not the same thing.** Because targets contain noise, learned values need not be exactly `2` and `1`.
 
-Every iteration here uses all 100 samples, so it is one full-batch training update. There is one weight and one bias, but all 100 samples contribute to loss and gradient calculations. **Parameter count is not a count of the computation performed.**
+## 10. Select the device used for tensor calculations
 
-Because targets include noise, the learned parameters need not be exactly `w=2` and `b=1`. Gradients do not reveal the distance to the optimum, so an excessively large learning rate can make loss increase.
+A **device** is where tensors are stored and calculations run. `cpu` uses the CPU, `cuda` is the NVIDIA GPU path here, and `mps` is the Apple GPU path on supported Macs. `is_available()` returns a Boolean indicating whether that path is currently available.[^device]
 
-## 10. What must be placed on the same CPU, CUDA, or MPS device?
-
-A **device** is where tensors are stored and calculations run. `cpu` uses the CPU, `cuda` is the NVIDIA GPU path in this example, and `mps` is the Apple GPU path on supported Macs. `is_available()` returns a Boolean indicating current availability.[^device]
+**`.to(device)` returns a tensor on the requested device.** It does not automatically rebind the original variable, so retain the returned value. If device and data type already match, it may return the original tensor.
 
 ```python
 if torch.cuda.is_available():
@@ -355,97 +489,131 @@ elif torch.backends.mps.is_available():
 else:
     device = "cpu"  # Use the CPU when neither GPU path is available.
 
-t = torch.randn(2, 2)  # Create a tensor on the default device.
-t_on_device = t.to(device)  # Keep the returned tensor on the requested device.
+t = torch.randn(2, 2)  # With default settings, create a tensor on the CPU.
+t_on_device = t.to(device)  # Keep the returned tensor in a new variable.
 print(t_on_device.device)  # Inspect its actual device.
 ```
 
-`Tensor.to(device)` returns a tensor; it does not automatically rebind the original variable name. If device and data type already match, it may return the original tensor. The example changes only the device, so shape and the meaning of the values are preserved.
+This device-only transfer preserves shape and the meaning of values. When using a model later, prepare **its parameters, the current inputs, and the current targets on the same computation device**. We will connect model transfer after explaining how to create a model object.
 
-A model's `.to(device)` transforms registered parameters and other relevant state within the model. Do not assume it behaves identically to tensor `.to()`. Prepare training in this order: **create the model → move it to the device → create the optimizer from that model's parameters**. Move the targets used for loss computation as well as the inputs to the appropriate device.
+## 11. Use an existing layer before wrapping it in a model class
 
-## 11. Do nn.Module and nn.Linear perform training for us?
+### 11.1. Predict with one nn.Linear layer
 
-`nn.Module` is the base class used to define models and layers. `__init__` prepares layers and parameters when an object is created. `forward` describes how inputs become outputs. `self` refers to the current object, and `super().__init__()` performs the base `nn.Module` initialization.
+A **neuron** multiplies inputs by corresponding weights, adds the products, and adds a bias. A **layer** groups such calculation units. `nn.Linear(input_features, output_neurons)` creates a layer performing that computation. Its two arguments are integers, not shape tuples such as `(1,)`.[^linear]
+
+`nn.Linear(1, 1)` takes one feature and outputs one value. It also creates the required weight and bias. These numbers are managed as **Parameters**, special tensors registered as trainable model parameters.
 
 ```python
-from torch import nn  # Import the model building classes.
-
-class LinearRegression(nn.Module):
-    def __init__(self):
-        super().__init__()  # Initialize the machinery managing modules and parameters.
-        self.linear = nn.Linear(1, 1)  # One input feature → one output value.
-
-    def forward(self, x):
-        return self.linear(x)  # Calculate predictions with the prepared layer.
-
-model = LinearRegression()  # Create a model; it has not been trained.
-prediction = model(x2)  # Run a forward pass; this alone does not update parameters.
-
-for name, p in model.named_parameters():
-    print(name, tuple(p.shape), type(p).__name__)  # Inspect name, shape, and type.
+linear = nn.Linear(1, 1)  # Create a layer object with a weight and bias.
+linear_prediction = linear(x2)  # Input (100, 1) → output (100, 1).
+print(linear.weight.shape)  # torch.Size([1, 1]): one weight value.
+print(linear.bias.shape)  # torch.Size([1]): one bias value.
 ```
 
-The parameters are `linear.weight`, shaped `(1, 1)`, and `linear.bias`, shaped `(1,)`. Both arguments of `nn.Linear(input_features, output_neurons)` are integers, not shape tuples such as `(1,)`.[^linear]
+**Creating** a layer, **predicting** with it, and **training** it using loss and gradients are different stages. This code only creates a layer and makes predictions.
 
-`nn.Linear` creates and manages weights and biases as **Parameters**. A Parameter is a special tensor registered as a model parameter. Attaching the layer to `self.linear` lets the model discover its parameters. Assigning any ordinary tensor to an attribute does not automatically register it as a training parameter.
+### 11.2. Describe the computation order in a model class
 
-`named_parameters()` provides parameter names and tensors, whereas `parameters()` provides only the tensors, one after another.
+To manage layers as one model, define a model class based on `nn.Module`. **Inheritance** means using an existing class's functionality in a new class. Here it provides management of parameters and child layers.
 
-| Manual code | Model-and-optimizer equivalent |
+| Name or syntax | Role |
 | --- | --- |
-| Directly created `w` and `b` | A layer's `weight` and `bias` |
-| `(pred - target).square().mean()` | Calling an object created by `nn.MSELoss()` |
-| `w -= lr * w.grad` | Basic SGD optimizer `step()` |
-| `w.grad = None` | `zero_grad(set_to_none=True)` |
+| `class LinearRegression(nn.Module)` | Define a model class using `nn.Module` functionality. |
+| `__init__` | A method describing preparation when a model object is created. |
+| `self` | The model object currently being created or used. |
+| `super().__init__()` | Initialize the base `nn.Module` management first. |
+| `self.linear` | The linear layer stored as part of the current model. |
+| `forward` | A method describing how inputs are calculated and returned. |
 
-## 12. Why does a 2 → 16 → 2 model have a (16, 2) weight tensor?
+`def` starts a function or method definition, and `return` sends its result back to the caller. Calling `model(x2)` makes PyTorch execute this `forward` calculation.
 
-We now switch to classifying two-feature inputs as class 0 or class 1. An **MLP** connects multiple linear layers and activation functions. This model has one hidden layer and one output layer. “Two layers” counts the parameterized linear layers; “16” counts neurons in the hidden layer, not hidden layers.
+```python
+class LinearRegression(nn.Module):
+    def __init__(self):
+        super().__init__()  # Prepare management of child layers and parameters.
+        self.linear = nn.Linear(1, 1)  # Store a one-input, one-output layer.
 
-A **neuron** multiplies each input feature by its corresponding weight, adds the products, and adds a bias. The first layer's 16 neurons receive the same two features, but each calculates one value using its own weights and bias.
+    def forward(self, x):
+        return self.linear(x)  # Predict with the stored layer and return its result.
+
+model = LinearRegression()  # Execute the preparation in __init__.
+prediction = model(x2)  # Execute the calculation in forward.
+```
+
+Attaching the layer as `self.linear` lets the model discover that layer's parameters. Merely storing an ordinary tensor in an attribute does not automatically register it as a trainable parameter.
+
+### 11.3. Inspect parameters and transfer the model
+
+`model.parameters()` returns an **iterator** providing trainable parameter tensors. An iterator is an object from which items can be obtained one at a time. `named_parameters()` also provides each tensor's name. The following loop receives those two items as `name` and `p`.
+
+```python
+for name, p in model.named_parameters():
+    print(name, p.shape)  # Inspect linear.weight (1, 1) and linear.bias (1,).
+
+model = model.to(device)  # Move registered parameters and related state to the chosen device.
+```
+
+Unlike tensor `.to()`, model `.to()` transforms registered parameters and related state within the model and returns the model. Prepare it in this order: **create the model → move it to the device → create an optimizer for that model's parameters**. Section 14 connects the optimizer calls.
+
+## 12. Identify what each number in 2 → 16 → 2 counts
+
+Now switch from regression to classification. The new input has two coordinates, and the target is class 0 or 1. An **MLP** is a neural network connecting linear layers and activation functions. A **hidden layer** computes intermediate values between inputs and final outputs.
+
+This model has one hidden layer and one output layer. Its 16 hidden neurons receive the same two input features and calculate with their own weights. Its two output neurons produce one score per class. `fc1` and `fc2` name the first and second linear layers.
+
+```text
+2 input features → 16 hidden neurons → 2 output neurons producing class scores
+```
+
+`B` is the current batch's sample count. `z1` is the first linear layer's result; `h1` is that result after ReLU. Start with the shapes:
+
+```text
+x (B, 2) → fc1 → z1 (B, 16) → ReLU → h1 (B, 16) → fc2 → logits (B, 2)
+```
 
 ```python
 class MLP(nn.Module):
     def __init__(self):
-        super().__init__()  # Initialize the model's base machinery.
-        self.fc1 = nn.Linear(2, 16)  # Two features → sixteen hidden values.
-        self.fc2 = nn.Linear(16, 2)  # Sixteen hidden values → two class scores.
+        super().__init__()  # Prepare model parameter management.
+        self.fc1 = nn.Linear(2, 16)  # Produce 16 intermediate values from two features.
+        self.fc2 = nn.Linear(16, 2)  # Produce two class scores from 16 intermediate values.
 
     def forward(self, x):
-        z1 = self.fc1(x)  # (B, 2) → (B, 16); B is the current sample count.
-        h1 = torch.relu(z1)  # (B, 16) → (B, 16); replace negative values with zero.
-        logits = self.fc2(h1)  # (B, 16) → (B, 2); return unnormalized scores.
-        return logits
+        z1 = self.fc1(x)  # (B, 2) → (B, 16).
+        h1 = torch.relu(z1)  # Replace negatives with zero; shape remains (B, 16).
+        logits = self.fc2(h1)  # (B, 16) → (B, 2).
+        return logits  # Return the original scores for classification loss.
 ```
 
-`z1` is the first linear layer's output, and `h1` is its output after ReLU. Calling `h1` a “16-dimensional hidden representation” does not change the fact that this tensor is two-dimensional, with shape `(B, 16)`. Its 16 columns are new features calculated from the original features in different ways. Developing such features through learned weights is **representation learning**. This is not merely copying values into extra columns.
+In “16-dimensional hidden representation,” 16 counts intermediate features per sample. Tensor `h1` itself is two-dimensional, shaped `(B, 16)`. As learned weights change, the way those intermediate features are calculated changes too. Learning features this way is **representation learning**, not copying input values into extra columns.
 
-`nn.Linear` stores weights as **`(output_neurons, input_features)`**. The first layer's weight shape is therefore `(16, 2)`. Each weight row contains the weights used by one output neuron.
+### 12.1. Data rows and weight rows mean different things
+
+`nn.Linear` stores weights as **`(output_neurons, input_features)`**. Its first-layer `weight` is `(16, 2)`. One weight row holds the two weights used by one neuron.
+
+A **transpose** exchanges the rows and columns of a two-dimensional matrix and is written `.T`. The actual calculation is equivalent to `X @ weight.T + bias`.[^linear]
 
 <figure class="pt-figure">
-<img src="/pytorch-training-basics/linear-weight.svg" alt="X is B by 2, stored weight is 16 by 2, and transposed weight is 2 by 16. X times transposed weight plus bias produces B by 16.">
-<figcaption>Rows of the input represent samples. Rows of the stored weight represent the weight sets of output neurons. A row does not have the same meaning in every tensor.</figcaption>
+<img src="/pytorch-training-basics/linear-weight.svg" alt="Stored weight is (16,2), transposed weight is (2,16), and multiplying input (B,2) produces (B,16).">
+<figcaption>Input rows represent samples; stored weight rows represent the weight sets of neurons. Being a row does not give every tensor the same meaning.</figcaption>
 </figure>
 
-The calculation is equivalent to `X @ weight.T + bias`. For a two-dimensional matrix, `.T` exchanges rows and columns; this is called a **transpose**.[^linear]
+`i` is a sample index and `j` an output-neuron index, both starting at zero. `X[i, 0]` is sample `i`'s first feature; `weight[j, 0]` is neuron `j`'s weight for that feature.
 
 ```text
-X:            (B, 2)
-weight:       (16, 2)
-weight.T:     (2, 16)
-bias:         (16,)
-result:       (B, 2) @ (2, 16) + (16,) → (B, 16)
-
-For sample i and neuron j:
 z1[i, j] = X[i, 0] * weight[j, 0]
          + X[i, 1] * weight[j, 1]
          + bias[j]
+
+shapes: (B, 2) @ (2, 16) + (16,) → (B, 16)
 ```
 
-When manually writing `X @ W`, arrange `W` as `(input_features, output_neurons)`. `nn.Linear.weight` stores the opposite orientation and transposes it for the calculation. The mathematics is unchanged; the storage orientation differs.
+For a manual `X @ W`, arrange `W` as `(input_features, output_neurons)`. `nn.Linear.weight` uses the opposite storage orientation and transposes it for calculation. The underlying calculation has not changed.
 
-| Parameter tensor | Shape | Number of scalar values |
+### 12.2. Separate layers, parameter tensors, and scalar values
+
+| Parameter | Shape | Scalar values |
 | --- | --- | ---: |
 | `fc1.weight` | `(16, 2)` | 32 |
 | `fc1.bias` | `(16,)` | 16 |
@@ -453,271 +621,345 @@ When manually writing `X @ W`, arrange `W` as `(input_features, output_neurons)`
 | `fc2.bias` | `(2,)` | 2 |
 | Total | Four tensors | 82 |
 
-After backward, the gradients stored for these parameters are also four tensors with 82 elements in total. Two layers do not mean two gradients. Intermediate gradients participate in backpropagation, but they are not all retained in `.grad` by default. Larger batches leave the parameter count unchanged while increasing the work contributed by samples.
+There are two trainable linear layers, four parameter tensors, and 82 numbers inside them. Gradients stored for those parameters after backward also total 82 elements. More samples do not increase parameter count, but they increase computation because each sample contributes.
 
-Without ReLU, a sequence of linear layers can be combined into one linear layer. ReLU introduces an input-dependent nonlinear transformation. Because `torch.relu` is a function called inside `forward`, it does not appear as a registered child module in `print(model)`. Its absence from that list does not mean its calculation is missing.
+Also separate the reason for ReLU. A sequence of linear layers can be rearranged into one linear layer's multiply-and-add calculation. ReLU changes some values to zero depending on their signs, enabling **nonlinear relationships** that cannot be combined into that single calculation. `torch.relu` is a function called inside `forward`, so it does not appear in `print(model)` as a registered child layer. Its absence from that list does not mean its calculation is missing.
 
-## 13. What TensorDataset and DataLoader organize
+## 13. Pair inputs and targets, then construct batches
 
-We use `make_moons` to generate classification data. It returns NumPy arrays of coordinates arranged in two moon shapes and their target class indices. We convert those arrays into PyTorch tensors. `noise` and `random_state` are settings for this synthetic dataset; changing them can change training results.
+`make_moons` generates coordinates arranged in two moon shapes and target indices. It returns two NumPy arrays. A NumPy array stores numbers in a structured shape; here we immediately convert those outputs to PyTorch tensors.
+
+`n_samples` is sample count, `noise` controls the noise added to coordinates, and `random_state` sets this function's randomness. Inputs use the 32-bit floating-point type `torch.float32`; targets use the previously introduced integer type `torch.long`.
 
 ```python
-from sklearn.datasets import make_moons  # Generate synthetic classification data.
-from torch.utils.data import TensorDataset, DataLoader  # Pair samples and build batches.
+from sklearn.datasets import make_moons  # Generate coordinates and class indices.
+from torch.utils.data import TensorDataset, DataLoader  # Pair samples and construct batches.
 
 X_np, y_np = make_moons(n_samples=500, noise=0.2, random_state=42)
-X = torch.tensor(X_np, dtype=torch.float32)  # (500, 2); two coordinates per row.
-y = torch.tensor(y_np, dtype=torch.long)  # (500,); a class index, 0 or 1, per sample.
+X = torch.tensor(X_np, dtype=torch.float32)  # Inputs: (500, 2).
+y = torch.tensor(y_np, dtype=torch.long)  # Target class indices: (500,).
+```
 
-dataset = TensorDataset(X, y)  # Pair X[i] with y[i] at the same index.
+`TensorDataset(X, y)` creates an object pairing `X[i]` and `y[i]` at the same index. The tensors must have the same first-dimension size: the same sample count. `DataLoader` constructs and supplies batches from that object.[^data]
+
+| Setting | Meaning |
+| --- | --- |
+| `batch_size=64` | Put up to 64 samples in one batch. |
+| `shuffle=True` | Shuffle sample order each epoch while preserving input–target pairs. |
+| `drop_last=False` | Include the smaller final batch. False is also the default. |
+
+```python
+dataset = TensorDataset(X, y)  # Manage input–target pairs.
 loader = DataLoader(dataset, batch_size=64, shuffle=True, drop_last=False)
 ```
 
-The tensors passed to `TensorDataset` must have matching first-dimension sizes: the same number of samples. `dataset[i]` provides `(X[i], y[i])`. `DataLoader` must receive the dataset it should use.[^data]
-
-`shuffle=True` shuffles sample order when traversing an epoch while preserving input–target pairs. `drop_last=False` includes the smaller final batch; this is the default.
-
 <figure class="pt-figure">
-<img src="/pytorch-training-basics/batches.svg" alt="500 samples at batch size 64 form seven batches of 64 and one batch of 52. Processing all eight completes one epoch.">
-<figcaption>64 × 7 + 52 = 500. This training loop performs one update per batch and eight updates per epoch.</figcaption>
+<img src="/pytorch-training-basics/batches.svg" alt="500 samples divided into batches of 64 produce seven full batches and one final batch of 52.">
+<figcaption>64 × 7 + 52 = 500. This article's loop performs one parameter update per batch.</figcaption>
 </figure>
 
-For the first seven batches, inputs `xb` have shape `(64, 2)` and targets `yb` have shape `(64,)`. For the last batch, those shapes are `(52, 2)` and `(52,)`. A batch of 64 samples does not require 64 calls to `model(xb)`: one call produces results for all 64 samples together.
+The first seven batches have inputs `(64, 2)` and targets `(64,)`; the last has inputs `(52, 2)` and targets `(52,)`. One call to `model(xb)` processes the samples in that batch together. A batch of 64 does not require 64 model calls.
 
-A **step** here means one call to `optimizer.step()`. One hundred epochs produce 800 updates. With all 500 samples in one full batch, each epoch instead produces one update. Inspect the actual data being processed, rather than relying on whether a loop variable is named `step` or `epoch`.
+A **step** here is one parameter update. Eight batches mean eight updates per epoch, and 100 epochs mean 800 updates. Section 9 used the whole dataset as one batch, producing one update per epoch instead.
 
-## 14. Minibatch training and epoch loss
+## 14. Let an optimizer handle parameter updates
 
-Connect the previously defined `MLP`, `device`, `dataset`, and `loader`. **Move the model to its device first**, then create the optimizer using that model's parameters.
+### 14.1. Identify construction and method roles first
 
-```python
-torch.manual_seed(42)  # Set the random state used to initialize the model.
-model = MLP().to(device)  # Create the model and move it to the computation device.
-criterion = nn.CrossEntropyLoss()  # Default mean loss with integer class targets.
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)  # Specify parameters and update rule.
-epoch_losses = []  # Store one recorded average loss per epoch.
+We previously modified `w` and `b` directly. With more model parameters, give an optimizer **the tensors to update and the update rule**.
 
-for epoch in range(100):
-    epoch_loss_sum = 0.0  # Recorded loss sum for this epoch.
-    sample_count = 0  # Number of samples actually processed.
+`torch.optim.Adam` is an optimizer class. Adam uses both current gradients and a history of earlier gradients to determine per-parameter updates. This section covers construction and call order; Section 17 separately explains how the update amounts are calculated.[^optim]
 
-    for xb, yb in loader:
-        xb = xb.to(device)  # Move this batch's inputs.
-        yb = yb.to(device)  # Move this batch's targets too.
-        optimizer.zero_grad(set_to_none=True)  # Clear previous batch gradients.
+| Code | Role |
+| --- | --- |
+| `model.parameters()` | Supply this model's trainable parameter tensors. |
+| `Adam(..., lr=0.01)` | Create an Adam object for them, without updating them yet. |
+| `zero_grad(set_to_none=True)` | Clear previous parameter gradients by setting them to `None`. |
+| `loss.backward()` | Calculate gradients for the current loss. |
+| `optimizer.step()` | Update parameters using stored gradients and the update rule. |
 
-        logits = model(xb)  # Predict only this batch: (B, 2).
-        loss = criterion(logits, yb)  # Compare with this batch's yb, not the entire y.
-        loss.backward()  # Calculate current parameter gradients.
-        optimizer.step()  # Update parameters using those gradients and Adam's rule.
+The optimizer's default behavior excludes its updates from differentiation recording, so this loop does not need a manually wrapped update block. `zero_grad` clears **parameter `.grad` values**, not learned weights or Adam's separate history.
 
-        batch_size = len(xb)  # The final batch contains 52, not 64.
-        epoch_loss_sum += loss.item() * batch_size  # Convert the batch mean to a sum.
-        sample_count += batch_size  # Count the samples actually processed.
+### 14.2. Decide how to record the epoch average before writing the loop
 
-    epoch_losses.append(epoch_loss_sum / sample_count)  # Record once after all batches.
-```
-
-`zero_grad` clears parameter gradients. It does not reset learned weights or Adam's separately maintained history. `step()` performs the update task we previously wrote manually, but **Adam's update formula differs from basic SGD**.
-
-### Why multiply an average, then divide again?
-
-This setup uses default CrossEntropyLoss without class weights or ignored labels. Let `B` be the batch's sample count, and let individual losses be `l₁` through `l_B`.
+Default CrossEntropyLoss returns a batch mean. **Batch means should not receive equal weight when batch sizes differ.** Let `B` be the batch sample count and `l₁` through `l_B` the individual sample losses.
 
 ```text
-batch mean loss = (l₁ + ... + l_B) / B
-batch loss sum  = loss × B
-epoch loss sum  = sum of the batch loss sums
-epoch mean loss = epoch loss sum / samples actually processed
+batch mean = (l₁ + ... + l_B) / B
+batch sum  = batch mean × B
+epoch mean = sum of all batch sums / samples actually processed
 ```
 
-If the eight batch means are `L₁` through `L₈`, the correctly weighted epoch mean is:
+If batch means are `L₁` through `L₈`, this epoch's mean is:
 
 ```text
 (64*L₁ + 64*L₂ + ... + 64*L₇ + 52*L₈) / 500
 ```
 
-`(L₁ + ... + L₈) / 8` gives the 52-sample batch the same weight as a 64-sample batch and generally produces a different result. We are not dividing an average again arbitrarily. The calculation is **batch mean → batch sum → total sum → overall mean**.
+`(L₁ + ... + L₈) / 8` gives 52-sample and 64-sample batches the same weight, so it generally differs. Calculate **batch mean → batch sum → total sum → overall mean**.
 
-`loss` is the tensor used for backpropagation. `epoch_loss_sum` and `epoch_losses` contain Python numbers for observation and recording; they do not update the parameters. Indentation matters: accumulate batch contributions inside the inner loop and record the epoch mean once after that loop finishes.
+`len(xb)` is the current batch's sample count. Accumulate loss sums in `epoch_loss_sum` and actual processed counts in `sample_count`. For numbers, `+=` adds the right-hand value to the current value and assigns the result back to that variable. These are logging numbers, separate from the `loss` tensor used for backward.
 
-The epoch record combines losses calculated using different parameter states across batches. It need not equal the loss obtained by reevaluating the whole dataset with the model at the end of the epoch. Calling `loss.item()` after `step()` does not retroactively recalculate an already-computed loss with the new parameters.
+### 14.3. Repeat one-batch training inside each epoch
 
-The code counts samples actually processed. When every sample is used exactly once, this equals `len(dataset)`. Dropping samples or sampling with replacement may change that relationship. With class weights or `ignore_index`, check the loss function's averaging denominator as well.[^loss]
+<figure class="pt-figure">
+<img src="/pytorch-training-basics/workflow.svg" alt="Clear gradients, calculate predictions and loss, run backward, and call optimizer.step for the current batch.">
+<figcaption>The features introduced so far are now connected into one batch's execution order. Targets yb enter the loss calculation.</figcaption>
+</figure>
 
-## 15. Who supplies the p in lambda p?
+The outer loop handles epochs and the inner loop handles batches. `for xb, yb in loader` receives the batch inputs and targets into separate variables. Pass **current-batch targets `yb`**, not the entire `y`, to the loss.
 
-Comparing optimizers does not require copying the complete training loop for each choice. Keep the common loop and pass **a function that creates an optimizer**.
+```python
+torch.manual_seed(42)  # Set randomness for model initialization.
+model = MLP().to(device)  # Create the model and move it before creating the optimizer.
+criterion = nn.CrossEntropyLoss()  # Mean loss with integer class targets.
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)  # Prepare the update tool.
+epoch_losses = []  # Store epoch loss numbers.
+
+for epoch in range(100):
+    epoch_loss_sum = 0.0  # Start a fresh total for this epoch.
+    sample_count = 0  # Count samples actually processed in this epoch.
+
+    for xb, yb in loader:
+        xb = xb.to(device)  # Current batch inputs: (B, 2).
+        yb = yb.to(device)  # Current batch targets: (B,).
+        optimizer.zero_grad(set_to_none=True)  # Clear old gradients.
+        logits = model(xb)  # Class scores: (B, 2).
+        loss = criterion(logits, yb)  # Compare with current-batch targets.
+        loss.backward()  # Calculate gradients.
+        optimizer.step()  # Update parameters.
+
+        batch_size = len(xb)  # Use the actual size, including 52 for the last batch.
+        epoch_loss_sum += loss.item() * batch_size  # Recover and accumulate the loss sum.
+        sample_count += batch_size  # Accumulate the processed sample count.
+
+    epoch_losses.append(epoch_loss_sum / sample_count)  # Record once after all batches.
+```
+
+Accumulate batch sums inside the inner loop and store the epoch mean after that loop finishes. This is why the final `append` is indented one level less than the batch-loop body.
+
+The record combines losses measured while processing different batches. Because weights change between batches, it may differ from reevaluating the whole dataset with the model at the epoch's end. Reading `loss.item()` after `step()` does not change an already computed loss.
+
+<details>
+<summary>Additional detail: the scope of this averaging rule</summary>
+
+The rule uses default CrossEntropyLoss with equal importance assigned to all samples. Counting the samples actually processed includes the smaller final batch correctly.
+
+**Class weights**, which give some classes greater importance, or `ignore_index`, which excludes a particular target index, can change the loss denominator. Check the documented averaging rule before using those settings. Neither is used in this example.[^loss]
+
+</details>
+
+## 15. Understand function passing before shortening it with lambda
+
+### 15.1. Passing a function name is not executing the function
+
+A function is also an object that can be stored in a variable or passed to another function. `double` without parentheses is the function itself; `double(3)` executes it and receives its return value.
+
+The following `apply` takes **one function and one value, then calls the function**. `operation` names the supplied function, and `value` names the argument to pass to it.
+
+```python
+def double(p):
+    return p * 2  # Calculate using p when the function is called.
+
+def apply(operation, value):
+    return operation(value)  # The actual function call happens here.
+
+answer = apply(double, 3)  # Pass the double function and the number 3 separately.
+print(answer)  # 6
+```
+
+```text
+apply(double, 3)
+    → operation receives double; value receives 3
+    → operation(value) executes double(3)
+    → double's parameter p receives 3
+    → 3 * 2 returns 6 to the caller
+```
+
+**Passing a function does not immediately execute its body.** Execution happens at an actual call such as `operation(value)`.
+
+### 15.2. lambda also defines a function
+
+`lambda p: p * 2` creates a function performing the same calculation as `double`. The name before the colon receives the argument, and the expression after it is evaluated and returned when called. `lambda` defines a function; it is not syntax for calling itself.[^python]
+
+```python
+answer = apply(lambda p: p * 2, 3)  # Pass the new function; apply calls it internally.
+print(answer)  # 6
+```
+
+### 15.3. Apply the same idea to optimizer creation
+
+By default, `torch.optim.SGD` creates an optimizer that subtracts the learning rate times the current gradient. The following function accepts parameters and returns an SGD object.
 
 ```python
 def make_sgd(p):
-    return torch.optim.SGD(p, lr=0.01)  # Create SGD using the supplied model parameters.
+    return torch.optim.SGD(p, lr=0.01)  # Create an optimizer for the supplied parameters.
 
-optimizer_fn = make_sgd  # Pass the function without calling it. No optimizer exists yet.
+optimizer_fn = make_sgd  # Store the function itself; no SGD object has been created yet.
 ```
 
-The following `lambda` has the same role. **A lambda expression defines an unnamed function.** The name `p` before the colon is a function parameter; the expression after the colon is evaluated and returned when the function is called.[^python]
-
-```python
-optimizer_fn = lambda p: torch.optim.SGD(p, lr=0.01)  # Define a function; do not execute its body yet.
-```
-
-A function parameter named `p` and a model's learned parameters are different concepts. `p` is a name for a supplied value. The model parameters are the actual weight and bias tensors.
+The equivalent lambda is `lambda p: torch.optim.SGD(p, lr=0.01)`. Here `p` is a **function parameter**, a name for a supplied value. The value supplied will be **an iterator providing model parameter tensors**. It is neither SGD itself nor a single scalar weight.
 
 <figure class="pt-figure">
-<img src="/pytorch-training-basics/lambda.svg" alt="The lambda function is passed to train_with as optimizer_fn. Calling it with model.parameters supplies p, after which it creates and returns an SGD optimizer.">
-<figcaption>p is not SGD itself. The call optimizer_fn(model.parameters()) supplies its value. No function calls itself recursively here.</figcaption>
+<img src="/pytorch-training-basics/lambda.svg" alt="Pass the function first, create a new model, then call the function with model.parameters() to receive an SGD object.">
+<figcaption>optimizer_fn(model.parameters()) supplies p. Separating definition from calling shows that no recursion occurs.</figcaption>
 </figure>
 
-`model.parameters()` returns an **iterator**, an object that provides items one at a time. For this MLP, it provides four parameter tensors. `p` does not mean one individual weight.
+Because the shared training function will create a new model internally, its caller cannot yet supply that new model's parameters. Instead it passes **a function that will create an optimizer when it receives those parameters later**. The next section shows the call site.
 
-The execution order is:
+## 16. Compare optimizers through a shared training function
 
-```text
-1. Evaluate the lambda expression to create a function object.
-2. Pass that function to train_with.
-3. Create a new model inside train_with.
-4. Call model.parameters() to obtain an object providing that model's parameters.
-5. Call optimizer_fn with that object. This is when p receives its value.
-6. Execute the function body, torch.optim.SGD(p, lr=0.01).
-7. Return the new SGD object and store it in optimizer.
-```
+`train_with` receives an optimizer-creation function and an epoch count, **trains a fresh MLP, and returns a list of loss numbers**. `epochs=200` is the default when a caller omits the epoch count. `_` is a conventional name indicating that the loop index is unused.
 
-Because the model is created inside `train_with`, the caller passes a function that can create an optimizer for the new model, rather than creating an optimizer for a different model beforehand.
-
-## 16. Compare optimizers from the same initial model
-
-This experiment uses all 500 samples together in full-batch training. It uses the earlier `X`, `y`, `MLP`, and `device`. Each `train_with` call creates a new model and returns a list of loss numbers. Resetting the seed inside the function matches model initialization conditions within the same environment.
+Here we process all 500 samples at once. Unlike Section 14's minibatches, each epoch produces one update. Resetting the seed inside the function starts each experiment from the same initial model within the same environment.
 
 ```python
-X_dev = X.to(device)  # Move all inputs for full-batch training.
-y_dev = y.to(device)  # Move all targets too.
+X_dev = X.to(device)  # All inputs: (500, 2).
+y_dev = y.to(device)  # All targets: (500,).
 
 def train_with(optimizer_fn, epochs=200):
-    torch.manual_seed(0)  # Match initialization conditions for each experiment.
-    model = MLP().to(device)  # Create a fresh model on each call.
-    criterion = nn.CrossEntropyLoss()  # Compare class scores with target indices.
-    optimizer = optimizer_fn(model.parameters())  # This call supplies the lambda's p.
+    torch.manual_seed(0)  # Match initialization conditions across experiments.
+    model = MLP().to(device)  # Create a new model on every call.
+    criterion = nn.CrossEntropyLoss()  # Create the loss object.
+    optimizer = optimizer_fn(model.parameters())  # This supplies the function's p argument.
     losses = []  # Loss history for this experiment.
 
     for _ in range(epochs):
-        optimizer.zero_grad(set_to_none=True)  # Clear old gradients.
-        logits = model(X_dev)  # Calculate scores for all 500 samples.
-        loss = criterion(logits, y_dev)  # Mean loss for this full batch.
+        optimizer.zero_grad(set_to_none=True)  # Clear previous gradients.
+        logits = model(X_dev)  # Calculate scores for the entire input batch.
+        loss = criterion(logits, y_dev)  # Calculate full-batch mean loss.
         loss.backward()  # Calculate gradients.
-        optimizer.step()  # Apply the chosen optimizer's update.
-        losses.append(loss.item())  # Record the loss computed before the update.
+        optimizer.step()  # Apply the chosen update rule.
+        losses.append(loss.item())  # Record the already-computed loss number.
 
-    return losses  # Return one Python number per epoch.
+    return losses  # Return the loss list to the caller.
+```
 
-results = {}  # Associate experiment names with their loss lists.
+`results = {}` creates a **dictionary**, which associates keys with values. Here experiment names are associated with loss lists. The first call executes in this order: **create lambda function → call train_with → create new model → call lambda → return SGD object → run training loop**.
+
+```python
+results = {}  # Associate experiment names with loss histories.
 results["SGD lr=0.01"] = train_with(lambda p: torch.optim.SGD(p, lr=0.01))
 results["SGD lr=0.5"] = train_with(lambda p: torch.optim.SGD(p, lr=0.5))
 results["SGD lr=10.0"] = train_with(lambda p: torch.optim.SGD(p, lr=10.0))
 results["Adam lr=0.01"] = train_with(lambda p: torch.optim.Adam(p, lr=0.01))
 ```
 
-`_` is a conventional variable name indicating that the loop index is not used. Each value in `results` contains 200 loss numbers. Because this is full-batch training, each epoch performs one update.
+Each value contains 200 losses. `results.items()` supplies name–value pairs. `plt.plot(losses)` plots a loss list as a line. `label` names that line, and `legend()` displays a key identifying the lines.
 
 ```python
-import matplotlib.pyplot as plt  # Plot the loss histories.
+import matplotlib.pyplot as plt  # Use plotting functions through the name plt.
 
-plt.figure(figsize=(8, 5))  # Create one plot.
+plt.figure(figsize=(8, 5))  # Create one figure eight inches wide and five inches tall.
 for name, losses in results.items():
-    plt.plot(losses, label=name)  # Draw the history for each experiment.
-plt.xlabel("epoch")  # Horizontal axis: epoch record order.
-plt.ylabel("loss")  # Vertical axis: training loss.
-plt.legend()  # Identify each experiment.
-plt.show()  # First inspect the full result without manually clipping the y-axis.
+    plt.plot(losses, label=name)  # Plot one experiment's loss history.
+plt.xlabel("epoch index")  # Record indices start at zero.
+plt.ylabel("training loss")  # The losses are measured on training data.
+plt.legend()  # Display the experiment names.
+plt.show()  # Inspect the complete plotting range.
 ```
 
-A small learning rate may reduce loss slowly within a fixed iteration budget. An overly large rate may cause spikes, oscillation, or divergence. But `lr=10` does not guarantee divergence, and Adam is not always the best choice. Initial parameters, data, and iteration count affect results.
+A small learning rate may reduce loss slowly within the same iteration budget. An excessively large rate may cause spikes or oscillations. But `lr=10` does not always diverge, and Adam is not always best. Data, initialization, and iteration count matter.
 
-A limit such as `plt.ylim(0, 2)` hides losses above two. When investigating instability, inspect the full range first. Also, these are **training-data losses**. Evaluating performance on new data requires a separate validation dataset.
+A display limit such as `plt.ylim(0, 2)` hides losses above two. Inspect the full range first when investigating instability. These are **training losses**. Performance on new samples must be evaluated using separate **validation data** held out for that purpose.
 
-## 17. How SGD, Momentum, RMSProp, and Adam differ
+## 17. Which records determine an optimizer's update?
 
-All these methods use gradients to update parameters. The distinction is **which information they use to determine the next update**. The formulas below show basic forms without options such as weight decay. “Basic SGD” here means SGD without momentum; PyTorch's SGD can also be configured with momentum.[^optim]
+Separate the training loop's call order from the optimizer's internal calculation. Here we compare the rules used by `step()`. **Basic SGD** means SGD without the momentum option. PyTorch's SGD can also be configured with momentum.[^optim]
 
-| Method | Information used to determine the update |
+| Method | Information used |
 | --- | --- |
 | Basic SGD | Current gradient. |
-| Momentum | Current gradient and an accumulation of earlier gradients. |
-| RMSProp | Current gradient and a history of squared gradients. |
-| Adam | A moving average of gradients, a moving average of squared gradients, and initial-bias corrections. |
+| Momentum | Current gradient and an accumulation of previous gradients. |
+| RMSProp | Current gradient and an averaged record of squared gradients. |
+| Adam | Two records: averaged gradients and averaged squared gradients. |
 
-### Symbols used in the formulas
+In the formulas, `t` is the update index, starting at `t=1`. `w_(t-1)` is a weight before the update, `w_t` after it, and `g_t` its gradient for the current loss. `lr` is the learning rate. Each formula describes a basic update for one scalar weight and is applied separately to other weights and biases.
 
-`t` is the update index, starting with `t=1`. `w_(t-1)` is one particular weight before the update. `g_t` is the derivative of the current batch loss with respect to that weight. `lr` is the learning rate. Each formula describes one scalar weight; it is also applied separately to other weights and biases.
-
-**Basic SGD** subtracts the learning rate times the current gradient.
+### 17.1. Basic SGD uses the current gradient
 
 <div class="pt-math">
-$$w_t = w_{t-1} - lr\,g_t$$
+$$w_t=w_{t-1}-lr\,g_t$$
 </div>
 
-For **Momentum**, `u_t` is the accumulated value including earlier gradients, and `μ` controls how much previous accumulation is retained, usually with a value at least zero and below one. Starting from `u_0=0`, the basic form is:
+Multiply the current gradient by the learning rate and subtract it from the current weight. This is the basic rule written manually in Section 9.
+
+### 17.2. Momentum retains the influence of earlier gradients
+
+`u_t` is an accumulated gradient record. `μ` controls how much of the previous record is retained, usually with a value at least zero and below one. Start with `u_0=0`.
 
 <div class="pt-math">
-$$u_t = \mu u_{t-1} + g_t,\qquad w_t = w_{t-1} - lr\,u_t$$
+$$u_t=\mu u_{t-1}+g_t$$
+$$w_t=w_{t-1}-lr\,u_t$$
 </div>
 
-Repeated gradients of the same sign can accumulate. When signs change, the new gradient can partially cancel the previous value. The stored information includes gradient magnitude as well as sign.
+First add the current gradient to a retained portion of the earlier record, then update using that accumulation. Repeated signs can accumulate; a changed sign can partially cancel the previous value. Both signs and magnitudes are retained.
 
-A **moving average** combines an existing record with a newly received value. Here, the influence of older values decreases as updates continue. **RMSProp** maintains a moving average of squared gradients, `v_t`, separately for each weight. `β` is the retention ratio, at least zero and below one. `ε` is a small positive number added to reduce problems such as division by zero. Initialize `v_0=0`.
+### 17.3. RMSProp scales updates using gradient-magnitude history
+
+A **moving average** updates a record by combining the previous record and a new value with specified proportions. Here older values have less influence as updates continue.
+
+`v_t` is the moving average of squared gradients. `β` is the retention ratio, at least zero and below one. `ε` is a small positive number preventing a zero denominator. `√` denotes the square root. Squaring collects magnitude information; taking the square root returns a scale corresponding to the gradient's original magnitude. Start with `v_0=0`.
 
 <div class="pt-math">
 $$v_t=\beta v_{t-1}+(1-\beta)g_t^2$$
 $$w_t=w_{t-1}-lr\frac{g_t}{\sqrt{v_t}+\varepsilon}$$
 </div>
 
-The square-root operation appears in the denominator. A weight with persistently large gradients develops a larger squared-gradient record, adjusting the size of its update. The weights do not all share a single record.
+The first equation updates the squared-gradient record. The second uses it to adjust the update based on the current gradient. Persistently large gradients increase the denominator. **Each weight maintains its own record** rather than sharing one across all weights.
 
-**Adam** uses both a moving average of gradients, `m_t`, and a moving average of squared gradients, `v_t`. `β₁` and `β₂` are the respective retention ratios. Both records start at zero.
+### 17.4. Adam uses two averaged records
+
+`m_t` is the moving average of gradients, and `v_t` is the moving average of squared gradients. `β₁` and `β₂` are their retention ratios, both at least zero and below one. Initialize `m_0=0` and `v_0=0`.
 
 <div class="pt-math">
 $$m_t=\beta_1m_{t-1}+(1-\beta_1)g_t$$
 $$v_t=\beta_2v_{t-1}+(1-\beta_2)g_t^2$$
 </div>
 
-Starting at zero makes these records small early on. The following corrects that effect. `β₁^t` and `β₂^t` mean the respective values raised to the power `t`.
+Starting from zero makes the early records small, so they are corrected. For the first update, `m_0=0` gives `m_1=(1-β₁)g_1`. Dividing by `1-β₁` removes that initial scaling. At a general update index `t`, use the corrections below. `β₁^t` and `β₂^t` mean the respective values raised to the power `t`; the hats in `m̂` and `v̂` indicate corrected records.
 
 <div class="pt-math">
 $$\hat m_t=\frac{m_t}{1-\beta_1^t},\qquad \hat v_t=\frac{v_t}{1-\beta_2^t}$$
 $$w_t=w_{t-1}-lr\frac{\hat m_t}{\sqrt{\hat v_t}+\varepsilon}$$
 </div>
 
-The numerator reflects recent gradient signs and magnitudes. The denominator adjusts update size using recent magnitude information. Adam uses ideas associated with Momentum and RMSProp, but it does not run those two optimizers one after the other. With every method, distinguish the gradient calculated by `backward()` from the update applied by `step()`.
+The numerator reflects recent gradient signs and magnitudes, and the denominator adjusts the update using the squared-gradient record. Adam uses core ideas associated with Momentum and RMSProp; it does not call those optimizers one after another.
 
-## Appendix: Python expressions that choose values
+With every rule, **`backward()` calculates gradients, and `step()` uses them to determine and apply updates.** These formulas show basic forms without additional options.
 
-The device-selection expression `"cuda" if condition else "cpu"` is a **conditional expression**: it chooses one value according to a condition. The same syntax works inside a list comprehension. A **list comprehension** creates a new list by combining iteration with a value expression.[^python]
+## Appendix: Python syntax for choosing values conditionally
+
+A **conditional expression** chooses one value according to a condition: `value_if_true if condition else value_if_false`. A **list comprehension** combines iteration with a value expression to create a new list. Distinguishing the two explains why `if` can appear in different positions.[^python]
+
+`%` calculates a division remainder. `x % 2 == 0` checks whether dividing by two leaves zero remainder.
 
 ```python
 numbers = [1, 2, 3, 4, 5, 6]  # Numbers to process.
 
-# The trailing if filters elements. % calculates the remainder.
+# A trailing if retains only elements meeting the condition.
 even_numbers = [x for x in numbers if x % 2 == 0]  # [2, 4, 6]
 
-# The leading if else chooses a value for each element.
+# A leading if else chooses the output value for each element.
 parity = ["even" if x % 2 == 0 else "odd" for x in numbers]
 # ['odd', 'even', 'odd', 'even', 'odd', 'even']
 
-# Another conditional expression can follow else.
+# Another condition can be checked after else.
 sizes = ["small" if x < 3 else "medium" if x < 5 else "large" for x in numbers]
 # ['small', 'small', 'medium', 'medium', 'large', 'large']
 ```
 
-Take one element, evaluate the condition, and append the chosen value to the result. For complicated conditions, an ordinary `for` loop with `if/elif/else` is often easier to read.
+The sequence is: get one element → evaluate the condition → add the chosen value to the result. For longer conditions, an ordinary `for` loop with `if/elif/else` is often easier to read.
 
-[^shape]: PyTorch documentation: [unsqueeze](https://docs.pytorch.org/docs/stable/generated/torch.unsqueeze.html), [matmul](https://docs.pytorch.org/docs/stable/generated/torch.matmul.html), [broadcasting semantics](https://docs.pytorch.org/docs/stable/notes/broadcasting.html).
+[^shape]: PyTorch documentation: [unsqueeze](https://docs.pytorch.org/docs/stable/generated/torch.unsqueeze.html), [matmul](https://docs.pytorch.org/docs/stable/generated/torch.matmul.html), [broadcasting](https://docs.pytorch.org/docs/stable/notes/broadcasting.html).
 [^random]: PyTorch documentation: [reproducibility](https://docs.pytorch.org/docs/stable/notes/randomness.html), [linspace](https://docs.pytorch.org/docs/stable/generated/torch.linspace.html), [randn](https://docs.pytorch.org/docs/stable/generated/torch.randn.html).
 [^activation]: PyTorch documentation: [Sigmoid](https://docs.pytorch.org/docs/stable/generated/torch.nn.Sigmoid.html), [ReLU](https://docs.pytorch.org/docs/stable/generated/torch.nn.ReLU.html), [Softmax](https://docs.pytorch.org/docs/stable/generated/torch.nn.Softmax.html).
 [^loss]: PyTorch documentation: [MSELoss](https://docs.pytorch.org/docs/stable/generated/torch.nn.MSELoss.html), [CrossEntropyLoss](https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html).
-[^autograd]: PyTorch documentation: [autograd mechanics](https://docs.pytorch.org/docs/stable/notes/autograd.html), [no_grad](https://docs.pytorch.org/docs/stable/generated/torch.no_grad.html).
-[^assignment]: Python documentation: [assignment and augmented assignment](https://docs.python.org/3/reference/simple_stmts.html). For tensor restrictions, see PyTorch's [in-place operations with autograd](https://docs.pytorch.org/docs/stable/notes/autograd.html#in-place-operations-with-autograd).
-[^device]: PyTorch documentation: [Tensor.to](https://docs.pytorch.org/docs/stable/generated/torch.Tensor.to.html), [Module](https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html), [MPS](https://docs.pytorch.org/docs/stable/notes/mps.html).
+[^autograd]: PyTorch documentation: [autograd and in-place operations](https://docs.pytorch.org/docs/stable/notes/autograd.html).
+[^assignment]: Python documentation: [assignment and augmented assignment](https://docs.python.org/3/reference/simple_stmts.html).
+[^no_grad]: [PyTorch no_grad](https://docs.pytorch.org/docs/stable/generated/torch.no_grad.html) and [Python with statement](https://docs.python.org/3/reference/compound_stmts.html#the-with-statement).
+[^device]: PyTorch documentation: [Tensor.to](https://docs.pytorch.org/docs/stable/generated/torch.Tensor.to.html), [MPS](https://docs.pytorch.org/docs/stable/notes/mps.html).
 [^linear]: PyTorch documentation: [Module](https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html), [Linear](https://docs.pytorch.org/docs/stable/generated/torch.nn.Linear.html).
-[^data]: PyTorch documentation: [TensorDataset and DataLoader](https://docs.pytorch.org/docs/stable/data.html).
-[^python]: Python documentation: [conditional expressions and comprehensions](https://docs.python.org/3/reference/expressions.html), [lambda expressions](https://docs.python.org/3/tutorial/controlflow.html#lambda-expressions).
+[^data]: [PyTorch datasets and DataLoader](https://docs.pytorch.org/docs/stable/data.html), [scikit-learn make_moons](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_moons.html).
+[^python]: Python documentation: [expressions](https://docs.python.org/3/reference/expressions.html), [lambda](https://docs.python.org/3/tutorial/controlflow.html#lambda-expressions).
 [^optim]: PyTorch documentation: [SGD](https://docs.pytorch.org/docs/stable/generated/torch.optim.SGD.html), [RMSprop](https://docs.pytorch.org/docs/stable/generated/torch.optim.RMSprop.html), [Adam](https://docs.pytorch.org/docs/stable/generated/torch.optim.Adam.html).
