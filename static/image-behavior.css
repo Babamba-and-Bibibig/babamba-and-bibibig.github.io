@@ -1,0 +1,23 @@
+/* Images and diagrams stay still. Do not restore hover zoom or lift effects.
+   This overrides Duckquill's img:hover scaling on every language and page.
+   Existing links and the browser's own zoom remain available. */
+html body img,
+html body picture,
+html body figure,
+html body figure > a,
+html body a:has(> img),
+html body figure > svg {
+  --hover: none;
+  --active: none;
+  transform: none !important;
+  scale: none !important;
+  translate: none !important;
+  rotate: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* An image is not a hover-operated magnifier; linked images inherit pointer. */
+html body img {
+  cursor: inherit !important;
+}

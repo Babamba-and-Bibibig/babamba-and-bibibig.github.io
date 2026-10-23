@@ -35,8 +35,8 @@ accent_color_dark = "#ff6a78"
 # 테마의 별도 번들 글꼴 대신 사용자 CSS의 Pretendard를 사용합니다.
 bundled_fonts = false
 
-# 기존 디자인은 유지하고 코드 표시 전용 스타일만 추가합니다.
-styles = ["reactor-ui-v4.css", "code-blocks.css", "bilingual.css"]
+# 기존 디자인과 코드 표시를 유지하고, 모든 글에서 이미지 마우스오버 확대를 끕니다.
+styles = ["reactor-ui-v4.css", "code-blocks.css", "bilingual.css", "image-behavior.css"]
 
 # 기존 글 읽기 기능을 유지합니다.
 show_copy_button = true

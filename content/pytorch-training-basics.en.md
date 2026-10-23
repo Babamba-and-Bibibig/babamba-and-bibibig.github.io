@@ -261,7 +261,9 @@ A directly created starting tensor such as `w` or `b`, rather than the result of
 
 Running a new forward pass and then `backward()` again adds gradients to existing `.grad` values. To update separately using each batch's gradients, as in this article, clear them between batches.
 
-## 8. w -= and w =- are entirely different code
+## 8. Updating weights: modifying an existing tensor or assigning a new one
+
+`w -= lr * w.grad` and `w = w - lr * w.grad` calculate the same subtraction result when given the same current values and gradients. In PyTorch, however, they differ in **whether they modify the existing tensor or create a new tensor and bind the variable to it**.
 
 A Python variable is a name referring to an object. Two tensors containing equal numbers are different from two names referring to the same tensor.
 
@@ -269,9 +271,6 @@ A Python variable is a name referring to an object. Two tensors containing equal
 | --- | --- |
 | `w = w - lr * w.grad` | Binds the name `w` to the new tensor produced by subtraction. |
 | `w -= lr * w.grad` | Modifies the values of the existing `w` tensor. |
-| `w =- lr * w.grad` | Means `w = -(lr * w.grad)`. It omits the original weight as the starting value. |
-
-`-=` is an augmented subtraction assignment operator. `=-` is not that operator: it is assignment `=` followed by unary minus `-`.
 
 Inside `no_grad`, `w = w - ...` creates a new subtraction-result tensor without gradient tracking. Replacing the training variable with that result changes the connection needed for later training. In the same position, `w -= ...` preserves the existing object's `requires_grad=True` setting while changing its values.
 
@@ -293,6 +292,17 @@ assert not replacement.requires_grad  # This operation result was created inside
 ```
 
 This explanation concerns **updating parameters after backward has finished**. Overwriting needed intermediate values during a forward pass can break backpropagation. The behavior of `-=` also depends on the data type. Do not apply PyTorch tensor identity behavior to ordinary Python numbers.[^assignment]
+
+### Typing mistake: do not reverse the symbols
+
+`w =- lr * w.grad` is not another update method. It is an example of **accidentally reversing the symbols in `-=`**. Separating the assignment and minus signs makes it clearer: `w = -lr * w.grad`.
+
+| Case | Code | Meaning |
+| --- | --- | --- |
+| Intended update | `w -= lr * w.grad` | Subtract `lr * w.grad` from the current weight. |
+| Reversed-symbol mistake | `w = -lr * w.grad` | Assign `-(lr * w.grad)` as the new value, omitting subtraction from the current weight. |
+
+`-=` is one operator with **minus followed by equals**. `= -` is an assignment with **equals followed by unary minus**. The second line can still run as valid Python syntax, so this typing mistake need not produce a syntax error.
 
 ## 9. Train regression by updating the parameters directly
 
