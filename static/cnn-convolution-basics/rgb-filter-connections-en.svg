@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1040" viewBox="0 0 960 1040" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">Every filter connects to all three RGB channels</title><desc id="desc">Each R, G, and B input channel connects to the corresponding 3×3 kernel in both filter A and filter B. Each filter adds the three channel results and its bias to make one output channel. The input shape is (1,3,7,7), weights (2,3,3,3), and output (1,2,7,7).</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52627b" /></marker>
+<marker id="red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#be123c" /></marker>
+<marker id="green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#15803d" /></marker>
+<marker id="blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#1d4ed8" /></marker>
+<marker id="teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#0f766e" /></marker>
+<marker id="orange" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#b45309" /></marker>
+<marker id="purple" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#6d28d9" /></marker>
+</defs><style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.num{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="960" height="1040" rx="20" fill="#f6f8fc" stroke="none" stroke-width="1.5" />
+<text x="32" y="48" font-size="28" fill="#16243b" font-weight="700" text-anchor="start">Every filter connects to all three RGB channels</text>
+<text x="32" y="84" font-size="20" fill="#52627b" font-weight="400" text-anchor="start">3×3 kernel · stride=1 · padding=1 · groups=1</text>
+<rect x="24" y="114" width="294" height="610" rx="16" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5" />
+<rect x="642" y="114" width="294" height="610" rx="16" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.5" />
+<text x="171" y="150" font-size="25" fill="#1d4ed8" font-weight="700" text-anchor="middle">Filter A</text>
+<text x="171" y="181" font-size="19" fill="#52627b" font-weight="400" text-anchor="middle">weights (3, 3, 3)</text>
+<text x="789" y="150" font-size="25" fill="#6d28d9" font-weight="700" text-anchor="middle">Filter B</text>
+<text x="789" y="181" font-size="19" fill="#52627b" font-weight="400" text-anchor="middle">weights (3, 3, 3)</text>
+<text x="480" y="150" font-size="24" fill="#16243b" font-weight="700" text-anchor="middle">One RGB image</text>
+<text x="480" y="181" font-size="19" fill="#52627b" font-weight="400" text-anchor="middle">input (1, 3, 7, 7)</text>
+<rect x="376" y="234" width="208" height="76" rx="12" fill="#ffe4e6" stroke="#be123c" stroke-width="1.5" />
+<text x="480" y="265" font-size="23" fill="#be123c" font-weight="700" text-anchor="middle">R channel</text>
+<text x="480" y="293" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">(7, 7)</text>
+<rect x="58" y="234" width="224" height="76" rx="10" fill="white" stroke="#be123c" stroke-width="1.5" />
+<text x="170" y="263" font-size="20" fill="#be123c" font-weight="700" text-anchor="middle">R kernel (3×3)</text>
+<text x="170" y="291" font-size="18" fill="#16243b" font-weight="400" text-anchor="middle">Multiply, then sum</text>
+<rect x="678" y="234" width="224" height="76" rx="10" fill="white" stroke="#be123c" stroke-width="1.5" />
+<text x="790" y="263" font-size="20" fill="#be123c" font-weight="700" text-anchor="middle">R kernel (3×3)</text>
+<text x="790" y="291" font-size="18" fill="#16243b" font-weight="400" text-anchor="middle">Multiply, then sum</text>
+<path d="M376 272L285 272" fill="none" stroke="#be123c" stroke-width="3" marker-end="url(#red)" />
+<path d="M584 272L675 272" fill="none" stroke="#be123c" stroke-width="3" marker-end="url(#red)" />
+<path d="M58 272H42V620H56" fill="none" stroke="#52627b" stroke-width="1.8" stroke-linejoin="round" />
+<path d="M902 272H918V620H904" fill="none" stroke="#52627b" stroke-width="1.8" stroke-linejoin="round" />
+<rect x="376" y="354" width="208" height="76" rx="12" fill="#dcfce7" stroke="#15803d" stroke-width="1.5" />
+<text x="480" y="385" font-size="23" fill="#15803d" font-weight="700" text-anchor="middle">G channel</text>
+<text x="480" y="413" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">(7, 7)</text>
+<rect x="58" y="354" width="224" height="76" rx="10" fill="white" stroke="#15803d" stroke-width="1.5" />
+<text x="170" y="383" font-size="20" fill="#15803d" font-weight="700" text-anchor="middle">G kernel (3×3)</text>
+<text x="170" y="411" font-size="18" fill="#16243b" font-weight="400" text-anchor="middle">Multiply, then sum</text>
+<rect x="678" y="354" width="224" height="76" rx="10" fill="white" stroke="#15803d" stroke-width="1.5" />
+<text x="790" y="383" font-size="20" fill="#15803d" font-weight="700" text-anchor="middle">G kernel (3×3)</text>
+<text x="790" y="411" font-size="18" fill="#16243b" font-weight="400" text-anchor="middle">Multiply, then sum</text>
+<path d="M376 392L285 392" fill="none" stroke="#15803d" stroke-width="3" marker-end="url(#green)" />
+<path d="M584 392L675 392" fill="none" stroke="#15803d" stroke-width="3" marker-end="url(#green)" />
+<path d="M58 392H42V620H56" fill="none" stroke="#52627b" stroke-width="1.8" stroke-linejoin="round" />
+<path d="M902 392H918V620H904" fill="none" stroke="#52627b" stroke-width="1.8" stroke-linejoin="round" />
+<rect x="376" y="474" width="208" height="76" rx="12" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5" />
+<text x="480" y="505" font-size="23" fill="#1d4ed8" font-weight="700" text-anchor="middle">B channel</text>
+<text x="480" y="533" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">(7, 7)</text>
+<rect x="58" y="474" width="224" height="76" rx="10" fill="white" stroke="#1d4ed8" stroke-width="1.5" />
+<text x="170" y="503" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle">B kernel (3×3)</text>
+<text x="170" y="531" font-size="18" fill="#16243b" font-weight="400" text-anchor="middle">Multiply, then sum</text>
+<rect x="678" y="474" width="224" height="76" rx="10" fill="white" stroke="#1d4ed8" stroke-width="1.5" />
+<text x="790" y="503" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle">B kernel (3×3)</text>
+<text x="790" y="531" font-size="18" fill="#16243b" font-weight="400" text-anchor="middle">Multiply, then sum</text>
+<path d="M376 512L285 512" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#blue)" />
+<path d="M584 512L675 512" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#blue)" />
+<path d="M58 512H42V620H56" fill="none" stroke="#52627b" stroke-width="1.8" stroke-linejoin="round" />
+<path d="M902 512H918V620H904" fill="none" stroke="#52627b" stroke-width="1.8" stroke-linejoin="round" />
+<rect x="58" y="586" width="224" height="90" rx="12" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5" />
+<text x="170" y="620" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle">Sum channel results</text>
+<text x="170" y="651" font-size="19" fill="#16243b" font-weight="400" text-anchor="middle">+ filter bias bA</text>
+<path d="M170 676L170 754" fill="none" stroke="#1d4ed8" stroke-width="2.6" marker-end="url(#blue)" />
+<rect x="76" y="768" width="188" height="132" rx="12" fill="white" stroke="#1d4ed8" stroke-width="1.5" />
+<text x="170" y="803" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle">Output channel A</text>
+<text x="170" y="839" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle">map (7, 7)</text>
+<text x="170" y="873" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle">49 spatial positions</text>
+<rect x="678" y="586" width="224" height="90" rx="12" fill="#ede9fe" stroke="#6d28d9" stroke-width="1.5" />
+<text x="790" y="620" font-size="20" fill="#6d28d9" font-weight="700" text-anchor="middle">Sum channel results</text>
+<text x="790" y="651" font-size="19" fill="#16243b" font-weight="400" text-anchor="middle">+ filter bias bB</text>
+<path d="M790 676L790 754" fill="none" stroke="#6d28d9" stroke-width="2.6" marker-end="url(#purple)" />
+<rect x="696" y="768" width="188" height="132" rx="12" fill="white" stroke="#6d28d9" stroke-width="1.5" />
+<text x="790" y="803" font-size="20" fill="#6d28d9" font-weight="700" text-anchor="middle">Output channel B</text>
+<text x="790" y="839" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle">map (7, 7)</text>
+<text x="790" y="873" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle">49 spatial positions</text>
+<text x="480" y="626" font-size="21" fill="#16243b" font-weight="700" text-anchor="middle">All weights</text>
+<text x="480" y="659" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">(2, 3, 3, 3)</text>
+<text x="480" y="698" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle">2 filters × 3 channel kernels</text>
+<path d="M170 900V928H790V900" fill="none" stroke="#52627b" stroke-width="2" stroke-linejoin="round" />
+<path d="M480 928L480 953" fill="none" stroke="#52627b" stroke-width="2" marker-end="url(#arrow)" />
+<text x="480" y="987" font-size="26" fill="#16243b" font-weight="700" text-anchor="middle">Full output (1, 2, 7, 7)</text>
+<text x="480" y="1020" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">Each filter reuses its own weights at every output position.</text>
+</svg>

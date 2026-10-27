@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="970" viewBox="0 0 960 970" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">출력 길이는 커널의 시작 위치 개수다</title><desc id="desc">7칸 입력에 길이 3의 커널을 stride 1로 놓으면 시작 인덱스는 0부터 4까지 5개이다. 양쪽에 패딩 한 칸씩 추가하면 계산 영역은 9칸이며 시작 인덱스는 0부터 6까지 7개이다. 패딩 때문에 더하는 2와 위치 개수를 셀 때 더하는 1은 서로 다른 의미이다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52627b"/></marker>
+<marker id="red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#be123c"/></marker>
+<marker id="green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#15803d"/></marker>
+<marker id="blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#1d4ed8"/></marker>
+<marker id="teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#0f766e"/></marker>
+<marker id="orange" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#b45309"/></marker>
+<marker id="purple" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#6d28d9"/></marker>
+</defs><style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.num{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="960" height="970" rx="20" fill="#f6f8fc" stroke="none" stroke-width="1.5"/>
+<text x="32" y="48" font-size="28" fill="#16243b" font-weight="700" text-anchor="start">출력 길이는 커널의 시작 위치 개수다</text>
+<text x="32" y="84" font-size="20" fill="#52627b" font-weight="400" text-anchor="start">가로 한 방향만 표시했다. 세로도 같은 방법으로 계산한다.</text>
+<rect x="28" y="111" width="436" height="594" rx="16" fill="white" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="246" y="150" font-size="23" fill="#16243b" font-weight="700" text-anchor="middle">패딩 0: 원본 그대로</text>
+<text x="246" y="182" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">계산 영역 7칸</text>
+<rect x="81.5" y="207" width="47" height="47" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="105.0" y="237.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">1</text>
+<rect x="128.5" y="207" width="47" height="47" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="152.0" y="237.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">2</text>
+<rect x="175.5" y="207" width="47" height="47" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="199.0" y="237.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">3</text>
+<rect x="222.5" y="207" width="47" height="47" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="246.0" y="237.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">4</text>
+<rect x="269.5" y="207" width="47" height="47" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="293.0" y="237.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">5</text>
+<rect x="316.5" y="207" width="47" height="47" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="340.0" y="237.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">6</text>
+<rect x="363.5" y="207" width="47" height="47" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="387.0" y="237.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">7</text>
+<text x="105.0" y="279" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">0</text>
+<text x="152.0" y="279" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">1</text>
+<text x="199.0" y="279" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">2</text>
+<text x="246.0" y="279" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">3</text>
+<text x="293.0" y="279" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">4</text>
+<text x="340.0" y="279" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">5</text>
+<text x="387.0" y="279" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">6</text>
+<text x="246" y="295" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle">위 작은 숫자는 계산 영역의 인덱스</text>
+<text x="48" y="348" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">0</text>
+<rect x="81.5" y="324" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="128.5" y="324" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="175.5" y="324" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="222.5" y="324" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="269.5" y="324" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="316.5" y="324" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="363.5" y="324" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="81.5" y="324" width="141" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="48" y="391" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">1</text>
+<rect x="81.5" y="367" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="128.5" y="367" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="175.5" y="367" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="222.5" y="367" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="269.5" y="367" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="316.5" y="367" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="363.5" y="367" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="128.5" y="367" width="141" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="48" y="434" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">2</text>
+<rect x="81.5" y="410" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="128.5" y="410" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="175.5" y="410" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="222.5" y="410" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="269.5" y="410" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="316.5" y="410" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="363.5" y="410" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="175.5" y="410" width="141" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="48" y="477" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">3</text>
+<rect x="81.5" y="453" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="128.5" y="453" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="175.5" y="453" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="222.5" y="453" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="269.5" y="453" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="316.5" y="453" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="363.5" y="453" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="222.5" y="453" width="141" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="48" y="520" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">4</text>
+<rect x="81.5" y="496" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="128.5" y="496" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="175.5" y="496" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="222.5" y="496" width="47" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="269.5" y="496" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="316.5" y="496" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="363.5" y="496" width="47" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="269.5" y="496" width="141" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="246" y="654" font-size="23" fill="#0f766e" font-weight="700" text-anchor="middle">시작 0~4  →  5개 위치</text>
+<text x="246" y="685" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">7 − 3 + 1 = 5</text>
+<rect x="496" y="111" width="436" height="594" rx="16" fill="white" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="714" y="150" font-size="23" fill="#1d4ed8" font-weight="700" text-anchor="middle">패딩 1: 양쪽에 1칸씩</text>
+<text x="714" y="182" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">계산 영역 9칸</text>
+<rect x="538.5" y="207" width="39" height="39" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="558.0" y="233.85" font-size="21" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">0</text>
+<rect x="577.5" y="207" width="39" height="39" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="597.0" y="233.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">1</text>
+<rect x="616.5" y="207" width="39" height="39" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="636.0" y="233.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">2</text>
+<rect x="655.5" y="207" width="39" height="39" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="675.0" y="233.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">3</text>
+<rect x="694.5" y="207" width="39" height="39" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="714.0" y="233.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">4</text>
+<rect x="733.5" y="207" width="39" height="39" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="753.0" y="233.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">5</text>
+<rect x="772.5" y="207" width="39" height="39" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="792.0" y="233.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">6</text>
+<rect x="811.5" y="207" width="39" height="39" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="831.0" y="233.85" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">7</text>
+<rect x="850.5" y="207" width="39" height="39" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="870.0" y="233.85" font-size="21" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">0</text>
+<text x="558.0" y="271" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">0</text>
+<text x="597.0" y="271" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">1</text>
+<text x="636.0" y="271" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">2</text>
+<text x="675.0" y="271" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">3</text>
+<text x="714.0" y="271" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">4</text>
+<text x="753.0" y="271" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">5</text>
+<text x="792.0" y="271" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">6</text>
+<text x="831.0" y="271" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">7</text>
+<text x="870.0" y="271" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle" class="num">8</text>
+<text x="714" y="295" font-size="17" fill="#52627b" font-weight="400" text-anchor="middle">위 작은 숫자는 계산 영역의 인덱스</text>
+<text x="516" y="348" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">0</text>
+<rect x="538.5" y="324" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="577.5" y="324" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="616.5" y="324" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="655.5" y="324" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="694.5" y="324" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="733.5" y="324" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="772.5" y="324" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="811.5" y="324" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="850.5" y="324" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="538.5" y="324" width="117" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="516" y="391" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">1</text>
+<rect x="538.5" y="367" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="577.5" y="367" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="616.5" y="367" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="655.5" y="367" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="694.5" y="367" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="733.5" y="367" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="772.5" y="367" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="811.5" y="367" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="850.5" y="367" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="577.5" y="367" width="117" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="516" y="434" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">2</text>
+<rect x="538.5" y="410" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="577.5" y="410" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="616.5" y="410" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="655.5" y="410" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="694.5" y="410" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="733.5" y="410" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="772.5" y="410" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="811.5" y="410" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="850.5" y="410" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="616.5" y="410" width="117" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="516" y="477" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">3</text>
+<rect x="538.5" y="453" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="577.5" y="453" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="616.5" y="453" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="655.5" y="453" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="694.5" y="453" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="733.5" y="453" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="772.5" y="453" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="811.5" y="453" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="850.5" y="453" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="655.5" y="453" width="117" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="516" y="520" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">4</text>
+<rect x="538.5" y="496" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="577.5" y="496" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="616.5" y="496" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="655.5" y="496" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="694.5" y="496" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="733.5" y="496" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="772.5" y="496" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="811.5" y="496" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="850.5" y="496" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="694.5" y="496" width="117" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="516" y="563" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">5</text>
+<rect x="538.5" y="539" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="577.5" y="539" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="616.5" y="539" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="655.5" y="539" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="694.5" y="539" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="733.5" y="539" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="772.5" y="539" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="811.5" y="539" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="850.5" y="539" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="733.5" y="539" width="117" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="516" y="606" font-size="18" fill="#0f766e" font-weight="700" text-anchor="start" class="num">6</text>
+<rect x="538.5" y="582" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="577.5" y="582" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="616.5" y="582" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="655.5" y="582" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="694.5" y="582" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="733.5" y="582" width="39" height="30" rx="0" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+<rect x="772.5" y="582" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="811.5" y="582" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="850.5" y="582" width="39" height="30" rx="0" fill="#ecfdf5" stroke="#d1d5db" stroke-width="1"/>
+<rect x="772.5" y="582" width="117" height="30" rx="3" fill="none" stroke="#0f766e" stroke-width="2"/>
+<text x="714" y="654" font-size="23" fill="#0f766e" font-weight="700" text-anchor="middle">시작 0~6  →  7개 위치</text>
+<text x="714" y="685" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">7 + 2 − 3 + 1 = 7</text>
+<rect x="28" y="731" width="436" height="118" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+<text x="50" y="766" font-size="24" fill="#1d4ed8" font-weight="700" text-anchor="start">패딩으로 더하는 +2</text>
+<text x="50" y="802" font-size="22" fill="#16243b" font-weight="400" text-anchor="start">왼쪽 1칸 + 오른쪽 1칸</text>
+<text x="50" y="832" font-size="19" fill="#52627b" font-weight="400" text-anchor="start">계산 영역의 길이가 2칸 늘어난다.</text>
+<rect x="496" y="731" width="436" height="118" rx="12" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="1.5"/>
+<text x="518" y="766" font-size="24" fill="#0f766e" font-weight="700" text-anchor="start">위치 개수를 셀 때의 +1</text>
+<text x="518" y="802" font-size="22" fill="#16243b" font-weight="400" text-anchor="start">마지막 시작 − 첫 시작 + 1</text>
+<text x="518" y="832" font-size="19" fill="#52627b" font-weight="400" text-anchor="start">첫 위치 0에서도 계산하기 때문이다.</text>
+<text x="480" y="898" font-size="21" fill="#16243b" font-weight="700" text-anchor="middle">stride=1일 때 출력 길이 = 입력 길이 + 2×패딩 − 커널 길이 + 1</text>
+<text x="480" y="940" font-size="18" fill="#52627b" font-weight="400" text-anchor="middle">조건: dilation=1, 양쪽에 같은 패딩. 패딩은 원본 텐서의 shape를 바꾸지 않는다.</text>
+</svg>

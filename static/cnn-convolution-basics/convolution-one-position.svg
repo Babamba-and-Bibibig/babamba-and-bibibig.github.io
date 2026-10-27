@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="980" viewBox="0 0 960 980" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">곱셈 결과 9개를 더해야 출력 숫자 하나가 된다</title><desc id="desc">1부터 49까지 있는 7×7 입력의 왼쪽 위 3×3 영역을 선택한다. 가중치 [[1,2,-1],[-2,1,3],[2,-1,1]]과 같은 위치끼리 곱하면 [[1,4,-3],[-16,9,30],[30,-16,17]]이다. 전체 합 56에 편향 2를 더하면 첫 출력값은 58이다. products는 아직 3×3 배열이며 sum 후에 숫자 하나가 된다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52627b" /></marker>
+<marker id="red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#be123c" /></marker>
+<marker id="green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#15803d" /></marker>
+<marker id="blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#1d4ed8" /></marker>
+<marker id="teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#0f766e" /></marker>
+<marker id="orange" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#b45309" /></marker>
+<marker id="purple" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#6d28d9" /></marker>
+</defs><style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.num{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="960" height="980" rx="20" fill="#f6f8fc" stroke="none" stroke-width="1.5" />
+<text x="32" y="48" font-size="28" fill="#16243b" font-weight="700" text-anchor="start">곱셈 결과 9개를 더해야 출력 숫자 하나가 된다</text>
+<text x="32" y="84" font-size="20" fill="#52627b" font-weight="400" text-anchor="start">입력 1장 · 입력 채널 1개 · 첫 번째 필터의 첫 위치</text>
+<text x="214" y="126" font-size="21" fill="#16243b" font-weight="700" text-anchor="middle">입력 x7[0, 0] : (7, 7)</text>
+<rect x="67" y="149" width="42" height="42" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="88.0" y="177.35" font-size="21" fill="#b45309" font-weight="700" text-anchor="middle" class="num">1</text>
+<rect x="109" y="149" width="42" height="42" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="130.0" y="177.35" font-size="21" fill="#b45309" font-weight="700" text-anchor="middle" class="num">2</text>
+<rect x="151" y="149" width="42" height="42" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="172.0" y="177.35" font-size="21" fill="#b45309" font-weight="700" text-anchor="middle" class="num">3</text>
+<rect x="193" y="149" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="214.0" y="177.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">4</text>
+<rect x="235" y="149" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="256.0" y="177.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">5</text>
+<rect x="277" y="149" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="298.0" y="177.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">6</text>
+<rect x="319" y="149" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="340.0" y="177.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">7</text>
+<rect x="67" y="191" width="42" height="42" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="88.0" y="219.35" font-size="21" fill="#b45309" font-weight="700" text-anchor="middle" class="num">8</text>
+<rect x="109" y="191" width="42" height="42" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="130.0" y="219.35" font-size="21" fill="#b45309" font-weight="700" text-anchor="middle" class="num">9</text>
+<rect x="151" y="191" width="42" height="42" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="172.0" y="219.35" font-size="21" fill="#b45309" font-weight="700" text-anchor="middle" class="num">10</text>
+<rect x="193" y="191" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="214.0" y="219.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">11</text>
+<rect x="235" y="191" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="256.0" y="219.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">12</text>
+<rect x="277" y="191" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="298.0" y="219.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">13</text>
+<rect x="319" y="191" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="340.0" y="219.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">14</text>
+<rect x="67" y="233" width="42" height="42" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="88.0" y="261.35" font-size="21" fill="#b45309" font-weight="700" text-anchor="middle" class="num">15</text>
+<rect x="109" y="233" width="42" height="42" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="130.0" y="261.35" font-size="21" fill="#b45309" font-weight="700" text-anchor="middle" class="num">16</text>
+<rect x="151" y="233" width="42" height="42" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="172.0" y="261.35" font-size="21" fill="#b45309" font-weight="700" text-anchor="middle" class="num">17</text>
+<rect x="193" y="233" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="214.0" y="261.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">18</text>
+<rect x="235" y="233" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="256.0" y="261.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">19</text>
+<rect x="277" y="233" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="298.0" y="261.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">20</text>
+<rect x="319" y="233" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="340.0" y="261.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">21</text>
+<rect x="67" y="275" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="88.0" y="303.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">22</text>
+<rect x="109" y="275" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="130.0" y="303.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">23</text>
+<rect x="151" y="275" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="172.0" y="303.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">24</text>
+<rect x="193" y="275" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="214.0" y="303.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">25</text>
+<rect x="235" y="275" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="256.0" y="303.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">26</text>
+<rect x="277" y="275" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="298.0" y="303.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">27</text>
+<rect x="319" y="275" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="340.0" y="303.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">28</text>
+<rect x="67" y="317" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="88.0" y="345.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">29</text>
+<rect x="109" y="317" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="130.0" y="345.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">30</text>
+<rect x="151" y="317" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="172.0" y="345.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">31</text>
+<rect x="193" y="317" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="214.0" y="345.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">32</text>
+<rect x="235" y="317" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="256.0" y="345.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">33</text>
+<rect x="277" y="317" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="298.0" y="345.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">34</text>
+<rect x="319" y="317" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="340.0" y="345.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">35</text>
+<rect x="67" y="359" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="88.0" y="387.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">36</text>
+<rect x="109" y="359" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="130.0" y="387.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">37</text>
+<rect x="151" y="359" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="172.0" y="387.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">38</text>
+<rect x="193" y="359" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="214.0" y="387.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">39</text>
+<rect x="235" y="359" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="256.0" y="387.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">40</text>
+<rect x="277" y="359" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="298.0" y="387.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">41</text>
+<rect x="319" y="359" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="340.0" y="387.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">42</text>
+<rect x="67" y="401" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="88.0" y="429.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">43</text>
+<rect x="109" y="401" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="130.0" y="429.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">44</text>
+<rect x="151" y="401" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="172.0" y="429.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">45</text>
+<rect x="193" y="401" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="214.0" y="429.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">46</text>
+<rect x="235" y="401" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="256.0" y="429.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">47</text>
+<rect x="277" y="401" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="298.0" y="429.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">48</text>
+<rect x="319" y="401" width="42" height="42" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="340.0" y="429.35" font-size="21" fill="#16243b" font-weight="400" text-anchor="middle" class="num">49</text>
+<rect x="67" y="149" width="126" height="126" rx="0" fill="none" stroke="#b45309" stroke-width="3" />
+<text x="418" y="164" font-size="23" fill="#b45309" font-weight="700" text-anchor="start">선택한 영역: 왼쪽 위 3×3</text>
+<text x="418" y="204" font-size="20" fill="#16243b" font-weight="400" text-anchor="start" class="num">patch = x7[0, 0, 0:3, 0:3]</text>
+<text x="418" y="249" font-size="20" fill="#16243b" font-weight="700" text-anchor="start" class="num">products = patch * kernel3</text>
+<text x="418" y="287" font-size="20" fill="#16243b" font-weight="400" text-anchor="start">* 는 같은 위치의 숫자끼리 곱한다.</text>
+<text x="418" y="322" font-size="20" fill="#16243b" font-weight="400" text-anchor="start">이 단계의 결과도 (3, 3) 배열이다.</text>
+<text x="418" y="376" font-size="20" fill="#52627b" font-weight="400" text-anchor="start">아래에서 같은 색 위치를 함께 읽는다.</text>
+<text x="418" y="412" font-size="18" fill="#52627b" font-weight="400" text-anchor="start">편향은 9개 곱셈 결과를 더한 뒤 한 번 더한다.</text>
+<path d="M32 471L928 471" fill="none" stroke="#cbd5e1" stroke-width="1.5" />
+<text x="142" y="519" font-size="24" fill="#b45309" font-weight="700" text-anchor="middle" class="num">patch</text>
+<text x="142" y="550" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle" class="num">(3, 3)</text>
+<rect x="70" y="571" width="48" height="48" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="94.0" y="603.4" font-size="24" fill="#b45309" font-weight="700" text-anchor="middle" class="num">1</text>
+<rect x="118" y="571" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="142.0" y="603.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">2</text>
+<rect x="166" y="571" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="190.0" y="603.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">3</text>
+<rect x="70" y="619" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="94.0" y="651.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">8</text>
+<rect x="118" y="619" width="48" height="48" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="142.0" y="651.4" font-size="24" fill="#b45309" font-weight="700" text-anchor="middle" class="num">9</text>
+<rect x="166" y="619" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="190.0" y="651.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">10</text>
+<rect x="70" y="667" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="94.0" y="699.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">15</text>
+<rect x="118" y="667" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="142.0" y="699.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">16</text>
+<rect x="166" y="667" width="48" height="48" rx="0" fill="#ffedd5" stroke="#cbd5e1" stroke-width="1" />
+<text x="190.0" y="699.4" font-size="24" fill="#b45309" font-weight="700" text-anchor="middle" class="num">17</text>
+<text x="476" y="519" font-size="24" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">kernel3</text>
+<text x="476" y="550" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle" class="num">(3, 3)</text>
+<rect x="404" y="571" width="48" height="48" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1" />
+<text x="428.0" y="603.4" font-size="24" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">1</text>
+<rect x="452" y="571" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="476.0" y="603.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">2</text>
+<rect x="500" y="571" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="524.0" y="603.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">-1</text>
+<rect x="404" y="619" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="428.0" y="651.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">-2</text>
+<rect x="452" y="619" width="48" height="48" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1" />
+<text x="476.0" y="651.4" font-size="24" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">1</text>
+<rect x="500" y="619" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="524.0" y="651.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">3</text>
+<rect x="404" y="667" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="428.0" y="699.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">2</text>
+<rect x="452" y="667" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="476.0" y="699.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">-1</text>
+<rect x="500" y="667" width="48" height="48" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1" />
+<text x="524.0" y="699.4" font-size="24" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">1</text>
+<text x="810" y="519" font-size="24" fill="#0f766e" font-weight="700" text-anchor="middle" class="num">products</text>
+<text x="810" y="550" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle" class="num">(3, 3)</text>
+<rect x="738" y="571" width="48" height="48" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1" />
+<text x="762.0" y="603.4" font-size="24" fill="#0f766e" font-weight="700" text-anchor="middle" class="num">1</text>
+<rect x="786" y="571" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="810.0" y="603.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">4</text>
+<rect x="834" y="571" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="858.0" y="603.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">-3</text>
+<rect x="738" y="619" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="762.0" y="651.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">-16</text>
+<rect x="786" y="619" width="48" height="48" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1" />
+<text x="810.0" y="651.4" font-size="24" fill="#0f766e" font-weight="700" text-anchor="middle" class="num">9</text>
+<rect x="834" y="619" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="858.0" y="651.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">30</text>
+<rect x="738" y="667" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="762.0" y="699.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">30</text>
+<rect x="786" y="667" width="48" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="810.0" y="699.4" font-size="24" fill="#16243b" font-weight="400" text-anchor="middle" class="num">-16</text>
+<rect x="834" y="667" width="48" height="48" rx="0" fill="#ccfbf1" stroke="#cbd5e1" stroke-width="1" />
+<text x="858.0" y="699.4" font-size="24" fill="#0f766e" font-weight="700" text-anchor="middle" class="num">17</text>
+<text x="310" y="656" font-size="34" fill="#52627b" font-weight="700" text-anchor="middle">×</text>
+<text x="644" y="656" font-size="34" fill="#52627b" font-weight="700" text-anchor="middle">=</text>
+<text x="480" y="760" font-size="23" fill="#16243b" font-weight="700" text-anchor="middle">행별 합: [2, 23, 31]  →  모든 값의 합: 56</text>
+<text x="480" y="794" font-size="19" fill="#52627b" font-weight="400" text-anchor="middle" class="num">products.sum(dim=1)             products.sum()</text>
+<rect x="142" y="828" width="676" height="112" rx="14" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5" />
+<text x="480" y="868" font-size="30" fill="#b45309" font-weight="700" text-anchor="middle">56 + 편향 2 = 58</text>
+<text x="480" y="910" font-size="23" fill="#16243b" font-weight="700" text-anchor="middle" class="num">y3[0, 0, 0, 0] = 58</text>
+<text x="480" y="969" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">다음 위치에서는 입력 영역만 옮기고, 같은 가중치를 다시 사용한다.</text>
+</svg>

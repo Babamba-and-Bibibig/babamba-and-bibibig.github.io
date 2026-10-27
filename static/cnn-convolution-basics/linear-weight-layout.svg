@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1010" viewBox="0 0 960 1010" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">Linear는 출력 점수마다 가중치 묶음 하나를 가진다</title><desc id="desc">Linear(3136,10)은 가중치를 출력 수, 입력 수 순서인 (10,3136)으로 저장한다. 각 클래스 점수에는 입력 3136개와 대응하는 가중치 3136개가 있다. 계산 관계는 입력 X (2,3136)와 전치한 W.T (3136,10)의 행렬곱에 편향 (10,)을 더해 Y (2,10)을 만드는 것이다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52627b"/></marker>
+<marker id="red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#be123c"/></marker>
+<marker id="green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#15803d"/></marker>
+<marker id="blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#1d4ed8"/></marker>
+<marker id="teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#0f766e"/></marker>
+<marker id="orange" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#b45309"/></marker>
+<marker id="purple" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#6d28d9"/></marker>
+</defs><style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.num{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="960" height="1010" rx="20" fill="#f6f8fc" stroke="none" stroke-width="1.5"/>
+<text x="32" y="48" font-size="28" fill="#16243b" font-weight="700" text-anchor="start">Linear는 출력 점수마다 가중치 묶음 하나를 가진다</text>
+<text x="32" y="88" font-size="22" fill="#52627b" font-weight="400" text-anchor="start">nn.Linear(in_features=3136, out_features=10)</text>
+<text x="32" y="137" font-size="25" fill="#1d4ed8" font-weight="700" text-anchor="start">1. 저장된 가중치 W : (출력 수 10, 입력 수 3136)</text>
+<text x="193" y="184" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">입력 0</text>
+<text x="385" y="184" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">입력 1</text>
+<text x="577" y="184" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">…</text>
+<text x="769" y="184" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">입력 3135</text>
+<text x="37" y="233" font-size="18" fill="#1d4ed8" font-weight="700" text-anchor="start">점수 0</text>
+<rect x="97" y="202" width="192" height="48" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="193" y="233" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">W[0,0]</text>
+<rect x="289" y="202" width="192" height="48" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="385" y="233" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">W[0,1]</text>
+<rect x="481" y="202" width="192" height="48" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="577" y="233" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">…</text>
+<rect x="673" y="202" width="192" height="48" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1"/>
+<text x="769" y="233" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">W[0,3135]</text>
+<text x="37" y="281" font-size="18" fill="#1d4ed8" font-weight="700" text-anchor="start">점수 1</text>
+<rect x="97" y="250" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="193" y="281" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[1,0]</text>
+<rect x="289" y="250" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="385" y="281" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[1,1]</text>
+<rect x="481" y="250" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="577" y="281" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<rect x="673" y="250" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="769" y="281" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[1,3135]</text>
+<text x="37" y="329" font-size="18" fill="#1d4ed8" font-weight="700" text-anchor="start">…</text>
+<rect x="97" y="298" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="193" y="329" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<rect x="289" y="298" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="385" y="329" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<rect x="481" y="298" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="577" y="329" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<rect x="673" y="298" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="769" y="329" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<text x="37" y="377" font-size="18" fill="#1d4ed8" font-weight="700" text-anchor="start">점수 9</text>
+<rect x="97" y="346" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="193" y="377" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[9,0]</text>
+<rect x="289" y="346" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="385" y="377" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[9,1]</text>
+<rect x="481" y="346" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="577" y="377" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<rect x="673" y="346" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+<text x="769" y="377" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[9,3135]</text>
+<text x="480" y="432" font-size="21" fill="#16243b" font-weight="700" text-anchor="middle">한 행에 가중치 3136개. 이런 묶음이 출력 점수 수만큼 10개 있다.</text>
+<text x="480" y="466" font-size="21" fill="#52627b" font-weight="400" text-anchor="middle">W[0]는 점수 0의 가중치, W[9]는 점수 9의 가중치다.</text>
+<path d="M32 496L928 496" fill="none" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="32" y="545" font-size="25" fill="#b45309" font-weight="700" text-anchor="start">2. 계산 관계: Y = X @ W.T + b</text>
+<text x="32" y="582" font-size="21" fill="#52627b" font-weight="400" text-anchor="start">W.T는 W의 두 차원을 바꾼 (3136, 10)이다.</text>
+<rect x="32" y="618" width="204" height="122" rx="12" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+<text x="134.0" y="660" font-size="23" fill="#1d4ed8" font-weight="700" text-anchor="middle">입력 X</text>
+<text x="134.0" y="710" font-size="22" fill="#16243b" font-weight="700" text-anchor="middle" class="num">(2, 3136)</text>
+<rect x="294" y="618" width="204" height="122" rx="12" fill="#fff7ed" stroke="#b45309" stroke-width="1.5"/>
+<text x="396.0" y="660" font-size="23" fill="#b45309" font-weight="700" text-anchor="middle">전치 W.T</text>
+<text x="396.0" y="710" font-size="22" fill="#16243b" font-weight="700" text-anchor="middle" class="num">(3136, 10)</text>
+<rect x="556" y="618" width="144" height="122" rx="12" fill="#ecfdf5" stroke="#0f766e" stroke-width="1.5"/>
+<text x="628.0" y="660" font-size="23" fill="#0f766e" font-weight="700" text-anchor="middle">편향 b</text>
+<text x="628.0" y="710" font-size="22" fill="#16243b" font-weight="700" text-anchor="middle" class="num">(10,)</text>
+<rect x="758" y="618" width="170" height="122" rx="12" fill="#f5f3ff" stroke="#6d28d9" stroke-width="1.5"/>
+<text x="843.0" y="660" font-size="23" fill="#6d28d9" font-weight="700" text-anchor="middle">출력 Y</text>
+<text x="843.0" y="710" font-size="22" fill="#16243b" font-weight="700" text-anchor="middle" class="num">(2, 10)</text>
+<text x="265" y="695" font-size="31" fill="#52627b" font-weight="700" text-anchor="middle">@</text>
+<text x="527" y="695" font-size="31" fill="#52627b" font-weight="700" text-anchor="middle">+</text>
+<text x="729" y="695" font-size="31" fill="#52627b" font-weight="700" text-anchor="middle">=</text>
+<text x="480" y="782" font-size="21" fill="#52627b" font-weight="400" text-anchor="middle">b의 점수별 편향 10개를 이미지 두 장에 똑같이 더한다.</text>
+<rect x="32" y="815" width="896" height="150" rx="13" fill="white" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="55" y="855" font-size="23" fill="#6d28d9" font-weight="700" text-anchor="start">출력 점수 하나</text>
+<text x="55" y="894" font-size="21" fill="#16243b" font-weight="400" text-anchor="start">입력 3136개와 해당 점수의 가중치 3136개를 짝지어 곱한 뒤,</text>
+<text x="55" y="928" font-size="21" fill="#16243b" font-weight="400" text-anchor="start">그 결과를 모두 더하고 해당 점수의 편향 하나를 더한다.</text>
+<text x="480" y="995" font-size="22" fill="#16243b" font-weight="700" text-anchor="middle">입력 이미지 2장 × 이미지당 점수 10개 = 출력 숫자 20개</text>
+</svg>

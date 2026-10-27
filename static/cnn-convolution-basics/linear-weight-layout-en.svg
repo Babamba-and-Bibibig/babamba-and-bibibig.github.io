@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1010" viewBox="0 0 960 1010" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">Linear stores one weight set per output score</title><desc id="desc">Linear(3136,10) stores weights as (10,3136), ordered by output then input. Each output score has 3136 matching input weights. The computation is Y = X @ W.T + b, using input X (2,3136), transposed weights (3136,10), and bias (10,) to produce (2,10).</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52627b" /></marker>
+<marker id="red" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#be123c" /></marker>
+<marker id="green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#15803d" /></marker>
+<marker id="blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#1d4ed8" /></marker>
+<marker id="teal" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#0f766e" /></marker>
+<marker id="orange" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#b45309" /></marker>
+<marker id="purple" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#6d28d9" /></marker>
+</defs><style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.num{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="960" height="1010" rx="20" fill="#f6f8fc" stroke="none" stroke-width="1.5" />
+<text x="32" y="48" font-size="28" fill="#16243b" font-weight="700" text-anchor="start">Linear stores one weight set per output score</text>
+<text x="32" y="88" font-size="22" fill="#52627b" font-weight="400" text-anchor="start">nn.Linear(in_features=3136, out_features=10)</text>
+<text x="32" y="137" font-size="25" fill="#1d4ed8" font-weight="700" text-anchor="start">1. Stored W: (10 output scores, 3136 input values)</text>
+<text x="193" y="184" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">input 0</text>
+<text x="385" y="184" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">input 1</text>
+<text x="577" y="184" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">…</text>
+<text x="769" y="184" font-size="20" fill="#52627b" font-weight="400" text-anchor="middle">input 3135</text>
+<text x="37" y="233" font-size="18" fill="#1d4ed8" font-weight="700" text-anchor="start">score 0</text>
+<rect x="97" y="202" width="192" height="48" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1" />
+<text x="193" y="233" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">W[0,0]</text>
+<rect x="289" y="202" width="192" height="48" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1" />
+<text x="385" y="233" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">W[0,1]</text>
+<rect x="481" y="202" width="192" height="48" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1" />
+<text x="577" y="233" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">…</text>
+<rect x="673" y="202" width="192" height="48" rx="0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1" />
+<text x="769" y="233" font-size="20" fill="#1d4ed8" font-weight="700" text-anchor="middle" class="num">W[0,3135]</text>
+<text x="37" y="281" font-size="18" fill="#1d4ed8" font-weight="700" text-anchor="start">score 1</text>
+<rect x="97" y="250" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="193" y="281" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[1,0]</text>
+<rect x="289" y="250" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="385" y="281" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[1,1]</text>
+<rect x="481" y="250" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="577" y="281" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<rect x="673" y="250" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="769" y="281" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[1,3135]</text>
+<text x="37" y="329" font-size="18" fill="#1d4ed8" font-weight="700" text-anchor="start">…</text>
+<rect x="97" y="298" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="193" y="329" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<rect x="289" y="298" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="385" y="329" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<rect x="481" y="298" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="577" y="329" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<rect x="673" y="298" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="769" y="329" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<text x="37" y="377" font-size="18" fill="#1d4ed8" font-weight="700" text-anchor="start">score 9</text>
+<rect x="97" y="346" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="193" y="377" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[9,0]</text>
+<rect x="289" y="346" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="385" y="377" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[9,1]</text>
+<rect x="481" y="346" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="577" y="377" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">…</text>
+<rect x="673" y="346" width="192" height="48" rx="0" fill="white" stroke="#cbd5e1" stroke-width="1" />
+<text x="769" y="377" font-size="20" fill="#16243b" font-weight="400" text-anchor="middle" class="num">W[9,3135]</text>
+<text x="480" y="432" font-size="21" fill="#16243b" font-weight="700" text-anchor="middle">One row holds 3136 weights. There are 10 rows, one per output score.</text>
+<text x="480" y="466" font-size="21" fill="#52627b" font-weight="400" text-anchor="middle">W[0] contains weights for score 0; W[9] contains weights for score 9.</text>
+<path d="M32 496L928 496" fill="none" stroke="#cbd5e1" stroke-width="1.5" />
+<text x="32" y="545" font-size="25" fill="#b45309" font-weight="700" text-anchor="start">2. Computation: Y = X @ W.T + b</text>
+<text x="32" y="582" font-size="21" fill="#52627b" font-weight="400" text-anchor="start">W.T swaps the two dimensions of W, giving (3136, 10).</text>
+<rect x="32" y="618" width="204" height="122" rx="12" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5" />
+<text x="134.0" y="660" font-size="23" fill="#1d4ed8" font-weight="700" text-anchor="middle">Input X</text>
+<text x="134.0" y="710" font-size="22" fill="#16243b" font-weight="700" text-anchor="middle" class="num">(2, 3136)</text>
+<rect x="294" y="618" width="204" height="122" rx="12" fill="#fff7ed" stroke="#b45309" stroke-width="1.5" />
+<text x="396.0" y="660" font-size="23" fill="#b45309" font-weight="700" text-anchor="middle">Transposed W.T</text>
+<text x="396.0" y="710" font-size="22" fill="#16243b" font-weight="700" text-anchor="middle" class="num">(3136, 10)</text>
+<rect x="556" y="618" width="144" height="122" rx="12" fill="#ecfdf5" stroke="#0f766e" stroke-width="1.5" />
+<text x="628.0" y="660" font-size="23" fill="#0f766e" font-weight="700" text-anchor="middle">Bias b</text>
+<text x="628.0" y="710" font-size="22" fill="#16243b" font-weight="700" text-anchor="middle" class="num">(10,)</text>
+<rect x="758" y="618" width="170" height="122" rx="12" fill="#f5f3ff" stroke="#6d28d9" stroke-width="1.5" />
+<text x="843.0" y="660" font-size="23" fill="#6d28d9" font-weight="700" text-anchor="middle">Output Y</text>
+<text x="843.0" y="710" font-size="22" fill="#16243b" font-weight="700" text-anchor="middle" class="num">(2, 10)</text>
+<text x="265" y="695" font-size="31" fill="#52627b" font-weight="700" text-anchor="middle">@</text>
+<text x="527" y="695" font-size="31" fill="#52627b" font-weight="700" text-anchor="middle">+</text>
+<text x="729" y="695" font-size="31" fill="#52627b" font-weight="700" text-anchor="middle">=</text>
+<text x="480" y="782" font-size="21" fill="#52627b" font-weight="400" text-anchor="middle">Add the same 10 score-specific biases to each image.</text>
+<rect x="32" y="815" width="896" height="150" rx="13" fill="white" stroke="#cbd5e1" stroke-width="1.5" />
+<text x="55" y="855" font-size="23" fill="#6d28d9" font-weight="700" text-anchor="start">One output score</text>
+<text x="55" y="894" font-size="21" fill="#16243b" font-weight="400" text-anchor="start">Pair all 3136 input values with the matching weights for this score.</text>
+<text x="55" y="928" font-size="21" fill="#16243b" font-weight="400" text-anchor="start">Multiply each pair, sum the products, then add this score’s bias.</text>
+<text x="480" y="995" font-size="22" fill="#16243b" font-weight="700" text-anchor="middle">2 input images × 10 scores per image = 20 output numbers</text>
+</svg>
