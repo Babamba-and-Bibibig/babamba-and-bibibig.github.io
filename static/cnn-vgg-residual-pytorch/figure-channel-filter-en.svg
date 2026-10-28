@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="1030" viewBox="0 0 1040 1030" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">One filter combines four input channels into one output value</title><desc id="desc">Each input channel has its own 3×3 kernel within a filter. Sum the four channel results, then add one bias. Six filters contain 216 weights; output (1,6,7,7) contains 294 values.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4e6078"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="1040" height="1030" rx="22" fill="#f7f9fc" stroke="none" stroke-width="1.5"/>
+<text x="34" y="48" font-size="30" fill="#17253d" font-weight="700" text-anchor="start">One filter combines four input channels into one output value</text>
+<text x="34" y="84" font-size="19" fill="#4e6078" font-weight="400" text-anchor="start">x: [1,4,7,7] · Conv2d(4,6,3, stride=1, padding=1) · groups=1 · dilation=1</text>
+<rect x="28" y="112" width="984" height="595" rx="16" fill="white" stroke="#b8c6d8" stroke-width="1.5"/>
+<text x="70" y="150" font-size="23" fill="#235fbe" font-weight="700" text-anchor="start">Data selected from the input</text>
+<text x="430" y="150" font-size="23" fill="#aa530e" font-weight="700" text-anchor="start">Weights inside filter A</text>
+<text x="845" y="150" font-size="23" fill="#177052" font-weight="700" text-anchor="middle">Channel sums</text>
+<rect x="58" y="180" width="260" height="82" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="188.0" y="211" font-size="18" fill="#235fbe" font-weight="700" text-anchor="middle">Patch from input channel 0</text>
+<text x="188.0" y="242" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[3, 3]</text>
+<text x="354" y="229" font-size="34" fill="#4e6078" font-weight="400" text-anchor="middle">×</text>
+<rect x="394" y="180" width="260" height="82" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="524.0" y="211" font-size="21" fill="#aa530e" font-weight="700" text-anchor="middle">Kernel A0 for channel 0</text>
+<text x="524.0" y="242" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[3, 3]</text>
+<path d="M665 221H720" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="738" y="180" width="225" height="82" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="850.5" y="211" font-size="23" fill="#177052" font-weight="700" text-anchor="middle">s0</text>
+<text x="850.5" y="242" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle">Sum of nine products</text>
+<rect x="58" y="287" width="260" height="82" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="188.0" y="318" font-size="18" fill="#235fbe" font-weight="700" text-anchor="middle">Patch from input channel 1</text>
+<text x="188.0" y="349" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[3, 3]</text>
+<text x="354" y="336" font-size="34" fill="#4e6078" font-weight="400" text-anchor="middle">×</text>
+<rect x="394" y="287" width="260" height="82" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="524.0" y="318" font-size="21" fill="#aa530e" font-weight="700" text-anchor="middle">Kernel A1 for channel 1</text>
+<text x="524.0" y="349" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[3, 3]</text>
+<path d="M665 328H720" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="738" y="287" width="225" height="82" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="850.5" y="318" font-size="23" fill="#177052" font-weight="700" text-anchor="middle">s1</text>
+<text x="850.5" y="349" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle">Sum of nine products</text>
+<rect x="58" y="394" width="260" height="82" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="188.0" y="425" font-size="18" fill="#235fbe" font-weight="700" text-anchor="middle">Patch from input channel 2</text>
+<text x="188.0" y="456" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[3, 3]</text>
+<text x="354" y="443" font-size="34" fill="#4e6078" font-weight="400" text-anchor="middle">×</text>
+<rect x="394" y="394" width="260" height="82" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="524.0" y="425" font-size="21" fill="#aa530e" font-weight="700" text-anchor="middle">Kernel A2 for channel 2</text>
+<text x="524.0" y="456" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[3, 3]</text>
+<path d="M665 435H720" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="738" y="394" width="225" height="82" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="850.5" y="425" font-size="23" fill="#177052" font-weight="700" text-anchor="middle">s2</text>
+<text x="850.5" y="456" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle">Sum of nine products</text>
+<rect x="58" y="501" width="260" height="82" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="188.0" y="532" font-size="18" fill="#235fbe" font-weight="700" text-anchor="middle">Patch from input channel 3</text>
+<text x="188.0" y="563" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[3, 3]</text>
+<text x="354" y="550" font-size="34" fill="#4e6078" font-weight="400" text-anchor="middle">×</text>
+<rect x="394" y="501" width="260" height="82" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="524.0" y="532" font-size="21" fill="#aa530e" font-weight="700" text-anchor="middle">Kernel A3 for channel 3</text>
+<text x="524.0" y="563" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[3, 3]</text>
+<path d="M665 542H720" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="738" y="501" width="225" height="82" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="850.5" y="532" font-size="23" fill="#177052" font-weight="700" text-anchor="middle">s3</text>
+<text x="850.5" y="563" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle">Sum of nine products</text>
+<text x="72" y="644" font-size="21" fill="#17253d" font-weight="400" text-anchor="start">Each channel pairs with its own kernel. One filter contains 4×3×3 = 36 weights.</text>
+<text x="72" y="680" font-size="19" fill="#4e6078" font-weight="400" text-anchor="start">All four patches use the same spatial position. Four channels and four kernels make four pairs.</text>
+<path d="M520 709V738" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="165" y="750" width="710" height="95" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="520.0" y="781" font-size="24" fill="#7043b5" font-weight="700" text-anchor="middle">One value in output feature map A</text>
+<text x="520.0" y="812" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">y[0, 0, 3, 3] = s0 + s1 + s2 + s3 + bA</text>
+<text x="520" y="879" font-size="20" fill="#17253d" font-weight="700" text-anchor="middle">Reuse a filter at 7×7 positions → one map. Six filters → six output channels.</text>
+<rect x="28" y="904" width="984" height="102" rx="12" fill="#eaf2ff" stroke="#b8c6d8" stroke-width="1.5"/>
+<text x="50" y="936" font-size="21" fill="#17253d" font-weight="700" text-anchor="start">Model parameters</text>
+<text x="350" y="936" font-size="22" fill="#17253d" font-weight="400" text-anchor="start">216 weights · 6 biases (bias=True)</text>
+<text x="50" y="977" font-size="21" fill="#17253d" font-weight="700" text-anchor="start">Output data</text>
+<text x="350" y="977" font-size="22" fill="#17253d" font-weight="400" text-anchor="start">[1, 6, 7, 7] → 294 values</text>
+</svg>

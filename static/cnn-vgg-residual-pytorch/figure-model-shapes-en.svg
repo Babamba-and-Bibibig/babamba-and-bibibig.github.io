@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="1110" viewBox="0 0 1040 1110" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">Follow the shapes through two VGG blocks to class scores</title><desc id="desc">RGB input (N,3,32,32) becomes (N,8,16,16) then (N,16,8,8). Conv preserves spatial size; Pool reduces it. Flatten preserves the batch to produce (N,1024), and Linear gives (N,5).</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4e6078"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="1040" height="1110" rx="22" fill="#f7f9fc" stroke="none" stroke-width="1.5"/>
+<text x="34" y="48" font-size="30" fill="#17253d" font-weight="700" text-anchor="start">Follow the shapes through two VGG blocks to class scores</text>
+<text x="34" y="84" font-size="19" fill="#4e6078" font-weight="400" text-anchor="start">RGB 32×32 · Conv: 3×3, stride=1, padding=1 · MaxPool: 2×2, stride=2</text>
+<rect x="290" y="112" width="460" height="83" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="520.0" y="143" font-size="24" fill="#235fbe" font-weight="700" text-anchor="middle">N input images</text>
+<text x="520.0" y="174" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[N, 3, 32, 32]</text>
+<path d="M520 195V231" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="32" y="245" width="976" height="215" rx="16" fill="white" stroke="#b8c6d8" stroke-width="1.5"/>
+<text x="58" y="280" font-size="25" fill="#235fbe" font-weight="700" text-anchor="start">MyVGGBlock(3, 8)</text>
+<rect x="58" y="305" width="172" height="83" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="144.0" y="336" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">Conv 1</text>
+<text x="144.0" y="367" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">3 → 8</text>
+<path d="M233 346H242" fill="none" stroke="#4e6078" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="246" y="305" width="172" height="83" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="332.0" y="336" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">ReLU</text>
+<text x="332.0" y="367" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">same shape</text>
+<path d="M421 346H430" fill="none" stroke="#4e6078" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="434" y="305" width="172" height="83" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="520.0" y="336" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">Conv 2</text>
+<text x="520.0" y="367" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">8 → 8</text>
+<path d="M609 346H618" fill="none" stroke="#4e6078" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="622" y="305" width="172" height="83" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="708.0" y="336" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">ReLU</text>
+<text x="708.0" y="367" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">same shape</text>
+<path d="M797 346H806" fill="none" stroke="#4e6078" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="810" y="305" width="172" height="83" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="896.0" y="336" font-size="22" fill="#aa530e" font-weight="700" text-anchor="middle">MaxPool</text>
+<text x="896.0" y="367" font-size="18" fill="#17253d" font-weight="400" text-anchor="middle">32×32 → 16×16</text>
+<text x="62" y="429" font-size="20" fill="#17253d" font-weight="400" text-anchor="start">Both Conv layers preserve 32×32</text>
+<text x="974" y="429" font-size="23" fill="#17253d" font-weight="700" text-anchor="end">Block output  [N, 8, 16, 16]</text>
+<path d="M520 460V496" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="32" y="510" width="976" height="215" rx="16" fill="white" stroke="#b8c6d8" stroke-width="1.5"/>
+<text x="58" y="545" font-size="25" fill="#235fbe" font-weight="700" text-anchor="start">MyVGGBlock(8, 16)</text>
+<rect x="58" y="570" width="172" height="83" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="144.0" y="601" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">Conv 1</text>
+<text x="144.0" y="632" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">8 → 16</text>
+<path d="M233 611H242" fill="none" stroke="#4e6078" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="246" y="570" width="172" height="83" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="332.0" y="601" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">ReLU</text>
+<text x="332.0" y="632" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">same shape</text>
+<path d="M421 611H430" fill="none" stroke="#4e6078" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="434" y="570" width="172" height="83" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="520.0" y="601" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">Conv 2</text>
+<text x="520.0" y="632" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">16 → 16</text>
+<path d="M609 611H618" fill="none" stroke="#4e6078" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="622" y="570" width="172" height="83" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="708.0" y="601" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">ReLU</text>
+<text x="708.0" y="632" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">same shape</text>
+<path d="M797 611H806" fill="none" stroke="#4e6078" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="810" y="570" width="172" height="83" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="896.0" y="601" font-size="22" fill="#aa530e" font-weight="700" text-anchor="middle">MaxPool</text>
+<text x="896.0" y="632" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">16×16 → 8×8</text>
+<text x="62" y="694" font-size="20" fill="#17253d" font-weight="400" text-anchor="start">Both Conv layers preserve 16×16</text>
+<text x="974" y="694" font-size="23" fill="#17253d" font-weight="700" text-anchor="end">Block output  [N, 16, 8, 8]</text>
+<path d="M520 725V763" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="112" y="778" width="816" height="112" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="520.0" y="809" font-size="25" fill="#7043b5" font-weight="700" text-anchor="middle">flatten(start_dim=1)</text>
+<text x="520.0" y="840" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">Feature values per image: 16 × 8 × 8 = 1024</text>
+<text x="520.0" y="868" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[N, 16, 8, 8] → [N, 1024]</text>
+<path d="M520 891V928" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="215" y="944" width="610" height="97" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="520.0" y="975" font-size="26" fill="#177052" font-weight="700" text-anchor="middle">Linear(1024, 5)</text>
+<text x="520.0" y="1006" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[N, 5] · five class scores per image</text>
+<text x="520" y="1083" font-size="22" fill="#17253d" font-weight="700" text-anchor="middle">N is the image count. Keep the batch axis even when N=1.</text>
+</svg>

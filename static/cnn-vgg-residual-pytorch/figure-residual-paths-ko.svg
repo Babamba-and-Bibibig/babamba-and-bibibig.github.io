@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="1120" viewBox="0 0 1040 1120" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">잔차 덧셈 직전에는 두 경로의 전체 shape를 맞춘다</title><desc id="desc">크기를 유지할 때는 원래 입력을 그대로 더한다. 16채널 14×14를 32채널 7×7로 바꿀 때는 주 경로와 shortcut 모두 목표 크기를 만든다. 이 교육용 블록의 최종 출력은 두 경로를 더한 뒤 ReLU한 결과다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4e6078"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="1040" height="1120" rx="22" fill="#f7f9fc" stroke="none" stroke-width="1.5"/>
+<text x="34" y="48" font-size="30" fill="#17253d" font-weight="700" text-anchor="start">잔차 덧셈 직전에는 두 경로의 전체 shape를 맞춘다</text>
+<text x="34" y="84" font-size="19" fill="#4e6078" font-weight="400" text-anchor="start">같은 데이터·채널·행·열의 값끼리 더한다. 채널을 이어 붙이는 연산이 아니다.</text>
+<rect x="28" y="112" width="984" height="455" rx="16" fill="white" stroke="#b8c6d8" stroke-width="1.5"/>
+<text x="52" y="146" font-size="25" fill="#17253d" font-weight="700" text-anchor="start">① 크기를 유지하는 블록: identity shortcut</text>
+<rect x="340" y="165" width="360" height="77" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="520.0" y="196" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">원래 입력 x</text>
+<text x="520.0" y="227" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[N, 16, 14, 14]</text>
+<path d="M520 243V262H274V286" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M520 262H766V286" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="58" y="300" width="432" height="119" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="274.0" y="331" font-size="22" fill="#7043b5" font-weight="700" text-anchor="middle">주 경로</text>
+<text x="274.0" y="362" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">3×3 Conv (16→16) → ReLU</text>
+<text x="274.0" y="390" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">3×3 Conv (16→16), stride=1</text>
+<rect x="550" y="300" width="432" height="119" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="766.0" y="331" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">Shortcut</text>
+<text x="766.0" y="362" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">입력 x를 그대로 전달</text>
+<text x="766.0" y="390" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">shortcut에 추가 파라미터 없음</text>
+<text x="274" y="448" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">[N, 16, 14, 14]</text>
+<text x="766" y="448" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">[N, 16, 14, 14]</text>
+<path d="M274 456V478H491" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M766 456V478H549" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<circle cx="520" cy="478" r="23" fill="#fff1dd" stroke="#aa530e" stroke-width="2"/>
+<text x="520" y="487" font-size="29" fill="#aa530e" font-weight="700" text-anchor="middle">+</text>
+<path d="M520 503V522" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="520" y="551" font-size="25" fill="#17253d" font-weight="700" text-anchor="middle">ReLU → [N, 16, 14, 14]</text>
+<rect x="28" y="594" width="984" height="455" rx="16" fill="white" stroke="#b8c6d8" stroke-width="1.5"/>
+<text x="52" y="628" font-size="25" fill="#17253d" font-weight="700" text-anchor="start">② 크기가 달라지는 블록: projection shortcut</text>
+<rect x="340" y="647" width="360" height="77" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="520.0" y="678" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">원래 입력 x</text>
+<text x="520.0" y="709" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">[N, 16, 14, 14]</text>
+<path d="M520 725V744H274V768" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M520 744H766V768" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="58" y="782" width="432" height="119" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="274.0" y="813" font-size="22" fill="#7043b5" font-weight="700" text-anchor="middle">주 경로</text>
+<text x="274.0" y="844" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">3×3 Conv (16→32), stride=2</text>
+<text x="274.0" y="872" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">ReLU → 3×3 Conv (32→32)</text>
+<rect x="550" y="782" width="432" height="119" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="766.0" y="813" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">Shortcut</text>
+<text x="766.0" y="844" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">1×1 Conv (16→32), stride=2</text>
+<text x="766.0" y="872" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">학습 가능한 별도 가중치</text>
+<text x="274" y="930" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">[N, 32, 7, 7]</text>
+<text x="766" y="930" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">[N, 32, 7, 7]</text>
+<path d="M274 938V960H491" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M766 938V960H549" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<circle cx="520" cy="960" r="23" fill="#fff1dd" stroke="#aa530e" stroke-width="2"/>
+<text x="520" y="969" font-size="29" fill="#aa530e" font-weight="700" text-anchor="middle">+</text>
+<path d="M520 985V1004" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="520" y="1033" font-size="25" fill="#17253d" font-weight="700" text-anchor="middle">ReLU → [N, 32, 7, 7]</text>
+<text x="520" y="1087" font-size="20" fill="#4e6078" font-weight="400" text-anchor="middle">3×3 Conv: padding=1 · 표시하지 않은 stride는 1 · BatchNorm을 생략한 교육용 구조</text>
+</svg>

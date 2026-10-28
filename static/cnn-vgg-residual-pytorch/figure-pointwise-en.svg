@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="1030" viewBox="0 0 1040 1030" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">A 1×1 kernel still combines all 16 input channels</title><desc id="desc">A 1×1 convolution multiplies the values from all 16 channels at one spatial position by separate weights and sums them. With 32 filters, it has 32×16×1×1=512 weights. Stride 2 samples positions 0,2,4,6,8,10,12 along each axis.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4e6078"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="1040" height="1030" rx="22" fill="#f7f9fc" stroke="none" stroke-width="1.5"/>
+<text x="34" y="48" font-size="30" fill="#17253d" font-weight="700" text-anchor="start">A 1×1 kernel still combines all 16 input channels</text>
+<text x="34" y="84" font-size="19" fill="#4e6078" font-weight="400" text-anchor="start">x: [N,16,14,14] · Conv2d(16,32,1, stride=2) · padding=0 · groups=1</text>
+<rect x="28" y="112" width="984" height="477" rx="16" fill="white" stroke="#b8c6d8" stroke-width="1.5"/>
+<text x="55" y="149" font-size="24" fill="#17253d" font-weight="700" text-anchor="start">Output filter j at one position in the first image</text>
+<text x="180" y="191" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">Input per channel</text>
+<text x="497" y="191" font-size="21" fill="#aa530e" font-weight="700" text-anchor="middle">Weight per channel</text>
+<rect x="63" y="212" width="234" height="58" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="180" y="249" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">x[0, 0, h, w]</text>
+<text x="337" y="250" font-size="32" fill="#17253d" font-weight="400" text-anchor="middle">×</text>
+<rect x="383" y="212" width="228" height="58" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="497" y="249" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">W[j, 0, 0, 0]</text>
+<path d="M625 241H678V344H713" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="63" y="287" width="234" height="58" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="180" y="324" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">x[0, 1, h, w]</text>
+<text x="337" y="325" font-size="32" fill="#17253d" font-weight="400" text-anchor="middle">×</text>
+<rect x="383" y="287" width="228" height="58" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="497" y="324" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">W[j, 1, 0, 0]</text>
+<path d="M625 316H678V344H713" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="180" y="393" font-size="34" fill="#17253d" font-weight="400" text-anchor="middle">⋮</text>
+<text x="497" y="393" font-size="34" fill="#17253d" font-weight="400" text-anchor="middle">⋮</text>
+<rect x="63" y="437" width="234" height="58" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="180" y="474" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">x[0, 15, h, w]</text>
+<text x="337" y="475" font-size="32" fill="#17253d" font-weight="400" text-anchor="middle">×</text>
+<rect x="383" y="437" width="228" height="58" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="497" y="474" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">W[j, 15, 0, 0]</text>
+<path d="M625 466H678V344H713" fill="none" stroke="#4e6078" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="730" y="278" width="249" height="136" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="854.5" y="309" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">Sum 16 products</text>
+<text x="854.5" y="340" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">+ bias for filter j</text>
+<text x="854.5" y="368" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">→ one output value</text>
+<text x="520" y="555" font-size="24" fill="#17253d" font-weight="700" text-anchor="middle">One spatial position, but 16 weights in each filter.</text>
+<rect x="28" y="615" width="474" height="114" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="265.0" y="646" font-size="24" fill="#aa530e" font-weight="700" text-anchor="middle">All weights</text>
+<text x="265.0" y="677" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">32 × 16 × 1 × 1 = 512</text>
+<text x="265.0" y="705" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">weight.shape = [32,16,1,1]</text>
+<rect x="534" y="615" width="478" height="114" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="773.0" y="646" font-size="24" fill="#177052" font-weight="700" text-anchor="middle">Output channels and biases</text>
+<text x="773.0" y="677" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">32 filters → 32 output channels</text>
+<text x="773.0" y="705" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle">32 biases when bias=True</text>
+<text x="50" y="781" font-size="22" fill="#17253d" font-weight="700" text-anchor="start">stride=2: select these positions along both rows and columns.</text>
+<rect x="58" y="807" width="60" height="54" rx="8" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="88" y="842" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">0</text>
+<rect x="124" y="807" width="60" height="54" rx="8" fill="#edf1f6" stroke="#c6d0dd" stroke-width="1.5"/>
+<text x="154" y="842" font-size="22" fill="#66778c" font-weight="400" text-anchor="middle">1</text>
+<rect x="190" y="807" width="60" height="54" rx="8" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="220" y="842" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">2</text>
+<rect x="256" y="807" width="60" height="54" rx="8" fill="#edf1f6" stroke="#c6d0dd" stroke-width="1.5"/>
+<text x="286" y="842" font-size="22" fill="#66778c" font-weight="400" text-anchor="middle">3</text>
+<rect x="322" y="807" width="60" height="54" rx="8" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="352" y="842" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">4</text>
+<rect x="388" y="807" width="60" height="54" rx="8" fill="#edf1f6" stroke="#c6d0dd" stroke-width="1.5"/>
+<text x="418" y="842" font-size="22" fill="#66778c" font-weight="400" text-anchor="middle">5</text>
+<rect x="454" y="807" width="60" height="54" rx="8" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="484" y="842" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">6</text>
+<rect x="520" y="807" width="60" height="54" rx="8" fill="#edf1f6" stroke="#c6d0dd" stroke-width="1.5"/>
+<text x="550" y="842" font-size="22" fill="#66778c" font-weight="400" text-anchor="middle">7</text>
+<rect x="586" y="807" width="60" height="54" rx="8" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="616" y="842" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">8</text>
+<rect x="652" y="807" width="60" height="54" rx="8" fill="#edf1f6" stroke="#c6d0dd" stroke-width="1.5"/>
+<text x="682" y="842" font-size="22" fill="#66778c" font-weight="400" text-anchor="middle">9</text>
+<rect x="718" y="807" width="60" height="54" rx="8" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="748" y="842" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">10</text>
+<rect x="784" y="807" width="60" height="54" rx="8" fill="#edf1f6" stroke="#c6d0dd" stroke-width="1.5"/>
+<text x="814" y="842" font-size="22" fill="#66778c" font-weight="400" text-anchor="middle">11</text>
+<rect x="850" y="807" width="60" height="54" rx="8" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="880" y="842" font-size="22" fill="#235fbe" font-weight="700" text-anchor="middle">12</text>
+<rect x="916" y="807" width="60" height="54" rx="8" fill="#edf1f6" stroke="#c6d0dd" stroke-width="1.5"/>
+<text x="946" y="842" font-size="22" fill="#66778c" font-weight="400" text-anchor="middle">13</text>
+<text x="520" y="900" font-size="22" fill="#17253d" font-weight="700" text-anchor="middle">0, 2, 4, 6, 8, 10, 12 → 7 positions per axis → [N,32,7,7]</text>
+<text x="50" y="952" font-size="20" fill="#4e6078" font-weight="400" text-anchor="start">The 1×1 weights are learned, not fixed to one.</text>
+<text x="50" y="987" font-size="20" fill="#4e6078" font-weight="400" text-anchor="start">All-one weights and zero bias would sum the channels, not copy the input.</text>
+</svg>
