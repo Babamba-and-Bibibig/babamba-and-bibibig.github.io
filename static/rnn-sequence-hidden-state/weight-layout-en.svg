@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1190" viewBox="0 0 1120 1190" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">One weight row belongs to one current neuron</title><desc id="desc">Input weights have shape 3×4; recurrent weights have shape 3×3. Rows select current neurons. Columns select input features or previous hidden values. Batch matrix multiplication uses their transposes.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4e6078"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="1120" height="1190" rx="22" fill="#f7f9fc" stroke="none" stroke-width="1.5"/>
+<text x="34" y="48" font-size="30" fill="#17253d" font-weight="700" text-anchor="start">One weight row belongs to one current neuron</text>
+<text x="34" y="87" font-size="22" fill="#4e6078" font-weight="400" text-anchor="start">For a batched calculation: current values @ weights.T</text>
+<rect x="34" y="130" width="1052" height="410" rx="12" fill="#ffffff" stroke="#c9d3df" stroke-width="1.5"/>
+<text x="60" y="171" font-size="28" fill="#235fbe" font-weight="700" text-anchor="start">weight_ih</text>
+<text x="325" y="171" font-size="25" fill="#17253d" font-weight="700" text-anchor="start">(H, F) = (3, 4)</text>
+<text x="60" y="207" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">Columns: input feature indices 0–3</text>
+<text x="410" y="255" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">f0</text>
+<text x="565" y="255" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">f1</text>
+<text x="720" y="255" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">f2</text>
+<text x="875" y="255" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">f3</text>
+<rect x="52" y="275" width="1016" height="55" rx="6" fill="#eaf2ff" stroke="none" stroke-width="1.5"/>
+<text x="73" y="311" font-size="21" fill="#17253d" font-weight="700" text-anchor="start">Current neuron A  (0)</text>
+<text x="410" y="312" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.11</text>
+<text x="565" y="312" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">-0.07</text>
+<text x="720" y="312" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.04</text>
+<text x="875" y="312" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.02</text>
+<text x="73" y="373" font-size="21" fill="#17253d" font-weight="700" text-anchor="start">Current neuron B  (1)</text>
+<text x="410" y="374" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">-0.09</text>
+<text x="565" y="374" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.13</text>
+<text x="720" y="374" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.06</text>
+<text x="875" y="374" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">-0.03</text>
+<text x="73" y="435" font-size="21" fill="#17253d" font-weight="700" text-anchor="start">Current neuron C  (2)</text>
+<text x="410" y="436" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.05</text>
+<text x="565" y="436" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.08</text>
+<text x="720" y="436" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">-0.12</text>
+<text x="875" y="436" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.15</text>
+<text x="60" y="493" font-size="22" fill="#17253d" font-weight="700" text-anchor="start" class="mono">xt @ weight_ih.T : (2, 4) @ (4, 3) → (2, 3)</text>
+<text x="60" y="523" font-size="20" fill="#4e6078" font-weight="400" text-anchor="start">Transpose .T exchanges row and column positions.</text>
+<rect x="34" y="570" width="1052" height="410" rx="12" fill="#ffffff" stroke="#c9d3df" stroke-width="1.5"/>
+<text x="60" y="611" font-size="28" fill="#177052" font-weight="700" text-anchor="start">weight_hh</text>
+<text x="325" y="611" font-size="25" fill="#17253d" font-weight="700" text-anchor="start">(H, H) = (3, 3)</text>
+<text x="60" y="647" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">Columns: previous hidden indices 0–2</text>
+<text x="445" y="695" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">Aₜ₋₁</text>
+<text x="660" y="695" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">Bₜ₋₁</text>
+<text x="875" y="695" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">Cₜ₋₁</text>
+<rect x="52" y="715" width="1016" height="55" rx="6" fill="#e6f5ed" stroke="none" stroke-width="1.5"/>
+<text x="73" y="751" font-size="21" fill="#17253d" font-weight="700" text-anchor="start">Current neuron A  (0)</text>
+<text x="445" y="752" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.21</text>
+<text x="660" y="752" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">-0.14</text>
+<text x="875" y="752" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.07</text>
+<text x="73" y="813" font-size="21" fill="#17253d" font-weight="700" text-anchor="start">Current neuron B  (1)</text>
+<text x="445" y="814" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">-0.16</text>
+<text x="660" y="814" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.25</text>
+<text x="875" y="814" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.12</text>
+<text x="73" y="875" font-size="21" fill="#17253d" font-weight="700" text-anchor="start">Current neuron C  (2)</text>
+<text x="445" y="876" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.19</text>
+<text x="660" y="876" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">-0.06</text>
+<text x="875" y="876" font-size="26" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.31</text>
+<text x="60" y="933" font-size="22" fill="#17253d" font-weight="700" text-anchor="start" class="mono">previous_state @ weight_hh.T : (2, 3) @ (3, 3) → (2, 3)</text>
+<text x="60" y="963" font-size="20" fill="#4e6078" font-weight="400" text-anchor="start">Transpose .T exchanges row and column positions.</text>
+<rect x="34" y="1040" width="1052" height="113" rx="12" fill="#fff1dd" stroke="#9a4b0a" stroke-width="1.5"/>
+<text x="560.0" y="1074" font-size="24" fill="#9a4b0a" font-weight="700" text-anchor="middle">21 weights + 6 biases = 27 trainable numbers</text>
+<text x="560.0" y="1108" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">weight_ih: 12  ·  weight_hh: 9  ·  bias_ih: 3  ·  bias_hh: 3</text>
+<text x="560.0" y="1137" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">Do not multiply this count by batch size 2 or sequence length 5.</text>
+</svg>

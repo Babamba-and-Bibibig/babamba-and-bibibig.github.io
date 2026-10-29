@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1190" viewBox="0 0 1120 1190" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">셀 안의 세 뉴런은 같은 입력과 이전 상태를 읽는다</title><desc id="desc">두 번째 시점에서 뉴런 A, B, C는 동일한 현재 입력과 이전 은닉 상태 전체를 각자의 가중치로 계산한다. 세 결과가 새 은닉 상태 벡터를 구성한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4e6078"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="1120" height="1190" rx="22" fill="#f7f9fc" stroke="none" stroke-width="1.5"/>
+<text x="34" y="48" font-size="30" fill="#17253d" font-weight="700" text-anchor="start">셀 안의 세 뉴런은 같은 입력과 이전 상태를 읽는다</text>
+<text x="34" y="87" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">예시: 첫 번째 시퀀스의 두 번째 시점 · 각 화살표는 값의 전달을 나타낸다.</text>
+<rect x="34" y="122" width="506" height="119" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="287.0" y="156" font-size="23" fill="#235fbe" font-weight="700" text-anchor="middle">현재 입력 x₂</text>
+<text x="287.0" y="190" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">[3, 8, 12, 6]</text>
+<text x="287.0" y="219" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">특징 4개</text>
+<rect x="580" y="122" width="506" height="119" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="833.0" y="156" font-size="23" fill="#177052" font-weight="700" text-anchor="middle">이전 은닉 상태 h₁</text>
+<text x="833.0" y="190" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">[0.360099, 0.502765, 0.866036]</text>
+<text x="833.0" y="219" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">이전 A₁, B₁, C₁ 전체</text>
+<path d="M287 241V271H560V302" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M833 241V271H560" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="105" y="302" width="910" height="73" rx="12" fill="#ffffff" stroke="#c9d3df" stroke-width="1.5"/>
+<text x="560" y="333" font-size="22" fill="#17253d" font-weight="700" text-anchor="middle">각 뉴런이 읽는 값: x₂의 4개 값 + h₁의 3개 값</text>
+<text x="560" y="361" font-size="20" fill="#4e6078" font-weight="400" text-anchor="middle">이 상자는 전달할 값의 묶음이며, 여기서 값을 합산하지 않는다.</text>
+<path d="M560 375V410H206V446" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M560 410V446" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M560 410H914V446" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="446" width="332" height="382" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="206" y="482" font-size="26" fill="#7043b5" font-weight="700" text-anchor="middle">뉴런 A</text>
+<text x="58" y="524" font-size="20" fill="#4e6078" font-weight="700" text-anchor="start">입력 가중치 4개</text>
+<text x="206" y="555" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.11, -0.07, 0.04, 0.02</text>
+<text x="58" y="599" font-size="20" fill="#4e6078" font-weight="700" text-anchor="start">이전 상태용 가중치 3개</text>
+<text x="206" y="630" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.21, -0.14, 0.07</text>
+<text x="58" y="674" font-size="20" fill="#4e6078" font-weight="700" text-anchor="start">자기 편향 2개</text>
+<text x="206" y="705" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.015, -0.008</text>
+<line x1="58" y1="728" x2="354" y2="728" stroke="#7043b5" stroke-width="2"/>
+<text x="206" y="763" font-size="19" fill="#17253d" font-weight="700" text-anchor="middle">곱셈 결과 합산 + 편향</text>
+<text x="206" y="797" font-size="19" fill="#17253d" font-weight="700" text-anchor="middle">tanh → A₂ ≈ 0.416009</text>
+<path d="M206 828V878" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="394" y="446" width="332" height="382" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="560" y="482" font-size="26" fill="#7043b5" font-weight="700" text-anchor="middle">뉴런 B</text>
+<text x="412" y="524" font-size="20" fill="#4e6078" font-weight="700" text-anchor="start">입력 가중치 4개</text>
+<text x="560" y="555" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">-0.09, 0.13, 0.06, -0.03</text>
+<text x="412" y="599" font-size="20" fill="#4e6078" font-weight="700" text-anchor="start">이전 상태용 가중치 3개</text>
+<text x="560" y="630" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">-0.16, 0.25, 0.12</text>
+<text x="412" y="674" font-size="20" fill="#4e6078" font-weight="700" text-anchor="start">자기 편향 2개</text>
+<text x="560" y="705" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">-0.025, 0.018</text>
+<line x1="412" y1="728" x2="708" y2="728" stroke="#7043b5" stroke-width="2"/>
+<text x="560" y="763" font-size="19" fill="#17253d" font-weight="700" text-anchor="middle">곱셈 결과 합산 + 편향</text>
+<text x="560" y="797" font-size="19" fill="#17253d" font-weight="700" text-anchor="middle">tanh → B₂ ≈ 0.900527</text>
+<path d="M560 828V878" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="748" y="446" width="332" height="382" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="914" y="482" font-size="26" fill="#7043b5" font-weight="700" text-anchor="middle">뉴런 C</text>
+<text x="766" y="524" font-size="20" fill="#4e6078" font-weight="700" text-anchor="start">입력 가중치 4개</text>
+<text x="914" y="555" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.05, 0.08, -0.12, 0.15</text>
+<text x="766" y="599" font-size="20" fill="#4e6078" font-weight="700" text-anchor="start">이전 상태용 가중치 3개</text>
+<text x="914" y="630" font-size="20" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.19, -0.06, 0.31</text>
+<text x="766" y="674" font-size="20" fill="#4e6078" font-weight="700" text-anchor="start">자기 편향 2개</text>
+<text x="914" y="705" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.035, -0.028</text>
+<line x1="766" y1="728" x2="1062" y2="728" stroke="#7043b5" stroke-width="2"/>
+<text x="914" y="763" font-size="19" fill="#17253d" font-weight="700" text-anchor="middle">곱셈 결과 합산 + 편향</text>
+<text x="914" y="797" font-size="19" fill="#17253d" font-weight="700" text-anchor="middle">tanh → C₂ ≈ 0.510735</text>
+<path d="M914 828V878" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="878" width="1040" height="128" rx="12" fill="#fff1dd" stroke="#9a4b0a" stroke-width="1.5"/>
+<text x="560" y="912" font-size="25" fill="#9a4b0a" font-weight="700" text-anchor="middle">새 은닉 상태 h₂ = [A₂, B₂, C₂]</text>
+<text x="206" y="963" font-size="28" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.416009</text>
+<text x="560" y="963" font-size="28" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.900527</text>
+<text x="914" y="963" font-size="28" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.510735</text>
+<text x="34" y="1058" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">현재 뉴런 A의 결과를 현재 뉴런 B의 입력으로 넣지 않는다.</text>
+<text x="34" y="1096" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">각 뉴런 내부에서는 곱셈 결과를 합산한다. 셀의 출력에서는 세 결과를 각각 보관한다.</text>
+<text x="34" y="1134" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">세 뉴런의 결과가 모두 준비되면 h₂ 전체를 다음 시점으로 전달한다.</text>
+</svg>

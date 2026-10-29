@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1250" viewBox="0 0 1120 1250" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">All step outputs and the final state are different views</title><desc id="desc">output contains three hidden values at all five steps of both sequences. Selecting the final step gives 2×3; nn.RNN h_n includes a layer axis and has shape 1×2×3.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4e6078"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="1120" height="1250" rx="22" fill="#f7f9fc" stroke="none" stroke-width="1.5"/>
+<text x="34" y="48" font-size="30" fill="#17253d" font-weight="700" text-anchor="start">All step outputs and the final state are different views</text>
+<text x="34" y="87" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">One layer · unidirectional · batch_first=True · values shown to 6 decimals</text>
+<rect x="34" y="117" width="1052" height="115" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="560.0" y="151" font-size="24" fill="#235fbe" font-weight="700" text-anchor="middle">Full output: (B, T, H) = (2, 5, 3)</text>
+<text x="560.0" y="185" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">5 RNNCell results stacked with dim=1 = nn.RNN output with the same parameters</text>
+<text x="560.0" y="214" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">Axis 0: 2 sequences · axis 1: 5 steps · axis 2: 3 hidden values</text>
+<rect x="34" y="264" width="506" height="393" rx="12" fill="#ffffff" stroke="#c9d3df" stroke-width="1.5"/>
+<text x="56" y="301" font-size="25" fill="#235fbe" font-weight="700" text-anchor="start">output[0]  ·  (5, 3)</text>
+<text x="76" y="340" font-size="21" fill="#4e6078" font-weight="700" text-anchor="middle">t</text>
+<text x="191" y="340" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">Aₜ</text>
+<text x="323" y="340" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">Bₜ</text>
+<text x="455" y="340" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">Cₜ</text>
+<text x="76" y="388" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">1</text>
+<text x="191" y="388" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.360099</text>
+<text x="323" y="388" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.502765</text>
+<text x="455" y="388" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.866036</text>
+<text x="76" y="441" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">2</text>
+<text x="191" y="441" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.416009</text>
+<text x="323" y="441" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.900527</text>
+<text x="455" y="441" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.510735</text>
+<text x="76" y="494" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">3</text>
+<text x="191" y="494" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.567644</text>
+<text x="323" y="494" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.654344</text>
+<text x="455" y="494" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.940266</text>
+<text x="76" y="547" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">4</text>
+<text x="191" y="547" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.824405</text>
+<text x="323" y="547" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">-0.150259</text>
+<text x="455" y="547" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.956839</text>
+<rect x="44" y="568" width="486" height="48" rx="6" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="76" y="600" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">5</text>
+<text x="191" y="600" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.645847</text>
+<text x="323" y="600" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.176484</text>
+<text x="455" y="600" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.997772</text>
+<text x="56" y="640" font-size="18" fill="#4e6078" font-weight="400" text-anchor="start">t=5 is the final step: time index 4 or -1</text>
+<rect x="580" y="264" width="506" height="393" rx="12" fill="#ffffff" stroke="#c9d3df" stroke-width="1.5"/>
+<text x="602" y="301" font-size="25" fill="#235fbe" font-weight="700" text-anchor="start">output[1]  ·  (5, 3)</text>
+<text x="622" y="340" font-size="21" fill="#4e6078" font-weight="700" text-anchor="middle">t</text>
+<text x="737" y="340" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">Aₜ</text>
+<text x="869" y="340" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">Bₜ</text>
+<text x="1001" y="340" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">Cₜ</text>
+<text x="622" y="388" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">1</text>
+<text x="737" y="388" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.645182</text>
+<text x="869" y="388" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.347854</text>
+<text x="1001" y="388" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.116469</text>
+<text x="622" y="441" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">2</text>
+<text x="737" y="441" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.857001</text>
+<text x="869" y="441" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.217195</text>
+<text x="1001" y="441" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.688353</text>
+<text x="622" y="494" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">3</text>
+<text x="737" y="494" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.791243</text>
+<text x="869" y="494" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.524684</text>
+<text x="1001" y="494" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.939078</text>
+<text x="622" y="547" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">4</text>
+<text x="737" y="547" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.015440</text>
+<text x="869" y="547" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.889653</text>
+<text x="1001" y="547" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.989601</text>
+<rect x="590" y="568" width="486" height="48" rx="6" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="622" y="600" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">5</text>
+<text x="737" y="600" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.844013</text>
+<text x="869" y="600" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.749448</text>
+<text x="1001" y="600" font-size="19" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">0.112848</text>
+<text x="602" y="640" font-size="18" fill="#4e6078" font-weight="400" text-anchor="start">t=5 is the final step: time index 4 or -1</text>
+<path d="M287 657V695H560V727" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M833 657V695H560" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="105" y="727" width="910" height="198" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="560" y="766" font-size="25" fill="#177052" font-weight="700" text-anchor="middle">Final state: output[:, -1, :]  →  (2, 3)</text>
+<text x="135" y="817" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">Sequence 0</text>
+<text x="665" y="817" font-size="24" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">[0.645847, 0.176484, 0.997772]</text>
+<text x="135" y="863" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">Sequence 1</text>
+<text x="665" y="863" font-size="24" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">[0.844013, 0.749448, 0.112848]</text>
+<path d="M560 925V967" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="105" y="967" width="910" height="130" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="560.0" y="1001" font-size="25" fill="#7043b5" font-weight="700" text-anchor="middle">nn.RNN h_n: (1, 2, 3)</text>
+<text x="560.0" y="1035" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">Axis 0: 1 layer/direction · axis 1: 2 sequences · axis 2: 3 hidden values</text>
+<text x="560.0" y="1064" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">h_n[0] = output[:, -1, :]  ·  both have shape (2, 3)</text>
+<text x="34" y="1150" font-size="22" fill="#4e6078" font-weight="400" text-anchor="start">Selecting the final step still keeps A, B, and C for each sequence.</text>
+<text x="34" y="1188" font-size="22" fill="#4e6078" font-weight="400" text-anchor="start">batch_first=True does not change the axis order of h_n.</text>
+</svg>

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1260" viewBox="0 0 1120 1260" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">이전 은닉 상태 전체가 다음 시점으로 이어진다</title><desc id="desc">한 시퀀스의 다섯 시점에서 같은 셀과 파라미터를 사용한다. 각 셀은 현재 입력 네 값과 이전 은닉값 세 개를 받는다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4e6078"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="1120" height="1260" rx="22" fill="#f7f9fc" stroke="none" stroke-width="1.5"/>
+<text x="34" y="48" font-size="30" fill="#17253d" font-weight="700" text-anchor="start">이전 은닉 상태 전체가 다음 시점으로 이어진다</text>
+<text x="34" y="87" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">그림은 첫 번째 시퀀스다. 두 번째 시퀀스도 자기 상태로 따로 계산한다.</text>
+<rect x="400" y="115" width="470" height="70" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="635" y="145" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">초기 은닉 상태 h₀</text>
+<text x="635" y="172" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">[0, 0, 0]</text>
+<path d="M635 185V215" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="34" y="215" width="314" height="72" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="191.0" y="249" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">x₁  ·  입력 특징 4개</text>
+<text x="191.0" y="283" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">[2, 5, 7, 11]</text>
+<path d="M348 251H440" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="440" y="215" width="390" height="72" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="635.0" y="249" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">같은 셀 계산  1</text>
+<text x="635.0" y="283" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">현재 입력 + 이전 상태</text>
+<path d="M635 287V309" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="365" y="309" width="540" height="66" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="635" y="335" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">h₁  =  [A₁, B₁, C₁]</text>
+<text x="635" y="363" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">[0.360099, 0.502765, 0.866036]</text>
+<path d="M635 375V405" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="34" y="405" width="314" height="72" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="191.0" y="439" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">x₂  ·  입력 특징 4개</text>
+<text x="191.0" y="473" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">[3, 8, 12, 6]</text>
+<path d="M348 441H440" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="440" y="405" width="390" height="72" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="635.0" y="439" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">같은 셀 계산  2</text>
+<text x="635.0" y="473" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">현재 입력 + 이전 상태</text>
+<path d="M635 477V499" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="365" y="499" width="540" height="66" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="635" y="525" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">h₂  =  [A₂, B₂, C₂]</text>
+<text x="635" y="553" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">[0.416009, 0.900527, 0.510735]</text>
+<path d="M635 565V595" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="34" y="595" width="314" height="72" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="191.0" y="629" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">x₃  ·  입력 특징 4개</text>
+<text x="191.0" y="663" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">[4, 6, 9, 13]</text>
+<path d="M348 631H440" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="440" y="595" width="390" height="72" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="635.0" y="629" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">같은 셀 계산  3</text>
+<text x="635.0" y="663" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">현재 입력 + 이전 상태</text>
+<path d="M635 667V689" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="365" y="689" width="540" height="66" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="635" y="715" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">h₃  =  [A₃, B₃, C₃]</text>
+<text x="635" y="743" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">[0.567644, 0.654344, 0.940266]</text>
+<path d="M635 755V785" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="34" y="785" width="314" height="72" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="191.0" y="819" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">x₄  ·  입력 특징 4개</text>
+<text x="191.0" y="853" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">[8, 3, 5, 10]</text>
+<path d="M348 821H440" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="440" y="785" width="390" height="72" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="635.0" y="819" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">같은 셀 계산  4</text>
+<text x="635.0" y="853" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">현재 입력 + 이전 상태</text>
+<path d="M635 857V879" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="365" y="879" width="540" height="66" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="635" y="905" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">h₄  =  [A₄, B₄, C₄]</text>
+<text x="635" y="933" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">[0.824405, -0.150259, 0.956839]</text>
+<path d="M635 945V975" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="34" y="975" width="314" height="72" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="191.0" y="1009" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">x₅  ·  입력 특징 4개</text>
+<text x="191.0" y="1043" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">[7, 9, 2, 14]</text>
+<path d="M348 1011H440" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="440" y="975" width="390" height="72" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="635.0" y="1009" font-size="23" fill="#7043b5" font-weight="700" text-anchor="middle">같은 셀 계산  5</text>
+<text x="635.0" y="1043" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle">현재 입력 + 이전 상태</text>
+<path d="M635 1047V1069" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="365" y="1069" width="540" height="66" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="635" y="1095" font-size="22" fill="#177052" font-weight="700" text-anchor="middle">h₅  =  [A₅, B₅, C₅]</text>
+<text x="635" y="1123" font-size="21" fill="#17253d" font-weight="400" text-anchor="middle" class="mono">[0.645847, 0.176484, 0.997772]</text>
+<rect x="34" y="1168" width="1052" height="62" rx="12" fill="#fff1dd" stroke="#9a4b0a" stroke-width="1.5"/>
+<text x="560" y="1207" font-size="22" fill="#9a4b0a" font-weight="700" text-anchor="middle">셀 객체 1개 · 시점별 계산 5번 · 같은 가중치 21개와 편향 6개 재사용</text>
+</svg>
