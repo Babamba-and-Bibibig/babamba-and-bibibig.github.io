@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="1060" viewBox="0 0 1040 1060" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">같은 입력에서 출발해, 같은 shape로 다시 만난다</title><desc id="desc">입력 2×8×16×16이 주 경로와 shortcut에 각각 전달된다. 주 경로는 3×3 합성곱, ReLU, 3×3 합성곱을 계산한다. Shortcut은 1×1 합성곱을 계산한다. 두 결과 2×16×8×8을 더한 뒤 ReLU를 적용한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4e6078"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="1040" height="1060" rx="22" fill="#f7f9fc" stroke="none" stroke-width="1.5"/>
+<text x="34" y="48" font-size="30" fill="#17253d" font-weight="700" text-anchor="start">같은 입력에서 출발해, 같은 shape로 다시 만난다</text>
+<text x="34" y="85" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">shape 순서: (N, C, H, W) · K: 커널 크기 · P: 한쪽 패딩 · S: stride</text>
+<rect x="340" y="115" width="360" height="102" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="520.0" y="149" font-size="24" fill="#235fbe" font-weight="700" text-anchor="middle">원래 입력 x</text>
+<text x="520.0" y="184" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">(2, 8, 16, 16)</text>
+<path d="M520 218V247H270V294" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M520 247H770V294" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="60" y="281" font-size="24" fill="#7043b5" font-weight="700" text-anchor="start">주 경로</text>
+<text x="560" y="281" font-size="24" fill="#177052" font-weight="700" text-anchor="start">Shortcut 경로</text>
+<rect x="60" y="310" width="420" height="159" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="270.0" y="344" font-size="24" fill="#7043b5" font-weight="700" text-anchor="middle">conv1: 3×3 Conv</text>
+<text x="270.0" y="379" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">채널 8 → 16</text>
+<text x="270.0" y="410" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">K=3, P=1, S=2</text>
+<text x="270.0" y="441" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">(2, 16, 8, 8)</text>
+<rect x="560" y="310" width="420" height="159" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="770.0" y="344" font-size="24" fill="#177052" font-weight="700" text-anchor="middle">projection: 1×1 Conv</text>
+<text x="770.0" y="379" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">채널 8 → 16</text>
+<text x="770.0" y="410" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">K=1, P=0, S=2</text>
+<text x="770.0" y="441" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">(2, 16, 8, 8)</text>
+<path d="M270 470V501" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="165" y="517" width="210" height="62" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="270.0" y="551" font-size="24" fill="#aa530e" font-weight="700" text-anchor="middle">ReLU</text>
+<path d="M270 580V613" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="60" y="629" width="420" height="159" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="270.0" y="663" font-size="24" fill="#7043b5" font-weight="700" text-anchor="middle">conv2: 3×3 Conv</text>
+<text x="270.0" y="698" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">채널 16 → 16</text>
+<text x="270.0" y="729" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">K=3, P=1, S=1</text>
+<text x="270.0" y="760" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">(2, 16, 8, 8)</text>
+<text x="770" y="548" font-size="23" fill="#177052" font-weight="700" text-anchor="middle">원래 x를 직접 받는다</text>
+<text x="770" y="582" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">conv1의 출력을 받지 않는다</text>
+<path d="M770 470V490H998V821H552" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M270 789V821H488" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<circle cx="520" cy="821" r="27" fill="#fff1dd" stroke="#aa530e" stroke-width="2"/>
+<text x="520" y="832" font-size="35" fill="#aa530e" font-weight="700" text-anchor="middle">+</text>
+<text x="520" y="881" font-size="23" fill="#17253d" font-weight="700" text-anchor="middle">같은 (n, c, h, w)의 값끼리 더한다</text>
+<path d="M520 894V921" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="320" y="937" width="400" height="89" rx="12" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="520.0" y="971" font-size="24" fill="#235fbe" font-weight="700" text-anchor="middle">ReLU → 최종 출력</text>
+<text x="520.0" y="1006" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">(2, 16, 8, 8)</text>
+</svg>

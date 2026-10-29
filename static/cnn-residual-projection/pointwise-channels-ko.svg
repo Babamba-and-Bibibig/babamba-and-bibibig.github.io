@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="1050" viewBox="0 0 1040 1050" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">1×1은 공간 크기다. 채널 8개는 모두 계산한다</title><desc id="desc">하나의 공간 위치에서 입력 8채널 값 각각에 출력필터 하나의 가중치8개를 곱하고 합한 뒤 편향을 더해 출력값 하나를 만든다. 서로 다른 필터16개가 출력16채널을 만든다. 전체 가중치는16×8×1×1의128개, 편향은16개다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4e6078"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect x="0" y="0" width="1040" height="1050" rx="22" fill="#f7f9fc" stroke="none" stroke-width="1.5"/>
+<text x="34" y="48" font-size="30" fill="#17253d" font-weight="700" text-anchor="start">1×1은 공간 크기다. 채널 8개는 모두 계산한다</text>
+<text x="34" y="85" font-size="21" fill="#4e6078" font-weight="400" text-anchor="start">groups=1 · bias=True · 배치의 이미지 하나와 공간 위치 하나를 고정한다.</text>
+<text x="54" y="137" font-size="24" fill="#235fbe" font-weight="700" text-anchor="start">입력 8채널의 값</text>
+<text x="54" y="171" font-size="22" fill="#17253d" font-weight="500" text-anchor="start" class="mono">x[n, 0:8, h, w]</text>
+<rect x="55" y="199" width="102" height="71" rx="10" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="106" y="227" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">c=0</text>
+<text x="106" y="256" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">x0</text>
+<rect x="169" y="199" width="102" height="71" rx="10" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="220" y="227" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">c=1</text>
+<text x="220" y="256" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">x1</text>
+<rect x="283" y="199" width="102" height="71" rx="10" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="334" y="227" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">c=2</text>
+<text x="334" y="256" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">x2</text>
+<rect x="397" y="199" width="102" height="71" rx="10" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="448" y="227" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">c=3</text>
+<text x="448" y="256" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">x3</text>
+<rect x="511" y="199" width="102" height="71" rx="10" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="562" y="227" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">c=4</text>
+<text x="562" y="256" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">x4</text>
+<rect x="625" y="199" width="102" height="71" rx="10" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="676" y="227" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">c=5</text>
+<text x="676" y="256" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">x5</text>
+<rect x="739" y="199" width="102" height="71" rx="10" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="790" y="227" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">c=6</text>
+<text x="790" y="256" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">x6</text>
+<rect x="853" y="199" width="102" height="71" rx="10" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="904" y="227" font-size="21" fill="#235fbe" font-weight="700" text-anchor="middle">c=7</text>
+<text x="904" y="256" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">x7</text>
+<line x1="106" y1="271" x2="106" y2="290" stroke="#4e6078" stroke-width="2"/>
+<line x1="220" y1="271" x2="220" y2="290" stroke="#4e6078" stroke-width="2"/>
+<line x1="334" y1="271" x2="334" y2="290" stroke="#4e6078" stroke-width="2"/>
+<line x1="448" y1="271" x2="448" y2="290" stroke="#4e6078" stroke-width="2"/>
+<line x1="562" y1="271" x2="562" y2="290" stroke="#4e6078" stroke-width="2"/>
+<line x1="676" y1="271" x2="676" y2="290" stroke="#4e6078" stroke-width="2"/>
+<line x1="790" y1="271" x2="790" y2="290" stroke="#4e6078" stroke-width="2"/>
+<line x1="904" y1="271" x2="904" y2="290" stroke="#4e6078" stroke-width="2"/>
+<line x1="106" y1="290" x2="904" y2="290" stroke="#4e6078" stroke-width="2"/>
+<path d="M520 290V306" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="214" y="320" width="612" height="96" rx="12" fill="#f1ebfc" stroke="#7043b5" stroke-width="1.5"/>
+<text x="520.0" y="354" font-size="24" fill="#7043b5" font-weight="700" text-anchor="middle">8개 값을 모든 출력 필터에 전달</text>
+<text x="520.0" y="389" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">서로 다른 필터는 서로 다른 가중치를 사용한다</text>
+<path d="M520 417V449H188V478" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M520 449V478" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M520 449H852V478" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="43" y="494" width="290" height="152" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="188.0" y="528" font-size="24" fill="#177052" font-weight="700" text-anchor="middle">필터 0</text>
+<text x="188.0" y="563" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">가중치 8개</text>
+<text x="188.0" y="594" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">8개 곱 → 합 + 편향</text>
+<text x="188.0" y="625" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">출력값 1개</text>
+<path d="M188 647V687" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="43" y="703" width="290" height="95" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="188.0" y="737" font-size="24" fill="#aa530e" font-weight="700" text-anchor="middle">출력 채널 0</text>
+<text x="188.0" y="772" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">y[n, 0, h′, w′]</text>
+<rect x="375" y="494" width="290" height="152" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="520.0" y="528" font-size="24" fill="#177052" font-weight="700" text-anchor="middle">필터 1</text>
+<text x="520.0" y="563" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">가중치 8개</text>
+<text x="520.0" y="594" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">8개 곱 → 합 + 편향</text>
+<text x="520.0" y="625" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">출력값 1개</text>
+<path d="M520 647V687" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="375" y="703" width="290" height="95" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="520.0" y="737" font-size="24" fill="#aa530e" font-weight="700" text-anchor="middle">출력 채널 1</text>
+<text x="520.0" y="772" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">y[n, 1, h′, w′]</text>
+<rect x="707" y="494" width="290" height="152" rx="12" fill="#e6f5ed" stroke="#177052" stroke-width="1.5"/>
+<text x="852.0" y="528" font-size="24" fill="#177052" font-weight="700" text-anchor="middle">필터 15</text>
+<text x="852.0" y="563" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">가중치 8개</text>
+<text x="852.0" y="594" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">8개 곱 → 합 + 편향</text>
+<text x="852.0" y="625" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">출력값 1개</text>
+<path d="M852 647V687" fill="none" stroke="#4e6078" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="707" y="703" width="290" height="95" rx="12" fill="#fff1dd" stroke="#aa530e" stroke-width="1.5"/>
+<text x="852.0" y="737" font-size="24" fill="#aa530e" font-weight="700" text-anchor="middle">출력 채널 15</text>
+<text x="852.0" y="772" font-size="22" fill="#17253d" font-weight="400" text-anchor="middle">y[n, 15, h′, w′]</text>
+<text x="687" y="586" font-size="35" fill="#4e6078" font-weight="700" text-anchor="middle">…</text>
+<text x="520" y="849" font-size="22" fill="#4e6078" font-weight="400" text-anchor="middle">0, 1, 15번 필터만 표시했다(총 16개). h′, w′는 대응하는 출력 위치다.</text>
+<rect x="44" y="883" width="952" height="131" rx="14" fill="#eaf2ff" stroke="#235fbe" stroke-width="1.5"/>
+<text x="520" y="921" font-size="27" fill="#235fbe" font-weight="700" text-anchor="middle" class="mono">weight.shape = (16, 8, 1, 1)</text>
+<text x="520" y="959" font-size="24" fill="#17253d" font-weight="600" text-anchor="middle">가중치 16×8×1×1 = 128개 · 편향 16개</text>
+<text x="520" y="992" font-size="21" fill="#4e6078" font-weight="400" text-anchor="middle">이 가중치들을 다른 공간 위치와 다른 이미지에도 재사용한다.</text>
+</svg>
