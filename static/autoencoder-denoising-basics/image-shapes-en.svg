@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1110" viewBox="0 0 1100 1110" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Image batches: keep the sample dimension intact</title>
+<desc id="desc">A noisy MNIST batch has shape (N,1,28,28). Flatten preserves N and produces (N,784). The encoder gives (N,64), the decoder (N,784), and reshape restores (N,1,28,28) before comparison with clean targets.</desc>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9.5" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1,1 L 10,5.5 L 1,10 Z" fill="#586e85"/></marker></defs>
+<style>text {font-family: "Pretendard", "Noto Sans CJK KR", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "DejaVu Sans", sans-serif;} .math {font-family: "DejaVu Sans", "Arial", sans-serif;}</style>
+<rect width="1100" height="1110" rx="18" fill="#f5f7fb"/>
+<text x="42" y="56" font-size="32" font-weight="700" fill="#192c43" text-anchor="start" class="">Image batches: keep the sample dimension intact</text>
+<text x="42" y="98" font-size="22" font-weight="400" fill="#4c6076" text-anchor="start" class="">Each grayscale MNIST image contains 1×28×28 = 784 pixel values.</text>
+<rect x="70" y="145" width="470" height="104" rx="14" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="305.0" y="189.25" font-size="25" font-weight="700" fill="#245b93" text-anchor="middle" class="">Noisy input: noisy_batch</text>
+<text x="305.0" y="221.25" font-size="25" font-weight="400" fill="#192c43" text-anchor="middle" class="">(N, 1, 28, 28)</text>
+<rect x="630" y="145" width="400" height="104" rx="14" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="830.0" y="189.25" font-size="25" font-weight="700" fill="#245b93" text-anchor="middle" class="">Clean target: clean_batch</text>
+<text x="830.0" y="221.25" font-size="25" font-weight="400" fill="#192c43" text-anchor="middle" class="">(N, 1, 28, 28)</text>
+<path d="M 305,253 L 305,318" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="70" y="330" width="470" height="104" rx="14" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="305.0" y="374.25" font-size="25" font-weight="700" fill="#245b93" text-anchor="middle" class="">flatten(start_dim=1)</text>
+<text x="305.0" y="406.25" font-size="25" font-weight="400" fill="#192c43" text-anchor="middle" class="">(N, 784)</text>
+<path d="M 305,438 L 305,483" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="70" y="495" width="470" height="104" rx="14" fill="#fff3da" stroke="#a06510" stroke-width="1.6"/>
+<text x="305.0" y="539.25" font-size="25" font-weight="700" fill="#a06510" text-anchor="middle" class="">Encoder → latent z</text>
+<text x="305.0" y="571.25" font-size="25" font-weight="400" fill="#192c43" text-anchor="middle" class="">(N, 64)</text>
+<path d="M 305,603 L 305,648" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="70" y="660" width="470" height="104" rx="14" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="305.0" y="704.25" font-size="25" font-weight="700" fill="#15715d" text-anchor="middle" class="">Decoder → reconstruction</text>
+<text x="305.0" y="736.25" font-size="25" font-weight="400" fill="#192c43" text-anchor="middle" class="">(N, 784)</text>
+<path d="M 305,768 L 305,813" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="70" y="825" width="470" height="104" rx="14" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="305.0" y="869.25" font-size="25" font-weight="700" fill="#15715d" text-anchor="middle" class="">reshape_as(noisy_batch)</text>
+<text x="305.0" y="901.25" font-size="25" font-weight="400" fill="#192c43" text-anchor="middle" class="">(N, 1, 28, 28)</text>
+<rect x="630" y="825" width="400" height="104" rx="14" fill="#fcecf0" stroke="#a43543" stroke-width="1.6"/>
+<text x="830.0" y="868.59" font-size="23" font-weight="700" fill="#a43543" text-anchor="middle" class="">Reconstruction loss</text>
+<text x="830.0" y="900.59" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">MSE(reconstruction, clean)</text>
+<path d="M 545,877 L 619,877" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 995,254 L 995,813" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="605" y="330" width="340" height="340" rx="14" fill="#fff" stroke="#cbd6e3" stroke-width="1.6"/>
+<text x="631" y="371" font-size="24" font-weight="700" fill="#192c43" text-anchor="start" class="">Input axes and meanings</text>
+<text x="631" y="423" font-size="23" font-weight="400" fill="#192c43" text-anchor="start" class="">Axis 0 · N: samples</text>
+<text x="631" y="472" font-size="23" font-weight="400" fill="#192c43" text-anchor="start" class="">Axis 1 · C: 1 channel</text>
+<text x="631" y="521" font-size="23" font-weight="400" fill="#192c43" text-anchor="start" class="">Axis 2 · H: height 28</text>
+<text x="631" y="570" font-size="23" font-weight="400" fill="#192c43" text-anchor="start" class="">Axis 3 · W: width 28</text>
+<text x="631" y="633" font-size="22" font-weight="700" fill="#15715d" text-anchor="start" class="">N stays unchanged</text>
+<text x="628" y="726" font-size="22" font-weight="400" fill="#245b93" text-anchor="start" class="">Right-hand path: the clean</text>
+<text x="628" y="761" font-size="22" font-weight="400" fill="#245b93" text-anchor="start" class="">target goes directly to loss.</text>
+<text x="45" y="989" font-size="22" font-weight="700" fill="#192c43" text-anchor="start" class="">Flatten and reshape rearrange values. The decoder computes new pixel values.</text>
+<text x="45" y="1035" font-size="22" font-weight="400" fill="#4c6076" text-anchor="start" class="">Valid indices: samples 0…N−1; channel 0; height and width 0…27.</text>
+<text x="45" y="1073" font-size="22" font-weight="400" fill="#4c6076" text-anchor="start" class="">A 2×2 plotting layout is separate from the shape of the model data.</text>
+</svg>

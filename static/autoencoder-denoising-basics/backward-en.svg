@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1120" viewBox="0 0 1100 1120" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Backpropagation: from output derivatives to parameters</title>
+<desc id="desc">Output derivatives are +0.2 and -0.2. Decoder parameter gradients are +0.3 and -0.3. The two paths to z contribute +0.16 and -0.24, totaling -0.08. Encoder parameter gradients are -0.08 and -0.16.</desc>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9.5" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1,1 L 10,5.5 L 1,10 Z" fill="#586e85"/></marker></defs>
+<style>text {font-family: "Pretendard", "Noto Sans CJK KR", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "DejaVu Sans", sans-serif;} .math {font-family: "DejaVu Sans", "Arial", sans-serif;}</style>
+<rect width="1100" height="1120" rx="18" fill="#f5f7fb"/>
+<text x="42" y="56" font-size="32" font-weight="700" fill="#192c43" text-anchor="start" class="">Backpropagation: from output derivatives to parameters</text>
+<text x="42" y="97" font-size="22" font-weight="400" fill="#4c6076" text-anchor="start" class="">Use A=[1,2], z=1.5, d=[0.8,1.2]. All derivatives use pre-update values.</text>
+<rect x="360" y="137" width="380" height="85" rx="14" fill="#fcecf0" stroke="#a43543" stroke-width="1.6"/>
+<text x="550.0" y="171.09" font-size="23" font-weight="700" fill="#a43543" text-anchor="middle" class="">Loss L</text>
+<text x="550.0" y="203.09" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">mean of two components</text>
+<path d="M 458,226 L 300,276" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 642,226 L 800,276" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="70" y="286" width="460" height="105" rx="14" fill="#fcecf0" stroke="#a43543" stroke-width="1.6"/>
+<text x="300.0" y="330.42" font-size="24" font-weight="700" fill="#a43543" text-anchor="middle" class="">First output derivative</text>
+<text x="300.0" y="362.42" font-size="24" font-weight="400" fill="#192c43" text-anchor="middle" class="">∂L/∂r₁ = r₁ − x₁ = +0.2</text>
+<rect x="570" y="286" width="460" height="105" rx="14" fill="#fcecf0" stroke="#a43543" stroke-width="1.6"/>
+<text x="800.0" y="330.42" font-size="24" font-weight="700" fill="#a43543" text-anchor="middle" class="">Second output derivative</text>
+<text x="800.0" y="362.42" font-size="24" font-weight="400" fill="#192c43" text-anchor="middle" class="">∂L/∂r₂ = r₂ − x₂ = −0.2</text>
+<path d="M 210,394 L 167,453" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 390,394 L 427,453" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 710,394 L 687,453" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 890,394 L 947,453" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="50" y="465" width="235" height="140" rx="14" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="167.5" y="510.59" font-size="23" font-weight="700" fill="#7351a0" text-anchor="middle" class="">Gradient of d₁</text>
+<text x="167.5" y="542.5899999999999" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">(+0.2) × z</text>
+<text x="167.5" y="574.5899999999999" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">= +0.30</text>
+<rect x="310" y="465" width="235" height="140" rx="14" fill="#fff3da" stroke="#a06510" stroke-width="1.6"/>
+<text x="427.5" y="510.59" font-size="23" font-weight="700" fill="#a06510" text-anchor="middle" class="">Path 1 to z</text>
+<text x="427.5" y="542.5899999999999" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">(+0.2) × d₁</text>
+<text x="427.5" y="574.5899999999999" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">= +0.16</text>
+<rect x="570" y="465" width="235" height="140" rx="14" fill="#fff3da" stroke="#a06510" stroke-width="1.6"/>
+<text x="687.5" y="510.59" font-size="23" font-weight="700" fill="#a06510" text-anchor="middle" class="">Path 2 to z</text>
+<text x="687.5" y="542.5899999999999" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">(−0.2) × d₂</text>
+<text x="687.5" y="574.5899999999999" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">= −0.24</text>
+<rect x="830" y="465" width="235" height="140" rx="14" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="947.5" y="510.59" font-size="23" font-weight="700" fill="#7351a0" text-anchor="middle" class="">Gradient of d₂</text>
+<text x="947.5" y="542.5899999999999" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">(−0.2) × z</text>
+<text x="947.5" y="574.5899999999999" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">= −0.30</text>
+<path d="M 427,608 L 427,654 L 461,679" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 687,608 L 687,654 L 639,679" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="304" y="690" width="492" height="106" rx="14" fill="#fff3da" stroke="#a06510" stroke-width="1.6"/>
+<text x="550.0" y="734.59" font-size="23" font-weight="700" fill="#a06510" text-anchor="middle" class="">Add both paths from z to the loss</text>
+<text x="550.0" y="766.59" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">∂L/∂z = +0.16 − 0.24 = −0.08</text>
+<path d="M 433,801 L 300,866" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 667,801 L 800,866" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="70" y="878" width="460" height="110" rx="14" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="300.0" y="924.59" font-size="23" font-weight="700" fill="#7351a0" text-anchor="middle" class="">Gradient of e₁</text>
+<text x="300.0" y="956.59" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">∂L/∂e₁ = (−0.08) × x₁ = −0.08</text>
+<rect x="570" y="878" width="460" height="110" rx="14" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="800.0" y="924.59" font-size="23" font-weight="700" fill="#7351a0" text-anchor="middle" class="">Gradient of e₂</text>
+<text x="800.0" y="956.59" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">∂L/∂e₂ = (−0.08) × x₂ = −0.16</text>
+<text x="50" y="1036" font-size="22" font-weight="400" fill="#4c6076" text-anchor="start" class="">Purple: four parameter gradients. Amber: derivatives needed along the path.</text>
+<text x="50" y="1075" font-size="22" font-weight="700" fill="#192c43" text-anchor="start" class="">z is a computed value; it is not independently updated as a model parameter.</text>
+</svg>

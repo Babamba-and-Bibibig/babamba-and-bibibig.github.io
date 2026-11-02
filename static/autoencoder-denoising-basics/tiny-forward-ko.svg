@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="925" viewBox="0 0 1100 925" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">특징 2개 → 잠재값 1개 → 복원값 2개</title>
+<desc id="desc">샘플 A=[1,2], 인코더 가중치 e=[0.5,0.5], 디코더 가중치 d=[0.8,1.2]. 두 입력의 가중합은 z=1.5이며 출력은 [1.2,1.8]이다. 원본과의 MSE는 0.04다.</desc>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9.5" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1,1 L 10,5.5 L 1,10 Z" fill="#586e85"/></marker></defs>
+<style>text {font-family: "Pretendard", "Noto Sans CJK KR", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "DejaVu Sans", sans-serif;} .math {font-family: "DejaVu Sans", "Arial", sans-serif;}</style>
+<rect width="1100" height="925" rx="18" fill="#f5f7fb"/>
+<text x="42" y="56" font-size="32" font-weight="700" fill="#192c43" text-anchor="start" class="">특징 2개 → 잠재값 1개 → 복원값 2개</text>
+<text x="42" y="98" font-size="22" font-weight="400" fill="#4c6076" text-anchor="start" class="">편향과 활성화 함수가 없는 계산 예제다. 가중치는 e₁, e₂, d₁, d₂ 네 개다.</text>
+<text x="185" y="155" font-size="24" font-weight="700" fill="#245b93" text-anchor="middle" class="">입력 샘플 A</text>
+<text x="550" y="155" font-size="24" font-weight="700" fill="#a06510" text-anchor="middle" class="">인코더의 계산 결과</text>
+<text x="915" y="155" font-size="24" font-weight="700" fill="#15715d" text-anchor="middle" class="">디코더의 계산 결과</text>
+<rect x="80" y="199" width="210" height="93" rx="14" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="185.0" y="255.4" font-size="30" font-weight="700" fill="#245b93" text-anchor="middle" class="">x₁ = 1</text>
+<rect x="80" y="401" width="210" height="93" rx="14" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="185.0" y="457.4" font-size="30" font-weight="700" fill="#245b93" text-anchor="middle" class="">x₂ = 2</text>
+<rect x="440" y="283" width="220" height="131" rx="14" fill="#fff3da" stroke="#a06510" stroke-width="1.6"/>
+<text x="550.0" y="341.08" font-size="26" font-weight="700" fill="#a06510" text-anchor="middle" class="">z = 1.5</text>
+<text x="550.0" y="373.08" font-size="26" font-weight="400" fill="#192c43" text-anchor="middle" class="">잠재값 하나</text>
+<rect x="810" y="199" width="210" height="93" rx="14" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="915.0" y="255.4" font-size="30" font-weight="700" fill="#15715d" text-anchor="middle" class="">r₁ = 1.2</text>
+<rect x="810" y="401" width="210" height="93" rx="14" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="915.0" y="457.4" font-size="30" font-weight="700" fill="#15715d" text-anchor="middle" class="">r₂ = 1.8</text>
+<path d="M 298,245 L 431,321" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 298,448 L 431,378" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 668,321 L 801,245" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 668,378 L 801,448" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="359" y="239" font-size="24" font-weight="700" fill="#7351a0" text-anchor="middle" class="">e₁ = 0.5</text>
+<text x="359" y="476" font-size="24" font-weight="700" fill="#7351a0" text-anchor="middle" class="">e₂ = 0.5</text>
+<text x="738" y="239" font-size="24" font-weight="700" fill="#7351a0" text-anchor="middle" class="">d₁ = 0.8</text>
+<text x="738" y="476" font-size="24" font-weight="700" fill="#7351a0" text-anchor="middle" class="">d₂ = 1.2</text>
+<rect x="44" y="545" width="491" height="117" rx="14" fill="#fff3da" stroke="#a06510" stroke-width="1.6"/>
+<text x="289.5" y="579.42" font-size="24" font-weight="700" fill="#a06510" text-anchor="middle" class="">인코더: 두 곱셈을 더한다</text>
+<text x="289.5" y="611.42" font-size="24" font-weight="400" fill="#192c43" text-anchor="middle" class="">z = e₁x₁ + e₂x₂</text>
+<text x="289.5" y="643.42" font-size="24" font-weight="400" fill="#192c43" text-anchor="middle" class="">0.5 × 1 + 0.5 × 2 = 1.5</text>
+<rect x="565" y="545" width="491" height="117" rx="14" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="810.5" y="579.42" font-size="24" font-weight="700" fill="#15715d" text-anchor="middle" class="">디코더: 결과 두 개를 따로 담는다</text>
+<text x="810.5" y="611.42" font-size="24" font-weight="400" fill="#192c43" text-anchor="middle" class="">r₁ = d₁z = 0.8 × 1.5 = 1.2</text>
+<text x="810.5" y="643.42" font-size="24" font-weight="400" fill="#192c43" text-anchor="middle" class="">r₂ = d₂z = 1.2 × 1.5 = 1.8</text>
+<rect x="44" y="704" width="1012" height="176" rx="14" fill="#fff" stroke="#a43543" stroke-width="1.6"/>
+<text x="70" y="745" font-size="24" font-weight="700" fill="#a43543" text-anchor="start" class="">같은 위치의 복원값과 원본을 비교한다.</text>
+<text x="70" y="790" font-size="25" font-weight="400" fill="#192c43" text-anchor="start" class="">복원 [1.2, 1.8] − 원본 [1, 2] = 차이 [+0.2, −0.2]</text>
+<text x="70" y="838" font-size="25" font-weight="700" fill="#a43543" text-anchor="start" class="">MSE = (0.2² + (−0.2)²) / 2 = (0.04 + 0.04) / 2 = 0.04</text>
+</svg>

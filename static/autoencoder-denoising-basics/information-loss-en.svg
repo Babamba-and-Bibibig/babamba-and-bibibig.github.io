@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="960" viewBox="0 0 1100 960" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Different inputs can collapse to the same code</title>
+<desc id="desc">Keeping only the first two values maps different inputs to the same code. A fixed repeat decoder produces one reconstruction. MSE is zero for the first input and 0.185 for the second input.</desc>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9.5" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1,1 L 10,5.5 L 1,10 Z" fill="#586e85"/></marker></defs>
+<style>text {font-family: "Pretendard", "Noto Sans CJK KR", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "DejaVu Sans", sans-serif;} .math {font-family: "DejaVu Sans", "Arial", sans-serif;}</style>
+<rect width="1100" height="960" rx="18" fill="#f5f7fb"/>
+<text x="42" y="56" font-size="32" font-weight="700" fill="#192c43" text-anchor="start" class="">Different inputs can collapse to the same code</text>
+<text x="42" y="99" font-size="22" font-weight="400" fill="#4c6076" text-anchor="start" class="">A hand-written select-and-repeat rule; no neural-network training occurs here.</text>
+<rect x="50" y="151" width="470" height="115" rx="14" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="285.0" y="200.75" font-size="25" font-weight="700" fill="#245b93" text-anchor="middle" class="">Input ①: the first pair repeats</text>
+<text x="285.0" y="232.75" font-size="25" font-weight="400" fill="#192c43" text-anchor="middle" class="">[0.2, 0.8, 0.2, 0.8]</text>
+<rect x="580" y="151" width="470" height="115" rx="14" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="815.0" y="200.75" font-size="25" font-weight="700" fill="#245b93" text-anchor="middle" class="">Input ②: a different last pair</text>
+<text x="815.0" y="232.75" font-size="25" font-weight="400" fill="#192c43" text-anchor="middle" class="">[0.2, 0.8, 0.7, 0.1]</text>
+<path d="M 285,270 L 285,305 L 440,341" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 815,270 L 815,305 L 660,341" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="550" y="308" font-size="23" font-weight="400" fill="#4c6076" text-anchor="middle" class="">Keep the first two values</text>
+<rect x="350" y="353" width="400" height="102" rx="14" fill="#fff3da" stroke="#a06510" stroke-width="1.6"/>
+<text x="550.0" y="396.91" font-size="27" font-weight="700" fill="#a06510" text-anchor="middle" class="">Same code</text>
+<text x="550.0" y="428.91" font-size="27" font-weight="400" fill="#192c43" text-anchor="middle" class="">[0.2, 0.8]</text>
+<path d="M 550,460 L 550,502" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="250" y="514" width="600" height="91" rx="14" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="550.0" y="551.42" font-size="24" font-weight="700" fill="#7351a0" text-anchor="middle" class="">Fixed decoder: repeat the code twice</text>
+<text x="550.0" y="583.42" font-size="24" font-weight="400" fill="#192c43" text-anchor="middle" class="">[a, b] → [a, b, a, b]</text>
+<path d="M 550,609 L 550,652" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="250" y="664" width="600" height="102" rx="14" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="550.0" y="707.91" font-size="27" font-weight="700" fill="#15715d" text-anchor="middle" class="">The same reconstruction every time</text>
+<text x="550.0" y="739.91" font-size="27" font-weight="400" fill="#192c43" text-anchor="middle" class="">[0.2, 0.8, 0.2, 0.8]</text>
+<rect x="50" y="814" width="470" height="94" rx="14" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="285.0" y="852.59" font-size="23" font-weight="700" fill="#15715d" text-anchor="middle" class="">Against input ①: MSE = 0</text>
+<text x="285.0" y="884.59" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">The repeat rule matches this input.</text>
+<rect x="580" y="814" width="470" height="94" rx="14" fill="#fcecf0" stroke="#a43543" stroke-width="1.6"/>
+<text x="815.0" y="852.59" font-size="23" font-weight="700" fill="#a43543" text-anchor="middle" class="">Against input ②: MSE = 0.185</text>
+<text x="815.0" y="884.59" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">(0 + 0 + 0.25 + 0.49) / 4</text>
+</svg>

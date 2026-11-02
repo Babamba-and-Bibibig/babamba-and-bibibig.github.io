@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="880" viewBox="0 0 1100 880" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">오토인코더: 원본을 중간 표현으로 바꾸고 다시 복원한다</title>
+<desc id="desc">원본 X가 인코더, 잠재 표현 Z, 디코더를 거쳐 복원값으로 바뀐다. 원본 X는 손실의 타깃으로도 연결된다. DAE는 모델 입력에만 잡음을 추가한다.</desc>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9.5" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1,1 L 10,5.5 L 1,10 Z" fill="#586e85"/></marker></defs>
+<style>text {font-family: "Pretendard", "Noto Sans CJK KR", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "DejaVu Sans", sans-serif;} .math {font-family: "DejaVu Sans", "Arial", sans-serif;}</style>
+<rect width="1100" height="880" rx="18" fill="#f5f7fb"/>
+<text x="42" y="56" font-size="32" font-weight="700" fill="#192c43" text-anchor="start" class="">오토인코더: 원본을 중간 표현으로 바꾸고 다시 복원한다</text>
+<text x="42" y="97" font-size="22" font-weight="400" fill="#4c6076" text-anchor="start" class="">샘플 수 N은 유지된다. F는 입력 특징 수, K는 잠재 특징 수다.</text>
+<rect x="30" y="126" width="1040" height="410" rx="14" fill="#ffffff" stroke="#d6dfeb" stroke-width="1.6"/>
+<text x="54" y="166" font-size="24" font-weight="700" fill="#192c43" text-anchor="start" class="">기본 AE: 입력과 타깃이 같은 원본이다.</text>
+<rect x="54" y="207" width="170" height="115" rx="14" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="139.0" y="255.76" font-size="22" font-weight="700" fill="#245b93" text-anchor="middle" class="">원본 입력 X</text>
+<text x="139.0" y="287.76" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle" class="">(N, F)</text>
+<rect x="264" y="207" width="166" height="115" rx="14" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="347.0" y="255.76" font-size="22" font-weight="700" fill="#7351a0" text-anchor="middle" class="">인코더</text>
+<text x="347.0" y="287.76" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle" class="">매개변수 θe</text>
+<rect x="470" y="207" width="160" height="115" rx="14" fill="#fff3da" stroke="#a06510" stroke-width="1.6"/>
+<text x="550.0" y="255.76" font-size="22" font-weight="700" fill="#a06510" text-anchor="middle" class="">잠재 표현 Z</text>
+<text x="550.0" y="287.76" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle" class="">(N, K)</text>
+<rect x="670" y="207" width="166" height="115" rx="14" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="753.0" y="255.76" font-size="22" font-weight="700" fill="#7351a0" text-anchor="middle" class="">디코더</text>
+<text x="753.0" y="287.76" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle" class="">매개변수 θd</text>
+<rect x="876" y="207" width="170" height="115" rx="14" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="961.0" y="255.76" font-size="22" font-weight="700" fill="#15715d" text-anchor="middle" class="">복원값 X̂</text>
+<text x="961.0" y="287.76" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle" class="">(N, F)</text>
+<path d="M 228,264 L 255,264" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 434,264 L 461,264" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 634,264 L 661,264" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 840,264 L 867,264" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="716" y="403" width="330" height="101" rx="14" fill="#fcecf0" stroke="#a43543" stroke-width="1.6"/>
+<text x="881.0" y="445.09" font-size="23" font-weight="700" fill="#a43543" text-anchor="middle" class="">재구성 손실 L</text>
+<text x="881.0" y="477.09" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">MSE(X̂, X)</text>
+<path d="M 961,323 L 961,394" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 139,323 L 139,454 L 705,454" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="176" y="433" font-size="23" font-weight="400" fill="#245b93" text-anchor="start" class="">원본 X를 타깃으로 전달</text>
+<rect x="30" y="565" width="1040" height="270" rx="14" fill="#ffffff" stroke="#d6dfeb" stroke-width="1.6"/>
+<text x="54" y="607" font-size="25" font-weight="700" fill="#192c43" text-anchor="start" class="">DAE: 입력을 바꾸고, 비교 기준은 원본으로 유지한다.</text>
+<rect x="56" y="643" width="280" height="93" rx="14" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="196.0" y="681.09" font-size="23" font-weight="700" fill="#245b93" text-anchor="middle" class="">잡음 입력 X̃</text>
+<text x="196.0" y="713.09" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">(N, F)</text>
+<rect x="409" y="643" width="280" height="93" rx="14" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="549.0" y="681.09" font-size="23" font-weight="700" fill="#7351a0" text-anchor="middle" class="">인코더 → 디코더</text>
+<text x="549.0" y="713.09" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">같은 연결 구조</text>
+<rect x="762" y="643" width="280" height="93" rx="14" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="902.0" y="681.09" font-size="23" font-weight="700" fill="#15715d" text-anchor="middle" class="">복원값 X̂</text>
+<text x="902.0" y="713.09" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle" class="">(N, F)</text>
+<path d="M 341,689 L 398,689" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 695,689 L 751,689" fill="none" stroke="#586e85" stroke-width="2.8" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="56" y="786" font-size="24" font-weight="700" fill="#a43543" text-anchor="start" class="">손실은 MSE(X̂, X): noisy 입력이 아니라 clean 원본과 비교한다.</text>
+</svg>
