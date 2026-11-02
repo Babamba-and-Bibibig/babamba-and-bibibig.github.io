@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="1005" viewBox="0 0 980 1005" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">Select the last state, then compute a prediction</title><desc id="desc">Selecting four state values at t13 from each of two samples gives shape (2,4). With one layer and one direction, h_n[0] contains the same values. Linear computes one prediction per sample.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4d6177"/></marker>
+<marker id="green-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#14694e"/></marker>
+</defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect width="980" height="1005" rx="20" fill="#f7f9fc"/>
+
+<text x="32" y="47" font-size="29" fill="#183048" font-weight="700" text-anchor="start">Select the last state, then compute a prediction</text>
+<text x="32" y="83" font-size="19" fill="#4d6177" font-weight="400" text-anchor="start">B=2 · T=14 · F=1 · H=4 · all input windows have equal length</text>
+<text x="490" y="126" font-size="24" fill="#7443a8" font-weight="700" text-anchor="middle" class="mono">output: (2,14,4)</text>
+<text x="490" y="151" font-size="16" fill="#4d6177" font-weight="400" text-anchor="middle">h[sample, time, hidden-value index]</text>
+<rect x="45" y="159" width="420" height="273" rx="12" fill="#ffffff" stroke="#b9c6d6" stroke-width="1.6"/>
+<text x="255" y="195" font-size="22" fill="#183048" font-weight="700" text-anchor="middle">Sample 0</text>
+<rect x="63" y="218" width="384" height="43" rx="6" fill="#f2f5f9" stroke="#d8e0eb" stroke-width="1.6"/>
+<text x="79" y="246" font-size="18" fill="#4d6177" font-weight="400" text-anchor="start" class="mono">t=0</text>
+<text x="288" y="246" font-size="16" fill="#183048" font-weight="400" text-anchor="middle" class="mono">h[0,0,0] … h[0,0,3]</text>
+<rect x="63" y="269" width="384" height="43" rx="6" fill="#f2f5f9" stroke="#d8e0eb" stroke-width="1.6"/>
+<text x="79" y="297" font-size="18" fill="#4d6177" font-weight="400" text-anchor="start" class="mono">t=1</text>
+<text x="288" y="297" font-size="16" fill="#183048" font-weight="400" text-anchor="middle" class="mono">h[0,1,0] … h[0,1,3]</text>
+<rect x="63" y="355" width="384" height="43" rx="6" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="79" y="383" font-size="18" fill="#14694e" font-weight="400" text-anchor="start" class="mono">t=13</text>
+<text x="288" y="383" font-size="16" fill="#183048" font-weight="400" text-anchor="middle" class="mono">h[0,13,0] … h[0,13,3]</text>
+<text x="255" y="340" font-size="28" fill="#4d6177" font-weight="400" text-anchor="middle">⋮</text>
+<rect x="515" y="159" width="420" height="273" rx="12" fill="#ffffff" stroke="#b9c6d6" stroke-width="1.6"/>
+<text x="725" y="195" font-size="22" fill="#183048" font-weight="700" text-anchor="middle">Sample 1</text>
+<rect x="533" y="218" width="384" height="43" rx="6" fill="#f2f5f9" stroke="#d8e0eb" stroke-width="1.6"/>
+<text x="549" y="246" font-size="18" fill="#4d6177" font-weight="400" text-anchor="start" class="mono">t=0</text>
+<text x="758" y="246" font-size="16" fill="#183048" font-weight="400" text-anchor="middle" class="mono">h[1,0,0] … h[1,0,3]</text>
+<rect x="533" y="269" width="384" height="43" rx="6" fill="#f2f5f9" stroke="#d8e0eb" stroke-width="1.6"/>
+<text x="549" y="297" font-size="18" fill="#4d6177" font-weight="400" text-anchor="start" class="mono">t=1</text>
+<text x="758" y="297" font-size="16" fill="#183048" font-weight="400" text-anchor="middle" class="mono">h[1,1,0] … h[1,1,3]</text>
+<rect x="533" y="355" width="384" height="43" rx="6" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="549" y="383" font-size="18" fill="#14694e" font-weight="400" text-anchor="start" class="mono">t=13</text>
+<text x="758" y="383" font-size="16" fill="#183048" font-weight="400" text-anchor="middle" class="mono">h[1,13,0] … h[1,13,3]</text>
+<text x="725" y="340" font-size="28" fill="#4d6177" font-weight="400" text-anchor="middle">⋮</text>
+<path d="M255 432V471H490V502" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M725 432V471H490" fill="none" stroke="#4d6177" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="520" y="490" font-size="20" fill="#14694e" font-weight="700" text-anchor="start" class="mono">output[:, -1, :]</text>
+<rect x="260" y="513" width="460" height="100" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="490" y="549" font-size="22" fill="#14694e" font-weight="700" text-anchor="middle">(2,4): two samples × four state values</text>
+<text x="490" y="586" font-size="20" fill="#14694e" font-weight="400" text-anchor="middle">Selection: keep existing values</text>
+<rect x="45" y="657" width="400" height="115" rx="12" fill="#fff" stroke="#b9c6d6" stroke-width="1.6"/>
+<text x="245" y="692" font-size="22" fill="#7443a8" font-weight="700" text-anchor="middle" class="mono">h_n: (1,2,4)</text>
+<text x="245" y="724" font-size="18" fill="#4d6177" font-weight="400" text-anchor="middle">First 1 = one layer × one direction</text>
+<text x="245" y="753" font-size="20" fill="#14694e" font-weight="400" text-anchor="middle" class="mono">h_n[0] → (2,4)</text>
+<path d="M445 714H490V617" fill="none" stroke="#14694e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green-arrow)"/>
+<text x="521" y="706" font-size="18" fill="#14694e" font-weight="400" text-anchor="start">The same last state</text>
+<path d="M720 563H891V852H704" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="270" y="854" width="430" height="97" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="485" y="890" font-size="23" fill="#7443a8" font-weight="700" text-anchor="middle" class="mono">Linear(4,1) → (2,1)</text>
+<text x="485" y="927" font-size="19" fill="#183048" font-weight="400" text-anchor="middle">Computation: one new prediction per sample</text>
+<text x="32" y="984" font-size="20" fill="#4d6177" font-weight="400" text-anchor="start">The 0 in h_n[0] selects the layer/direction group, not sample 0.</text>
+</svg>

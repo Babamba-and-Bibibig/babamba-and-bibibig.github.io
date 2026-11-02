@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="810" viewBox="0 0 980 810" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">정답 날짜를 기준으로 과거와 미래를 나눈다</title><desc id="desc">84일 기록에서 첫14일은 과거 입력이다. 정답 인덱스14~55의42개 창으로 학습,56~69의14개로 검증,70~83의14개로 테스트한다. 각 예측에는 이미 관측된 직전14일만 사용한다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4d6177"/></marker>
+<marker id="green-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#14694e"/></marker>
+</defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect width="980" height="810" rx="20" fill="#f7f9fc"/>
+
+<text x="32" y="47" font-size="29" fill="#183048" font-weight="700" text-anchor="start">정답 날짜를 기준으로 과거와 미래를 나눈다</text>
+<text x="32" y="83" font-size="19" fill="#4d6177" font-weight="400" text-anchor="start">입력창 길이 14 · 하루씩 관측한 뒤 다음 날 하나를 예측하는 평가</text>
+<rect x="45" y="130" width="144.16666666666669" height="139" rx="9" fill="#edf1f6" stroke="#8396ae" stroke-width="1.6"/>
+<text x="117.08333333333334" y="166" font-size="18" fill="#8396ae" font-weight="700" text-anchor="middle">과거 입력</text>
+<text x="117.08333333333334" y="201" font-size="18" fill="#8396ae" font-weight="700" text-anchor="middle">0–13</text>
+<text x="117.08333333333334" y="236" font-size="18" fill="#8396ae" font-weight="700" text-anchor="middle">정답 없음</text>
+<rect x="193.16666666666669" y="130" width="440.5" height="139" rx="9" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="413.4166666666667" y="166" font-size="18" fill="#215ba0" font-weight="700" text-anchor="middle">학습 정답</text>
+<text x="413.4166666666667" y="201" font-size="18" fill="#215ba0" font-weight="700" text-anchor="middle">14–55</text>
+<text x="413.4166666666667" y="236" font-size="18" fill="#215ba0" font-weight="700" text-anchor="middle">42개 창</text>
+<rect x="637.6666666666667" y="130" width="144.16666666666669" height="139" rx="9" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="709.7500000000001" y="166" font-size="18" fill="#14694e" font-weight="700" text-anchor="middle">검증 정답</text>
+<text x="709.7500000000001" y="201" font-size="18" fill="#14694e" font-weight="700" text-anchor="middle">56–69</text>
+<text x="709.7500000000001" y="236" font-size="18" fill="#14694e" font-weight="700" text-anchor="middle">14개 창</text>
+<rect x="785.8333333333335" y="130" width="144.16666666666669" height="139" rx="9" fill="#fcebf0" stroke="#ac3b4d" stroke-width="1.6"/>
+<text x="857.9166666666669" y="166" font-size="18" fill="#ac3b4d" font-weight="700" text-anchor="middle">테스트 정답</text>
+<text x="857.9166666666669" y="201" font-size="18" fill="#ac3b4d" font-weight="700" text-anchor="middle">70–83</text>
+<text x="857.9166666666669" y="236" font-size="18" fill="#ac3b4d" font-weight="700" text-anchor="middle">14개 창</text>
+<text x="45" y="306" font-size="21" fill="#4d6177" font-weight="400" text-anchor="start">같은 원래 기록에서 아래 두 입력창을 꺼낸다.</text>
+<text x="45" y="348" font-size="22" fill="#14694e" font-weight="700" text-anchor="start">첫 검증 예측</text>
+<rect x="45" y="368" width="585" height="86" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="337" y="403" font-size="22" fill="#215ba0" font-weight="700" text-anchor="middle">이미 관측한 14일 입력</text>
+<text x="337" y="436" font-size="20" fill="#183048" font-weight="400" text-anchor="middle" class="mono">original indices 42–55</text>
+<path d="M630 411H707" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="713" y="368" width="220" height="86" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="823" y="403" font-size="20" fill="#14694e" font-weight="700" text-anchor="middle">다음 날 정답</text>
+<text x="823" y="436" font-size="22" fill="#183048" font-weight="400" text-anchor="middle" class="mono">index 56</text>
+<text x="45" y="512" font-size="22" fill="#ac3b4d" font-weight="700" text-anchor="start">첫 테스트 예측</text>
+<rect x="45" y="532" width="585" height="86" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="337" y="567" font-size="22" fill="#215ba0" font-weight="700" text-anchor="middle">이미 관측한 14일 입력</text>
+<text x="337" y="600" font-size="20" fill="#183048" font-weight="400" text-anchor="middle" class="mono">original indices 56–69</text>
+<path d="M630 575H707" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="713" y="532" width="220" height="86" rx="12" fill="#fcebf0" stroke="#ac3b4d" stroke-width="1.6"/>
+<text x="823" y="567" font-size="20" fill="#ac3b4d" font-weight="700" text-anchor="middle">다음 날 정답</text>
+<text x="823" y="600" font-size="22" fill="#183048" font-weight="400" text-anchor="middle" class="mono">index 70</text>
+<rect x="45" y="671" width="889" height="103" rx="12" fill="#ffffff" stroke="#b9c6d6" stroke-width="1.6"/>
+<text x="65" y="706" font-size="21" fill="#4d6177" font-weight="400" text-anchor="start">검증·테스트 입력에 관측된 과거를 쓰는 것은 허용된다.</text>
+<text x="65" y="742" font-size="21" fill="#4d6177" font-weight="400" text-anchor="start">미래의 정답을 학습이나 예측 시점의 입력에 섞지 않는다.</text>
+</svg>

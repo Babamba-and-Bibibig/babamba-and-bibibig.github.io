@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="1160" viewBox="0 0 980 1160" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">한 시점에서 두 기울기 경로를 구분한다</title><desc id="desc">최종 손실에서 현재 은닉 상태, 활성화 전 가중합으로 기울기가 전달된다. 이 시점에서 파라미터를 사용한 경로의 기울기는 합산되고, 이전 상태로 전달할 기울기는 이전 시점 계산을 계속 역전파한다. 공유 파라미터별 합산 결과가 grad에 저장되고 step에서 갱신된다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4d6177"/></marker>
+<marker id="green-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#14694e"/></marker>
+</defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect width="980" height="1160" rx="20" fill="#f7f9fc"/>
+
+<text x="32" y="47" font-size="29" fill="#183048" font-weight="700" text-anchor="start">한 시점에서 두 기울기 경로를 구분한다</text>
+<text x="32" y="83" font-size="19" fill="#4d6177" font-weight="400" text-anchor="start">여기서는 파라미터 학습과 이전 상태 전달의 두 경로를 추적한다.</text>
+<rect x="49" y="115" width="882" height="104" rx="12" fill="#ffffff" stroke="#b9c6d6" stroke-width="1.6"/>
+<text x="69" y="151" font-size="20" fill="#4d6177" font-weight="400" text-anchor="start">L: 최종 손실 · h_t: 현재 은닉 상태 · a_t: tanh 적용 전 가중합</text>
+<text x="69" y="185" font-size="20" fill="#4d6177" font-weight="400" text-anchor="start">dL/dh_t: 은닉값을 조금 바꿀 때 손실이 얼마나 변하는지 나타내는 값들</text>
+<rect x="253" y="252" width="474" height="73" rx="12" fill="#fcebf0" stroke="#ac3b4d" stroke-width="1.6"/>
+<text x="490" y="281" font-size="21" fill="#ac3b4d" font-weight="700" text-anchor="middle">최종 손실 L → 예측층의 역전파</text>
+<text x="490" y="309" font-size="18" fill="#4d6177" font-weight="400" text-anchor="middle">마지막 은닉 상태에서 시작</text>
+<path d="M490 325V361" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="253" y="365" width="474" height="72" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="490" y="395" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle">현재 은닉 상태에 대한 기울기</text>
+<text x="490" y="424" font-size="22" fill="#183048" font-weight="400" text-anchor="middle" class="mono">dL/dh_t</text>
+<path d="M490 437V494" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="511" y="473" font-size="18" fill="#4d6177" font-weight="400" text-anchor="start">tanh의 변화율을 적용</text>
+<rect x="253" y="499" width="474" height="73" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="490" y="531" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">가중합에 대한 기울기</text>
+<text x="490" y="558" font-size="22" fill="#183048" font-weight="400" text-anchor="middle" class="mono">dL/da_t</text>
+<path d="M490 572V607H255V639" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M490 607H737V639" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="45" y="643" width="420" height="141" rx="12" fill="#fff4e5" stroke="#bd7a25" stroke-width="1.6"/>
+<text x="255" y="680" font-size="20" fill="#895414" font-weight="700" text-anchor="middle">현재 시점의 파라미터 사용에서</text>
+<text x="255" y="707" font-size="20" fill="#895414" font-weight="700" text-anchor="middle">나온 기울기를 계산한다.</text>
+<text x="255" y="734" font-size="20" fill="#895414" font-weight="700" text-anchor="middle"></text>
+<text x="255" y="761" font-size="20" fill="#895414" font-weight="700" text-anchor="middle">W_ih · W_hh · b_ih · b_hh</text>
+<rect x="525" y="643" width="410" height="141" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="730" y="681" font-size="20" fill="#14694e" font-weight="700" text-anchor="middle">이전 은닉 상태로 전달할</text>
+<text x="730" y="708" font-size="20" fill="#14694e" font-weight="700" text-anchor="middle">기울기를 계산한다.</text>
+<text x="730" y="735" font-size="20" fill="#14694e" font-weight="700" text-anchor="middle"></text>
+<text x="730" y="762" font-size="20" fill="#14694e" font-weight="700" text-anchor="middle">dL/dh_(t-1)</text>
+<path d="M730 784V820H942V401H732" fill="none" stroke="#14694e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green-arrow)"/>
+<rect x="659" y="835" width="277" height="100" rx="12" fill="#ffffff" stroke="#c4d4cc" stroke-width="1.6"/>
+<text x="797" y="866" font-size="17" fill="#14694e" font-weight="400" text-anchor="middle">이전 시점으로 이동</text>
+<text x="797" y="893" font-size="17" fill="#14694e" font-weight="400" text-anchor="middle">t를 t-1로 바꿔 반복</text>
+<text x="797" y="920" font-size="17" fill="#14694e" font-weight="400" text-anchor="middle">같은 W_hh를 다시 사용</text>
+<path d="M255 784V842" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="45" y="846" width="536" height="113" rx="12" fill="#fff4e5" stroke="#bd7a25" stroke-width="1.6"/>
+<text x="313" y="883" font-size="19" fill="#895414" font-weight="400" text-anchor="middle">같은 파라미터의 모든 사용 경로를 합산</text>
+<text x="313" y="912" font-size="19" fill="#895414" font-weight="400" text-anchor="middle">배치 전체도 함께 반영 → parameter.grad</text>
+<text x="313" y="941" font-size="19" fill="#895414" font-weight="400" text-anchor="middle">파라미터와 .grad는 원소별로 대응한다.</text>
+<path d="M313 959V999" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="45" y="1003" width="536" height="79" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="313" y="1035" font-size="23" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">optimizer.step()</text>
+<text x="313" y="1066" font-size="19" fill="#183048" font-weight="400" text-anchor="middle">이때 가중치와 편향의 숫자가 바뀐다.</text>
+<text x="32" y="1126" font-size="20" fill="#4d6177" font-weight="400" text-anchor="start">backward()는 기울기를 계산한다. 시점별로 가중치를 따로 갱신하지 않는다.</text>
+</svg>

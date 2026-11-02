@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="1090" viewBox="0 0 980 1090" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">입력에서 예측·학습까지</title><desc id="desc">14일 입력을 RNN으로 계산한 뒤 마지막 상태를 Linear에 전달하고, 정답과 비교해 손실과 기울기를 계산하여 가중치를 갱신한다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4d6177"/></marker>
+<marker id="green-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#14694e"/></marker>
+</defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect width="980" height="1090" rx="20" fill="#f7f9fc"/>
+
+<text x="32" y="47" font-size="29" fill="#183048" font-weight="700" text-anchor="start">입력에서 예측·학습까지</text>
+<text x="32" y="83" font-size="19" fill="#4d6177" font-weight="400" text-anchor="start">B: 함께 처리하는 입력창 수 · H=4 · 한 층, 단방향</text>
+<rect x="55" y="117" width="550" height="88" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="330" y="151" font-size="22" fill="#215ba0" font-weight="700" text-anchor="middle">지난 14일의 방문 기록</text>
+<text x="330" y="185" font-size="21" fill="#183048" font-weight="400" text-anchor="middle" class="mono">(B, 14, 1)</text>
+<rect x="55" y="248" width="550" height="105" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="330" y="282" font-size="22" fill="#7443a8" font-weight="700" text-anchor="middle">RNN: 모든 시점의 상태 계산</text>
+<text x="330" y="316" font-size="21" fill="#183048" font-weight="400" text-anchor="middle" class="mono">output: (B, 14, 4)</text>
+<rect x="55" y="401" width="550" height="88" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="330" y="435" font-size="22" fill="#14694e" font-weight="700" text-anchor="middle">마지막 시점의 네 값 선택</text>
+<text x="330" y="469" font-size="21" fill="#183048" font-weight="400" text-anchor="middle" class="mono">output[:, -1, :] → (B, 4)</text>
+<rect x="55" y="536" width="550" height="88" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="330" y="570" font-size="22" fill="#7443a8" font-weight="700" text-anchor="middle">Linear: 다음 날 숫자 계산</text>
+<text x="330" y="604" font-size="21" fill="#183048" font-weight="400" text-anchor="middle" class="mono">prediction: (B, 1)</text>
+<rect x="55" y="674" width="550" height="88" rx="12" fill="#fcebf0" stroke="#ac3b4d" stroke-width="1.6"/>
+<text x="330" y="708" font-size="22" fill="#ac3b4d" font-weight="700" text-anchor="middle">예측과 정답 비교 → 손실</text>
+<text x="330" y="742" font-size="21" fill="#183048" font-weight="400" text-anchor="middle" class="mono">loss: one scalar</text>
+<rect x="55" y="811" width="550" height="88" rx="12" fill="#edf1f6" stroke="#4d6177" stroke-width="1.6"/>
+<text x="330" y="845" font-size="22" fill="#4d6177" font-weight="700" text-anchor="middle">backward(): 기울기 계산</text>
+<text x="330" y="879" font-size="21" fill="#183048" font-weight="400" text-anchor="middle" class="mono">parameter.grad</text>
+<rect x="55" y="948" width="550" height="88" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="330" y="982" font-size="22" fill="#14694e" font-weight="700" text-anchor="middle">step(): 가중치·편향 갱신</text>
+<text x="330" y="1016" font-size="21" fill="#183048" font-weight="400" text-anchor="middle" class="mono">optimizer.step()</text>
+<path d="M330 205V244" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M330 353V397" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M330 489V532" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M330 624V670" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M330 762V807" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M330 899V944" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="661" y="248" width="270" height="290" rx="12" fill="#ffffff" stroke="#9babc0" stroke-width="1.6"/>
+<text x="796" y="283" font-size="22" fill="#183048" font-weight="700" text-anchor="middle">모델 파라미터</text>
+<text x="796" y="324" font-size="18" fill="#4d6177" font-weight="400" text-anchor="middle">RNN 가중치·편향</text>
+<text x="796" y="358" font-size="18" fill="#4d6177" font-weight="400" text-anchor="middle">모든 시점에서 재사용</text>
+<text x="796" y="392" font-size="18" fill="#4d6177" font-weight="400" text-anchor="middle">각 샘플도 함께 사용</text>
+<text x="796" y="426" font-size="18" fill="#4d6177" font-weight="400" text-anchor="middle"></text>
+<text x="796" y="460" font-size="18" fill="#4d6177" font-weight="400" text-anchor="middle">Linear 가중치·편향</text>
+<path d="M661 298H609" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<path d="M661 503H633V580H609" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<rect x="661" y="674" width="270" height="88" rx="12" fill="#fff4e5" stroke="#bd7a25" stroke-width="1.6"/>
+<text x="796" y="709" font-size="20" fill="#895414" font-weight="700" text-anchor="middle">관측된 다음 날 정답</text>
+<text x="796" y="744" font-size="21" fill="#183048" font-weight="400" text-anchor="middle" class="mono">target: (B, 1)</text>
+<path d="M661 718H609" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M605 992H951V558H796V542" fill="none" stroke="#14694e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green-arrow)"/>
+<text x="786" y="855" font-size="19" fill="#14694e" font-weight="400" text-anchor="middle">갱신한 숫자는</text>
+<text x="786" y="886" font-size="19" fill="#14694e" font-weight="400" text-anchor="middle">다음 순전파에서 사용</text>
+<text x="32" y="1068" font-size="20" fill="#4d6177" font-weight="400" text-anchor="start">은닉 상태는 계산 결과, 파라미터는 학습으로 바꾸는 숫자다.</text>
+</svg>

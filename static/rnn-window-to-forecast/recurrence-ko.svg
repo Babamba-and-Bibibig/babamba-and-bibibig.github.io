@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="1180" viewBox="0 0 980 1180" role="img" aria-labelledby="title desc" xml:lang="ko">
+<title id="title">같은 가중치, 샘플마다 다른 은닉 상태</title><desc id="desc">겹치는 방문자 입력창 두 개가 같은 파라미터로 처리되지만 은닉 상태를 서로 전달하지 않는다. 각 시점은 현재 입력 하나와 자기 이전 상태 네 값을 받아 새 상태 네 값을 계산한다.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4d6177"/></marker>
+<marker id="green-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#14694e"/></marker>
+</defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect width="980" height="1180" rx="20" fill="#f7f9fc"/>
+
+<text x="32" y="47" font-size="29" fill="#183048" font-weight="700" text-anchor="start">같은 가중치, 샘플마다 다른 은닉 상태</text>
+<text x="32" y="83" font-size="19" fill="#4d6177" font-weight="400" text-anchor="start">vᵢ: 원래 기록의 i번 값 · t: 입력창 안에서의 시점 인덱스</text>
+<rect x="42" y="112" width="896" height="94" rx="12" fill="#ffffff" stroke="#9babc0" stroke-width="1.6"/>
+<text x="490" y="144" font-size="22" fill="#183048" font-weight="700" text-anchor="middle">모든 셀 계산에 같은 파라미터를 사용한다</text>
+<text x="490" y="180" font-size="20" fill="#7443a8" font-weight="400" text-anchor="middle" class="mono">W_ih (4,1)  ·  W_hh (4,4)  ·  b_ih (4,)  ·  b_hh (4,)</text>
+<rect x="35" y="228" width="435" height="874" rx="12" fill="#ffffff" stroke="#d2dbe6" stroke-width="1.6"/>
+<text x="253" y="265" font-size="23" fill="#183048" font-weight="700" text-anchor="middle">샘플 0</text>
+<text x="253" y="296" font-size="18" fill="#4d6177" font-weight="400" text-anchor="middle">원래 인덱스 0~13</text>
+<rect x="222" y="316" width="212" height="58" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="328" y="352" font-size="17" fill="#14694e" font-weight="400" text-anchor="middle" class="mono">h_init = [0,0,0,0]</text>
+<rect x="55" y="424" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="115" y="454" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[0,0,:]</text>
+<text x="115" y="481" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v0]</text>
+<path d="M175 461H220" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="416" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="328" y="449" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">시점 t=0</text>
+<text x="328" y="482" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">입력·이전 상태 사용</text>
+<path d="M328 507V527" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="531" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="328" y="559" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_0</text>
+<text x="328" y="582" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">새 은닉값 4개</text>
+<rect x="55" y="642" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="115" y="672" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[0,1,:]</text>
+<text x="115" y="699" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v1]</text>
+<path d="M175 679H220" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="634" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="328" y="667" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">시점 t=1</text>
+<text x="328" y="700" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">입력·이전 상태 사용</text>
+<path d="M328 725V745" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="749" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="328" y="777" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_1</text>
+<text x="328" y="800" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">새 은닉값 4개</text>
+<rect x="55" y="916" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="115" y="946" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[0,13,:]</text>
+<text x="115" y="973" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v13]</text>
+<path d="M175 953H220" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="908" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="328" y="941" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">시점 t=13</text>
+<text x="328" y="974" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">입력·이전 상태 사용</text>
+<path d="M328 999V1019" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="1023" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="328" y="1051" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_13</text>
+<text x="328" y="1074" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">새 은닉값 4개</text>
+<path d="M328 374V412" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M328 594V630" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M328 812V842" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="328" y="871" font-size="36" fill="#4d6177" font-weight="400" text-anchor="middle">⋮</text>
+<path d="M328 880V904" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M452 201V962" fill="none" stroke="#7443a8" stroke-width="1.8" stroke-dasharray="6 5"/>
+<path d="M452 461H436" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<path d="M452 679H436" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<path d="M452 953H436" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<rect x="510" y="228" width="435" height="874" rx="12" fill="#ffffff" stroke="#d2dbe6" stroke-width="1.6"/>
+<text x="728" y="265" font-size="23" fill="#183048" font-weight="700" text-anchor="middle">샘플 1</text>
+<text x="728" y="296" font-size="18" fill="#4d6177" font-weight="400" text-anchor="middle">원래 인덱스 1~14</text>
+<rect x="697" y="316" width="212" height="58" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="803" y="352" font-size="17" fill="#14694e" font-weight="400" text-anchor="middle" class="mono">h_init = [0,0,0,0]</text>
+<rect x="530" y="424" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="590" y="454" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[1,0,:]</text>
+<text x="590" y="481" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v1]</text>
+<path d="M650 461H695" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="416" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="803" y="449" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">시점 t=0</text>
+<text x="803" y="482" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">입력·이전 상태 사용</text>
+<path d="M803 507V527" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="531" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="803" y="559" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_0</text>
+<text x="803" y="582" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">새 은닉값 4개</text>
+<rect x="530" y="642" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="590" y="672" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[1,1,:]</text>
+<text x="590" y="699" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v2]</text>
+<path d="M650 679H695" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="634" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="803" y="667" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">시점 t=1</text>
+<text x="803" y="700" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">입력·이전 상태 사용</text>
+<path d="M803 725V745" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="749" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="803" y="777" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_1</text>
+<text x="803" y="800" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">새 은닉값 4개</text>
+<rect x="530" y="916" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="590" y="946" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[1,13,:]</text>
+<text x="590" y="973" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v14]</text>
+<path d="M650 953H695" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="908" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="803" y="941" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">시점 t=13</text>
+<text x="803" y="974" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">입력·이전 상태 사용</text>
+<path d="M803 999V1019" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="1023" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="803" y="1051" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_13</text>
+<text x="803" y="1074" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">새 은닉값 4개</text>
+<path d="M803 374V412" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M803 594V630" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M803 812V842" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="803" y="871" font-size="36" fill="#4d6177" font-weight="400" text-anchor="middle">⋮</text>
+<path d="M803 880V904" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M927 201V962" fill="none" stroke="#7443a8" stroke-width="1.8" stroke-dasharray="6 5"/>
+<path d="M927 461H911" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<path d="M927 679H911" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<path d="M927 953H911" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<text x="35" y="1136" font-size="19" fill="#4d6177" font-weight="400" text-anchor="start">실선: 자기 샘플의 데이터 흐름 · 점선: 같은 파라미터의 재사용</text>
+<text x="35" y="1165" font-size="19" fill="#4d6177" font-weight="400" text-anchor="start">시간은 순서대로 진행하지만, 두 샘플의 상태는 서로 섞이지 않는다.</text>
+</svg>

@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="1180" viewBox="0 0 980 1180" role="img" aria-labelledby="title desc" xml:lang="en">
+<title id="title">Shared weights, separate hidden states</title><desc id="desc">Two overlapping visitor windows share model parameters but never pass hidden states to each other. Each time step uses its current input and its own four previous state values.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#4d6177"/></marker>
+<marker id="green-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#14694e"/></marker>
+</defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}.mono{font-family:"DejaVu Sans Mono",Consolas,monospace}</style>
+<rect width="980" height="1180" rx="20" fill="#f7f9fc"/>
+
+<text x="32" y="47" font-size="29" fill="#183048" font-weight="700" text-anchor="start">Shared weights, separate hidden states</text>
+<text x="32" y="83" font-size="19" fill="#4d6177" font-weight="400" text-anchor="start">vᵢ: value at original index i · t: time-step index within a window</text>
+<rect x="42" y="112" width="896" height="94" rx="12" fill="#ffffff" stroke="#9babc0" stroke-width="1.6"/>
+<text x="490" y="144" font-size="22" fill="#183048" font-weight="700" text-anchor="middle">Every cell computation uses the same parameters</text>
+<text x="490" y="180" font-size="20" fill="#7443a8" font-weight="400" text-anchor="middle" class="mono">W_ih (4,1)  ·  W_hh (4,4)  ·  b_ih (4,)  ·  b_hh (4,)</text>
+<rect x="35" y="228" width="435" height="874" rx="12" fill="#ffffff" stroke="#d2dbe6" stroke-width="1.6"/>
+<text x="253" y="265" font-size="23" fill="#183048" font-weight="700" text-anchor="middle">Sample 0</text>
+<text x="253" y="296" font-size="18" fill="#4d6177" font-weight="400" text-anchor="middle">Original indices 0–13</text>
+<rect x="222" y="316" width="212" height="58" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="328" y="352" font-size="17" fill="#14694e" font-weight="400" text-anchor="middle" class="mono">h_init = [0,0,0,0]</text>
+<rect x="55" y="424" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="115" y="454" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[0,0,:]</text>
+<text x="115" y="481" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v0]</text>
+<path d="M175 461H220" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="416" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="328" y="449" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">Time t=0</text>
+<text x="328" y="482" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">uses input and prior state</text>
+<path d="M328 507V527" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="531" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="328" y="559" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_0</text>
+<text x="328" y="582" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">four new state values</text>
+<rect x="55" y="642" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="115" y="672" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[0,1,:]</text>
+<text x="115" y="699" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v1]</text>
+<path d="M175 679H220" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="634" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="328" y="667" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">Time t=1</text>
+<text x="328" y="700" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">uses input and prior state</text>
+<path d="M328 725V745" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="749" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="328" y="777" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_1</text>
+<text x="328" y="800" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">four new state values</text>
+<rect x="55" y="916" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="115" y="946" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[0,13,:]</text>
+<text x="115" y="973" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v13]</text>
+<path d="M175 953H220" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="908" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="328" y="941" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">Time t=13</text>
+<text x="328" y="974" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">uses input and prior state</text>
+<path d="M328 999V1019" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="222" y="1023" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="328" y="1051" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_13</text>
+<text x="328" y="1074" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">four new state values</text>
+<path d="M328 374V412" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M328 594V630" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M328 812V842" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="328" y="871" font-size="36" fill="#4d6177" font-weight="400" text-anchor="middle">⋮</text>
+<path d="M328 880V904" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M452 201V962" fill="none" stroke="#7443a8" stroke-width="1.8" stroke-dasharray="6 5"/>
+<path d="M452 461H436" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<path d="M452 679H436" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<path d="M452 953H436" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<rect x="510" y="228" width="435" height="874" rx="12" fill="#ffffff" stroke="#d2dbe6" stroke-width="1.6"/>
+<text x="728" y="265" font-size="23" fill="#183048" font-weight="700" text-anchor="middle">Sample 1</text>
+<text x="728" y="296" font-size="18" fill="#4d6177" font-weight="400" text-anchor="middle">Original indices 1–14</text>
+<rect x="697" y="316" width="212" height="58" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="803" y="352" font-size="17" fill="#14694e" font-weight="400" text-anchor="middle" class="mono">h_init = [0,0,0,0]</text>
+<rect x="530" y="424" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="590" y="454" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[1,0,:]</text>
+<text x="590" y="481" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v1]</text>
+<path d="M650 461H695" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="416" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="803" y="449" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">Time t=0</text>
+<text x="803" y="482" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">uses input and prior state</text>
+<path d="M803 507V527" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="531" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="803" y="559" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_0</text>
+<text x="803" y="582" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">four new state values</text>
+<rect x="530" y="642" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="590" y="672" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[1,1,:]</text>
+<text x="590" y="699" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v2]</text>
+<path d="M650 679H695" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="634" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="803" y="667" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">Time t=1</text>
+<text x="803" y="700" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">uses input and prior state</text>
+<path d="M803 725V745" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="749" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="803" y="777" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_1</text>
+<text x="803" y="800" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">four new state values</text>
+<rect x="530" y="916" width="120" height="75" rx="12" fill="#eaf2ff" stroke="#215ba0" stroke-width="1.6"/>
+<text x="590" y="946" font-size="17" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">x[1,13,:]</text>
+<text x="590" y="973" font-size="20" fill="#215ba0" font-weight="400" text-anchor="middle" class="mono">[v14]</text>
+<path d="M650 953H695" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="908" width="212" height="91" rx="12" fill="#f2ebfb" stroke="#7443a8" stroke-width="1.6"/>
+<text x="803" y="941" font-size="21" fill="#7443a8" font-weight="700" text-anchor="middle">Time t=13</text>
+<text x="803" y="974" font-size="16" fill="#183048" font-weight="400" text-anchor="middle">uses input and prior state</text>
+<path d="M803 999V1019" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="697" y="1023" width="212" height="63" rx="12" fill="#e8f5ee" stroke="#14694e" stroke-width="1.6"/>
+<text x="803" y="1051" font-size="21" fill="#14694e" font-weight="700" text-anchor="middle" class="mono">h_13</text>
+<text x="803" y="1074" font-size="16" fill="#14694e" font-weight="400" text-anchor="middle">four new state values</text>
+<path d="M803 374V412" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M803 594V630" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M803 812V842" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="803" y="871" font-size="36" fill="#4d6177" font-weight="400" text-anchor="middle">⋮</text>
+<path d="M803 880V904" fill="none" stroke="#4d6177" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M927 201V962" fill="none" stroke="#7443a8" stroke-width="1.8" stroke-dasharray="6 5"/>
+<path d="M927 461H911" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<path d="M927 679H911" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<path d="M927 953H911" fill="none" stroke="#4d6177" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<text x="35" y="1136" font-size="19" fill="#4d6177" font-weight="400" text-anchor="start">Solid: data flow within a sample · Dashed: reuse of model parameters</text>
+<text x="35" y="1165" font-size="19" fill="#4d6177" font-weight="400" text-anchor="start">Time steps proceed in order; the two samples never mix their states.</text>
+</svg>
