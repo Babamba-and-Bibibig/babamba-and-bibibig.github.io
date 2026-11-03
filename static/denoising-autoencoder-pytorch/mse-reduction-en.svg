@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1050" viewBox="0 0 1100 1050" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Compute matched-pixel errors, then choose what to average</title>
+<desc id="desc">Subtract corresponding pixels in matched reconstructed and clean images. Squared errors keep shape (B,1,28,28). A global mean produces a scalar; flatten(1) then mean(1) produces B image-level MSE values.</desc>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L10 5.5 L1 10 Z" fill="#59718a"/></marker><marker id="update" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L10 5.5 L1 10 Z" fill="#7351a0"/></marker></defs>
+<style>text{font-family:"Pretendard","Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","DejaVu Sans",sans-serif} .code{font-family:"DejaVu Sans Mono",monospace}</style>
+<rect width="1100" height="1050" rx="18" fill="#f5f7fb"/>
+<text x="38" y="53" font-size="32" font-weight="700" fill="#192c43" text-anchor="start">Compute matched-pixel errors, then choose what to average</text>
+<text x="38" y="92" font-size="21" font-weight="400" fill="#4c6076" text-anchor="start">flatten changes the axis structure; mean averages values over the selected axes.</text>
+<rect x="60" y="135" width="440" height="90" rx="13" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="280.0" y="172.0" font-size="22" font-weight="700" fill="#15715d" text-anchor="middle">Reconstructed images</text>
+<text x="280.0" y="204.0" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(B, 1, 28, 28)</text>
+<rect x="600" y="135" width="440" height="90" rx="13" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="820.0" y="172.0" font-size="22" font-weight="700" fill="#245b93" text-anchor="middle">Matched clean originals</text>
+<text x="820.0" y="204.0" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(B, 1, 28, 28)</text>
+<path d="M 280,235 L 280,267 L 450,267 L 450,290" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<path d="M 820,235 L 820,267 L 650,267 L 650,290" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="320" y="300" width="460" height="95" rx="13" fill="#fff3db" stroke="#9a610e" stroke-width="1.6"/>
+<text x="550.0" y="339.5" font-size="22" font-weight="700" fill="#9a610e" text-anchor="middle">Subtract corresponding positions</text>
+<text x="550.0" y="371.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">difference = reconstructed − clean</text>
+<text x="550" y="425" font-size="21" font-weight="400" fill="#192c43" text-anchor="middle">Same image i, channel c, height h, and width w.</text>
+<path d="M 550,442 L 550,465" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="320" y="475" width="460" height="100" rx="13" fill="#fff3db" stroke="#9a610e" stroke-width="1.6"/>
+<text x="550.0" y="517.0" font-size="21" font-weight="700" fill="#9a610e" text-anchor="middle">squared_error = difference.square()</text>
+<text x="550.0" y="549.0" font-size="21" font-weight="400" fill="#192c43" text-anchor="middle">(B, 1, 28, 28)</text>
+<path d="M 420,585 L 420,620 L 280,620 L 280,655" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<path d="M 680,585 L 680,620 L 820,620 L 820,655" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="60" y="665" width="440" height="110" rx="13" fill="#fcecf0" stroke="#a43543" stroke-width="1.6"/>
+<text x="280.0" y="712.0" font-size="23" font-weight="700" fill="#a43543" text-anchor="middle">squared_error.mean()</text>
+<text x="280.0" y="744.0" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle">Global MSE: shape = ()</text>
+<rect x="600" y="665" width="440" height="110" rx="13" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="820.0" y="712.0" font-size="23" font-weight="700" fill="#245b93" text-anchor="middle">squared_error.flatten(1)</text>
+<text x="820.0" y="744.0" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle">(B, 784)</text>
+<path d="M 820,785 L 820,825" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="600" y="835" width="440" height="105" rx="13" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="820.0" y="879.5" font-size="23" font-weight="700" fill="#15715d" text-anchor="middle">.mean(dim=1)</text>
+<text x="820.0" y="911.5" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle">Per-image MSE: shape = (B,)</text>
+<text x="60" y="835" font-size="22" font-weight="400" fill="#192c43" text-anchor="start">For images of equal size,</text>
+<text x="60" y="867" font-size="22" font-weight="400" fill="#192c43" text-anchor="start">the mean of per-image MSE values</text>
+<text x="60" y="899" font-size="22" font-weight="400" fill="#192c43" text-anchor="start">equals the global MSE.</text>
+<rect x="40" y="970" width="1020" height="55" rx="13" fill="#fff" stroke="#d4deea" stroke-width="1.6"/>
+<text x="550" y="1006" font-size="22" font-weight="700" fill="#192c43" text-anchor="middle">Equivalent: squared_error.mean(dim=(1, 2, 3)) → (B,)</text>
+</svg>

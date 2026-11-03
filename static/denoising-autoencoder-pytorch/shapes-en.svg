@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1070" viewBox="0 0 1100 1070" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Read inputs, intermediate values, weights, and outputs separately</title>
+<desc id="desc">The batch size B stays unchanged. The input becomes features of shape (B,8,14,14), then a reconstruction of shape (B,1,28,28). The encoder and decoder each store their own parameters.</desc>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L10 5.5 L1 10 Z" fill="#59718a"/></marker><marker id="update" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L10 5.5 L1 10 Z" fill="#7351a0"/></marker></defs>
+<style>text{font-family:"Pretendard","Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","DejaVu Sans",sans-serif} .code{font-family:"DejaVu Sans Mono",monospace}</style>
+<rect width="1100" height="1070" rx="18" fill="#f5f7fb"/>
+<text x="38" y="53" font-size="32" font-weight="700" fill="#192c43" text-anchor="start">Read inputs, intermediate values, weights, and outputs separately</text>
+<text x="38" y="92" font-size="21" font-weight="400" fill="#4c6076" text-anchor="start">B: images in this call · C: channels · H, W: height and width positions</text>
+<text x="70" y="144" font-size="22" font-weight="700" fill="#245b93" text-anchor="start">Data computed for the current input</text>
+<text x="590" y="144" font-size="22" font-weight="700" fill="#7351a0" text-anchor="start">Learned parameters stored by the model</text>
+<rect x="65" y="175" width="440" height="95" rx="13" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="285.0" y="214.5" font-size="22" font-weight="700" fill="#245b93" text-anchor="middle">Input: noisy images</text>
+<text x="285.0" y="246.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(B, 1, 28, 28)</text>
+<path d="M 285,280 L 285,314" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="65" y="325" width="440" height="105" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="285.0" y="369.5" font-size="23" font-weight="700" fill="#7351a0" text-anchor="middle">Conv2d → ReLU</text>
+<text x="285.0" y="401.5" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle">1 → 8 channels · k=3, s=2, p=1</text>
+<rect x="580" y="325" width="455" height="105" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="807.5" y="369.5" font-size="22" font-weight="700" fill="#7351a0" text-anchor="middle">Conv2d: weight = (8, 1, 3, 3)</text>
+<text x="807.5" y="401.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">bias = (8,) · 72 + 8 = 80</text>
+<path d="M515,377 L570,377" fill="none" stroke="#7351a0" stroke-width="2"/>
+<text x="595" y="458" font-size="19" font-weight="400" fill="#4c6076" text-anchor="start">Weight axes: output channels → input channels</text>
+<path d="M 285,440 L 285,485" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="65" y="495" width="440" height="95" rx="13" fill="#fff3db" stroke="#9a610e" stroke-width="1.6"/>
+<text x="285.0" y="534.5" font-size="22" font-weight="700" fill="#9a610e" text-anchor="middle">Features: 8 maps per image</text>
+<text x="285.0" y="566.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(B, 8, 14, 14)</text>
+<rect x="580" y="505" width="455" height="80" rx="13" fill="#fff3db" stroke="#9a610e" stroke-width="1.6"/>
+<text x="807.5" y="537.0" font-size="21" font-weight="700" fill="#9a610e" text-anchor="middle">ReLU: no learned parameters</text>
+<text x="807.5" y="569.0" font-size="21" font-weight="400" fill="#192c43" text-anchor="middle">The shape stays unchanged.</text>
+<path d="M 285,600 L 285,655" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="65" y="665" width="440" height="105" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="285.0" y="709.5" font-size="22" font-weight="700" fill="#7351a0" text-anchor="middle">ConvTranspose2d → Sigmoid</text>
+<text x="285.0" y="741.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">8 → 1 channel · k=4, s=2, p=1</text>
+<rect x="580" y="665" width="455" height="105" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="807.5" y="709.5" font-size="21" font-weight="700" fill="#7351a0" text-anchor="middle">ConvTranspose2d: weight = (8, 1, 4, 4)</text>
+<text x="807.5" y="741.5" font-size="21" font-weight="400" fill="#192c43" text-anchor="middle">bias = (1,) · 128 + 1 = 129</text>
+<path d="M515,717 L570,717" fill="none" stroke="#7351a0" stroke-width="2"/>
+<text x="595" y="798" font-size="19" font-weight="400" fill="#4c6076" text-anchor="start">Weight axes: input channels → output channels</text>
+<path d="M 285,780 L 285,825" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="65" y="835" width="440" height="95" rx="13" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="285.0" y="874.5" font-size="22" font-weight="700" fill="#15715d" text-anchor="middle">Final output: reconstructed images</text>
+<text x="285.0" y="906.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(B, 1, 28, 28)</text>
+<rect x="580" y="835" width="455" height="95" rx="13" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="807.5" y="874.5" font-size="22" font-weight="700" fill="#15715d" text-anchor="middle">Total learned parameters: 209</text>
+<text x="807.5" y="906.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">Sigmoid: no learned parameters</text>
+<rect x="40" y="960" width="1020" height="80" rx="13" fill="#fff3db" stroke="#9a610e" stroke-width="1.6"/>
+<text x="60" y="992" font-size="23" font-weight="700" fill="#192c43" text-anchor="start">Spatial size: 28×28 → 14×14  /  Elements per image: 784 → 1,568</text>
+<text x="60" y="1022" font-size="21" font-weight="400" fill="#192c43" text-anchor="start">Smaller height and width can still produce more elements when channels increase.</text>
+</svg>

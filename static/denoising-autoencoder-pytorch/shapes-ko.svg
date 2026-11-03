@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1070" viewBox="0 0 1100 1070" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">입력·중간값·가중치·출력을 따로 읽는다</title>
+<desc id="desc">배치 B를 유지하며 입력 (B,1,28,28)을 중간 특징 (B,8,14,14)로 바꾸고 다시 (B,1,28,28)로 복원한다. 인코더의 가중치는 (8,1,3,3), 디코더의 가중치는 (8,1,4,4)다.</desc>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L10 5.5 L1 10 Z" fill="#59718a"/></marker><marker id="update" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L10 5.5 L1 10 Z" fill="#7351a0"/></marker></defs>
+<style>text{font-family:"Pretendard","Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","DejaVu Sans",sans-serif} .code{font-family:"DejaVu Sans Mono",monospace}</style>
+<rect width="1100" height="1070" rx="18" fill="#f5f7fb"/>
+<text x="38" y="53" font-size="32" font-weight="700" fill="#192c43" text-anchor="start">입력·중간값·가중치·출력을 따로 읽는다</text>
+<text x="38" y="92" font-size="21" font-weight="400" fill="#4c6076" text-anchor="start">B: 이번 호출의 이미지 수 · C: 채널 수 · H, W: 높이·너비 위치 수</text>
+<text x="70" y="144" font-size="22" font-weight="700" fill="#245b93" text-anchor="start">호출할 때마다 계산되는 데이터</text>
+<text x="590" y="144" font-size="22" font-weight="700" fill="#7351a0" text-anchor="start">모델이 보관하는 학습 파라미터</text>
+<rect x="65" y="175" width="440" height="95" rx="13" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="285.0" y="214.5" font-size="22" font-weight="700" fill="#245b93" text-anchor="middle">입력: 잡음 이미지</text>
+<text x="285.0" y="246.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(B, 1, 28, 28)</text>
+<path d="M 285,280 L 285,314" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="65" y="325" width="440" height="105" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="285.0" y="369.5" font-size="23" font-weight="700" fill="#7351a0" text-anchor="middle">Conv2d → ReLU</text>
+<text x="285.0" y="401.5" font-size="23" font-weight="400" fill="#192c43" text-anchor="middle">1 → 8 channels · k=3, s=2, p=1</text>
+<rect x="580" y="325" width="455" height="105" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="807.5" y="369.5" font-size="22" font-weight="700" fill="#7351a0" text-anchor="middle">Conv2d: weight = (8, 1, 3, 3)</text>
+<text x="807.5" y="401.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">bias = (8,) · 72 + 8 = 80</text>
+<path d="M515,377 L570,377" fill="none" stroke="#7351a0" stroke-width="2"/>
+<text x="595" y="458" font-size="19" font-weight="400" fill="#4c6076" text-anchor="start">가중치 축: 출력 채널 → 입력 채널</text>
+<path d="M 285,440 L 285,485" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="65" y="495" width="440" height="95" rx="13" fill="#fff3db" stroke="#9a610e" stroke-width="1.6"/>
+<text x="285.0" y="534.5" font-size="22" font-weight="700" fill="#9a610e" text-anchor="middle">중간값: 특징맵 8개 / 이미지</text>
+<text x="285.0" y="566.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(B, 8, 14, 14)</text>
+<rect x="580" y="505" width="455" height="80" rx="13" fill="#fff3db" stroke="#9a610e" stroke-width="1.6"/>
+<text x="807.5" y="537.0" font-size="21" font-weight="700" fill="#9a610e" text-anchor="middle">ReLU: 파라미터 없음</text>
+<text x="807.5" y="569.0" font-size="21" font-weight="400" fill="#192c43" text-anchor="middle">shape는 유지한다.</text>
+<path d="M 285,600 L 285,655" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="65" y="665" width="440" height="105" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="285.0" y="709.5" font-size="22" font-weight="700" fill="#7351a0" text-anchor="middle">ConvTranspose2d → Sigmoid</text>
+<text x="285.0" y="741.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">8 → 1 channel · k=4, s=2, p=1</text>
+<rect x="580" y="665" width="455" height="105" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="807.5" y="709.5" font-size="21" font-weight="700" fill="#7351a0" text-anchor="middle">ConvTranspose2d: weight = (8, 1, 4, 4)</text>
+<text x="807.5" y="741.5" font-size="21" font-weight="400" fill="#192c43" text-anchor="middle">bias = (1,) · 128 + 1 = 129</text>
+<path d="M515,717 L570,717" fill="none" stroke="#7351a0" stroke-width="2"/>
+<text x="595" y="798" font-size="19" font-weight="400" fill="#4c6076" text-anchor="start">가중치 축: 입력 채널 → 출력 채널</text>
+<path d="M 285,780 L 285,825" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="65" y="835" width="440" height="95" rx="13" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="285.0" y="874.5" font-size="22" font-weight="700" fill="#15715d" text-anchor="middle">최종 출력: 복원 이미지</text>
+<text x="285.0" y="906.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(B, 1, 28, 28)</text>
+<rect x="580" y="835" width="455" height="95" rx="13" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="807.5" y="874.5" font-size="22" font-weight="700" fill="#15715d" text-anchor="middle">전체 파라미터: 209개</text>
+<text x="807.5" y="906.5" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">Sigmoid: 파라미터 없음</text>
+<rect x="40" y="960" width="1020" height="80" rx="13" fill="#fff3db" stroke="#9a610e" stroke-width="1.6"/>
+<text x="60" y="992" font-size="23" font-weight="700" fill="#192c43" text-anchor="start">공간 크기: 28×28 → 14×14  /  이미지당 원소 수: 784 → 1,568</text>
+<text x="60" y="1022" font-size="21" font-weight="400" fill="#192c43" text-anchor="start">높이·너비가 줄어도 채널이 늘면 전체 원소 수는 늘 수 있다.</text>
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1000" viewBox="0 0 1100 1000" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">split → model → cat: preserve image order</title>
+<desc id="desc">An illustrative set of 600 images is split into chunks of 256,256,88. The same model processes each chunk in order, and cat along dim 0 restores one 600-image tensor.</desc>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L10 5.5 L1 10 Z" fill="#59718a"/></marker><marker id="update" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L10 5.5 L1 10 Z" fill="#7351a0"/></marker></defs>
+<style>text{font-family:"Pretendard","Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","DejaVu Sans",sans-serif} .code{font-family:"DejaVu Sans Mono",monospace}</style>
+<rect width="1100" height="1000" rx="18" fill="#f5f7fb"/>
+<text x="38" y="53" font-size="32" font-weight="700" fill="#192c43" text-anchor="start">split → model → cat: preserve image order</text>
+<text x="38" y="92" font-size="21" font-weight="400" fill="#4c6076" text-anchor="start">600 is an illustrative count. Read the actual validation count from the data.</text>
+<rect x="100" y="135" width="900" height="90" rx="13" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="550.0" y="172.0" font-size="24" font-weight="700" fill="#245b93" text-anchor="middle">Noisy images: (600, 1, 28, 28)</text>
+<text x="550.0" y="204.0" font-size="24" font-weight="400" fill="#192c43" text-anchor="middle">noisy.split(256, dim=0)</text>
+<path d="M 550,235 L 550,260 L 200,260 L 200,290" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<path d="M 550,235 L 550,260 L 550,260 L 550,290" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<path d="M 550,235 L 550,260 L 900,260 L 900,290" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="50" y="300" width="300" height="110" rx="13" fill="#eaf3fc" stroke="#245b93" stroke-width="1.6"/>
+<text x="200.0" y="347.0" font-size="22" font-weight="700" fill="#245b93" text-anchor="middle">Chunk 0: images 0–255</text>
+<text x="200.0" y="379.0" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(256, 1, 28, 28)</text>
+<path d="M 200,420 L 200,470" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="400" y="300" width="300" height="110" rx="13" fill="#fff3db" stroke="#9a610e" stroke-width="1.6"/>
+<text x="550.0" y="347.0" font-size="22" font-weight="700" fill="#9a610e" text-anchor="middle">Chunk 1: images 256–511</text>
+<text x="550.0" y="379.0" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(256, 1, 28, 28)</text>
+<path d="M 550,420 L 550,470" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="750" y="300" width="300" height="110" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="900.0" y="347.0" font-size="22" font-weight="700" fill="#7351a0" text-anchor="middle">Chunk 2: images 512–599</text>
+<text x="900.0" y="379.0" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(88, 1, 28, 28)</text>
+<path d="M 900,420 L 900,470" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="50" y="480" width="300" height="75" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="200.0" y="509.5" font-size="21" font-weight="700" fill="#7351a0" text-anchor="middle">model(part)</text>
+<text x="200.0" y="541.5" font-size="21" font-weight="400" fill="#192c43" text-anchor="middle">Shared weights</text>
+<path d="M 200,565 L 200,605" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="50" y="615" width="300" height="100" rx="13" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="200.0" y="657.0" font-size="22" font-weight="700" fill="#15715d" text-anchor="middle">Result 0: images 0–255</text>
+<text x="200.0" y="689.0" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(256, 1, 28, 28)</text>
+<path d="M 200,725 L 200,755 L 550,755 L 550,790" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="400" y="480" width="300" height="75" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="550.0" y="509.5" font-size="21" font-weight="700" fill="#7351a0" text-anchor="middle">model(part)</text>
+<text x="550.0" y="541.5" font-size="21" font-weight="400" fill="#192c43" text-anchor="middle">Shared weights</text>
+<path d="M 550,565 L 550,605" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="400" y="615" width="300" height="100" rx="13" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="550.0" y="657.0" font-size="22" font-weight="700" fill="#15715d" text-anchor="middle">Result 1: images 256–511</text>
+<text x="550.0" y="689.0" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(256, 1, 28, 28)</text>
+<path d="M 550,725 L 550,755 L 550,755 L 550,790" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="750" y="480" width="300" height="75" rx="13" fill="#f1ecf9" stroke="#7351a0" stroke-width="1.6"/>
+<text x="900.0" y="509.5" font-size="21" font-weight="700" fill="#7351a0" text-anchor="middle">model(part)</text>
+<text x="900.0" y="541.5" font-size="21" font-weight="400" fill="#192c43" text-anchor="middle">Shared weights</text>
+<path d="M 900,565 L 900,605" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="750" y="615" width="300" height="100" rx="13" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="900.0" y="657.0" font-size="22" font-weight="700" fill="#15715d" text-anchor="middle">Result 2: images 512–599</text>
+<text x="900.0" y="689.0" font-size="22" font-weight="400" fill="#192c43" text-anchor="middle">(88, 1, 28, 28)</text>
+<path d="M 900,725 L 900,755 L 550,755 L 550,790" fill="none" stroke="#59718a" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="100" y="800" width="900" height="100" rx="13" fill="#e7f5ef" stroke="#15715d" stroke-width="1.6"/>
+<text x="550.0" y="842.0" font-size="24" font-weight="700" fill="#15715d" text-anchor="middle">torch.cat(results, dim=0)</text>
+<text x="550.0" y="874.0" font-size="24" font-weight="400" fill="#192c43" text-anchor="middle">All reconstructions: (600, 1, 28, 28)</text>
+<text x="550" y="951" font-size="23" font-weight="700" fill="#192c43" text-anchor="middle">Concatenate along the existing image axis. No new axis; no pixel summation.</text>
+</svg>
