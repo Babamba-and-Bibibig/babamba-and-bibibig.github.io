@@ -53,7 +53,11 @@ The gradient indicates the direction and how much the loss changes when a weight
 
 So, for the same gradient, a higher learning rate means a larger change in each update.
 
+<div class="reference-note">
+
 Reference: [Google Machine Learning Crash Course — Gradient Descent](https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent). I checked the steps and calculations for updating the weights and bias.
+
+</div>
 
 ##### 2. What Happens If It Is Too High or Too Low? {.research-detail}
 
@@ -64,7 +68,11 @@ Reference: [Google Machine Learning Crash Course — Gradient Descent](https://d
 
 The right learning rate depends on the model and the data. A higher value does not always mean faster learning, and a lower value does not always produce better results.
 
+<div class="reference-note">
+
 Reference: [Google Machine Learning Crash Course — Learning Rate in Hyperparameters](https://developers.google.com/machine-learning/crash-course/linear-regression/hyperparameters#learning-rate). I checked the explanations and graphs showing how the learning rate affects loss.
+
+</div>
 
 ### 2) My Answer
 
@@ -85,7 +93,11 @@ You are planning to build an AI model that predicts appropriate age ratings (suc
 
 Classification models can also calculate numerical scores or probabilities internally. So, the presence of continuous numbers in the calculations does not make a task regression. What matters is what we use as the correct answer and what we are trying to predict.
 
+<div class="reference-note">
+
 References: Google's [Introduction to Machine Learning — Regression and Classification](https://developers.google.com/machine-learning/intro-to-ml/what-is-ml#supervised-learning) and [Classification](https://developers.google.com/machine-learning/crash-course/classification). I checked the difference between predicting numbers and predicting categories, and how probabilities can be used to decide on a category.
+
+</div>
 
 #### Google search: "predicting ordered ratings with regression" {#research-ordered-ratings .research-topic}
 
@@ -108,7 +120,11 @@ For example, if regression predicts 13.8, we need a rule for deciding whether th
 
 Also, simply giving an ordinary classification model the rating labels does not make it automatically understand their order. There are methods that predict ordered categories and account for their order during training, so ordinary regression is not the only way to use the order of the ratings.
 
+<div class="reference-note">
+
 References: [Pedregosa, Bach, and Gramfort, On the Consistency of Ordinal Regression Methods](https://jmlr.org/papers/volume18/15-495/15-495.pdf). I referred to the introduction and pages 10–11 for explanations of ordered categories and converting regression predictions into categories. I checked how numerical differences are reflected in error in [scikit-learn's explanation of mean squared error](https://scikit-learn.org/stable/modules/model_evaluation.html#mean-squared-error). The age-rating example above is one I considered for this question.
+
+</div>
 
 ### 2) My Answer
 

@@ -1,0 +1,41 @@
+/* Keep references compact in every article, including translated posts. */
+#main-content article :is(.footnote-definition, .footnotes-list, .reference-note) {
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* Zola renders each footnote as a label followed by block-level content. */
+#main-content article .footnote-definition {
+  display: grid;
+  grid-template-columns: 1.5em minmax(0, 1fr);
+  column-gap: .375em;
+  row-gap: .25rem;
+  margin-block: .25rem;
+  padding: 0;
+}
+
+#main-content article .footnote-definition > .footnote-definition-label {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  vertical-align: baseline;
+}
+
+#main-content article .footnote-definition > :not(.footnote-definition-label) {
+  grid-column: 2;
+  min-inline-size: 0;
+  margin-block: 0;
+}
+
+#main-content article :is(.footnote-definition, .footnotes-list, .reference-note) p {
+  margin-block: 0;
+}
+
+/* Also support list-based footnotes and explicitly marked inline references. */
+#main-content article .footnotes-list > li,
+#main-content article .reference-note {
+  margin-block: .25rem;
+}
