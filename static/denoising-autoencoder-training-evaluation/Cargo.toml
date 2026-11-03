@@ -1,0 +1,16 @@
+[package]
+name = "dae-training-evaluation-example"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+tch = "=0.26.0"
+
+[[bin]]
+name = "examples-ko"
+path = "examples-ko.rs"
+
+[[bin]]
+name = "examples-en"
+path = "examples-en.rs"

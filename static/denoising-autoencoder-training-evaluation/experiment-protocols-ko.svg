@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="1165" viewBox="0 0 920 1165" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">잡음 세기 비교: 같은 모델인가, 새 모델인가?</title>
+<desc id="desc">고정 모델 평가는 하나의 학습된 모델에 sigma0.25와0.50 입력을 넣고 가중치를 바꾸지 않는다. 별도 재학습 비교는 각조건에서 같은 초기시드를 설정하고 새모델과새Adam을 만들어3에포크 학습한뒤 해당sigma로평가한다. 통제된예시의평가는공통clean과기본잡음epsilon을사용한다.</desc>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L10 5.5 L1 10 Z" fill="#59718a"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","DejaVu Sans",sans-serif}</style>
+<rect width="920" height="1165" rx="16" fill="#f5f7fb"/>
+<text x="35" y="48" font-size="28" fill="#172033" font-weight="700" text-anchor="start">잡음 세기 비교: 같은 모델인가, 새 모델인가?</text>
+<text x="35" y="82" font-size="18" fill="#46566c" font-weight="400" text-anchor="start">이 그림은 같은 검증 원본과 기본 잡음을 사용하는 통제된 비교 예시다.</text>
+<rect x="40" y="115" width="840" height="125" rx="12" fill="#e8f5ef" stroke="#176d58" stroke-width="1.5"/>
+<text x="460.0" y="153.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">두 평가의 공통 입력 준비</text>
+<text x="460.0" y="184.85" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">clean + σ × ε → clamp(0, 1)</text>
+<text x="460.0" y="215.85" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">같은 clean, 같은 ε · σ는 0.25 또는 0.50</text>
+<text x="60" y="291" font-size="24" fill="#1b5fa7" font-weight="700" text-anchor="start">A. 고정 모델 평가</text>
+<text x="500" y="291" font-size="24" fill="#7444a5" font-weight="700" text-anchor="start">B. σ마다 별도 재학습</text>
+<rect x="40" y="313" width="400" height="715" rx="12" fill="#fff" stroke="#c7d6e8" stroke-width="1.5"/>
+<rect x="480" y="313" width="400" height="715" rx="12" fill="#fff" stroke="#d8c8e9" stroke-width="1.5"/>
+<rect x="65" y="354" width="350" height="104" rx="12" fill="#e9f2fc" stroke="#1b5fa7" stroke-width="1.5"/>
+<text x="240.0" y="398.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">이미 학습된 model 하나</text>
+<text x="240.0" y="427.85" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">가중치를 그대로 유지</text>
+<path d="M240,468 L240,510" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="65" y="523" width="350" height="95" rx="12" fill="#e9f2fc" stroke="#1b5fa7" stroke-width="1.5"/>
+<text x="240.0" y="563.35" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">eval() + no_grad()</text>
+<text x="240.0" y="592.35" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">backward / step 없음</text>
+<path d="M240,628 L240,681 L150,681 L150,717" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M240,681 L330,681 L330,717" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="65" y="730" width="170" height="100" rx="12" fill="#e8f5ef" stroke="#176d58" stroke-width="1.5"/>
+<text x="150.0" y="772.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">σ = 0.25</text>
+<text x="150.0" y="801.5" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">평가만</text>
+<rect x="245" y="730" width="170" height="100" rx="12" fill="#e8f5ef" stroke="#176d58" stroke-width="1.5"/>
+<text x="330.0" y="772.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">σ = 0.50</text>
+<text x="330.0" y="801.5" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">평가만</text>
+<rect x="500" y="345" width="170" height="82" rx="12" fill="#fff2d9" stroke="#996014" stroke-width="1.5"/>
+<text x="585.0" y="377.8" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">σ = 0.25</text>
+<text x="585.0" y="406.8" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">seed S 재설정</text>
+<path d="M585,437 L585,460" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="500" y="472" width="170" height="100" rx="12" fill="#f1ebf9" stroke="#7444a5" stroke-width="1.5"/>
+<text x="585.0" y="514.15" font-size="19" fill="#172033" font-weight="700" text-anchor="middle">새 모델 A</text>
+<text x="585.0" y="543.15" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">새 Adam A</text>
+<path d="M585,582 L585,605" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="500" y="617" width="170" height="100" rx="12" fill="#fff2d9" stroke="#996014" stroke-width="1.5"/>
+<text x="585.0" y="659.15" font-size="19" fill="#172033" font-weight="700" text-anchor="middle">fit: 3 epochs</text>
+<text x="585.0" y="688.15" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">가중치 갱신</text>
+<path d="M585,727 L585,749" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="500" y="761" width="170" height="82" rx="12" fill="#e8f5ef" stroke="#176d58" stroke-width="1.5"/>
+<text x="585.0" y="793.8" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">σ = 0.25</text>
+<text x="585.0" y="822.8" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">학습 후 평가</text>
+<rect x="690" y="345" width="170" height="82" rx="12" fill="#fff2d9" stroke="#996014" stroke-width="1.5"/>
+<text x="775.0" y="377.8" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">σ = 0.50</text>
+<text x="775.0" y="406.8" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">seed S 재설정</text>
+<path d="M775,437 L775,460" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="690" y="472" width="170" height="100" rx="12" fill="#f1ebf9" stroke="#7444a5" stroke-width="1.5"/>
+<text x="775.0" y="514.15" font-size="19" fill="#172033" font-weight="700" text-anchor="middle">새 모델 B</text>
+<text x="775.0" y="543.15" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">새 Adam B</text>
+<path d="M775,582 L775,605" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="690" y="617" width="170" height="100" rx="12" fill="#fff2d9" stroke="#996014" stroke-width="1.5"/>
+<text x="775.0" y="659.15" font-size="19" fill="#172033" font-weight="700" text-anchor="middle">fit: 3 epochs</text>
+<text x="775.0" y="688.15" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">가중치 갱신</text>
+<path d="M775,727 L775,749" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="690" y="761" width="170" height="82" rx="12" fill="#e8f5ef" stroke="#176d58" stroke-width="1.5"/>
+<text x="775.0" y="793.8" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">σ = 0.50</text>
+<text x="775.0" y="822.8" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">학습 후 평가</text>
+<text x="65" y="897" font-size="20" fill="#172033" font-weight="700" text-anchor="start">묻는 것:</text>
+<text x="65" y="929" font-size="20" fill="#172033" font-weight="400" text-anchor="start">같은 모델이 입력 잡음의 변화에</text>
+<text x="65" y="961" font-size="20" fill="#172033" font-weight="400" text-anchor="start">얼마나 잘 대응하는가?</text>
+<text x="505" y="897" font-size="20" fill="#172033" font-weight="700" text-anchor="start">묻는 것:</text>
+<text x="505" y="929" font-size="20" fill="#172033" font-weight="400" text-anchor="start">각 σ에 맞게 따로 학습했을 때</text>
+<text x="505" y="961" font-size="20" fill="#172033" font-weight="400" text-anchor="start">각 모델은 얼마나 잘 복원하는가?</text>
+<rect x="40" y="1053" width="840" height="75" rx="12" fill="#fff2d9" stroke="#996014" stroke-width="1.5"/>
+<text x="60" y="1083" font-size="19" fill="#172033" font-weight="400" text-anchor="start">왼쪽은 평가 입력만 바꾼다. 오른쪽은 학습 조건과 평가 입력을 함께 바꾼다.</text>
+</svg>

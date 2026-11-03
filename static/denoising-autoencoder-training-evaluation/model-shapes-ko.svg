@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="1040" viewBox="0 0 920 1040" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">4채널 모델: 데이터의 모양과 학습 파라미터</title>
+<desc id="desc">입력과 출력은 (N,1,28,28), 중간 특징은 (N,4,14,14)다. 깨끗한 원본이 MSE의 정답으로 들어간다. 인코더40개와 디코더65개를 합해 학습 파라미터는105개이며, 입력과 중간 특징의 이미지당 원소 수는784개로 같다.</desc>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L10 5.5 L1 10 Z" fill="#59718a"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","DejaVu Sans",sans-serif}</style>
+<rect width="920" height="1040" rx="16" fill="#f5f7fb"/>
+<text x="35" y="48" font-size="28" fill="#172033" font-weight="700" text-anchor="start">4채널 모델: 데이터의 모양과 학습 파라미터</text>
+<text x="35" y="82" font-size="18" fill="#46566c" font-weight="400" text-anchor="start">N: 이미지 수 · C: 채널 수 · H/W: 높이와 너비 · 모든 shape는 (N,C,H,W)</text>
+<rect x="35" y="135" width="400" height="92" rx="12" fill="#e9f2fc" stroke="#1b5fa7" stroke-width="1.5"/>
+<text x="235.0" y="173.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">잡음 입력 noisy</text>
+<text x="235.0" y="202.5" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">(N, 1, 28, 28)</text>
+<path d="M235,235 L235,254" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="35" y="265" width="400" height="92" rx="12" fill="#f1ebf9" stroke="#7444a5" stroke-width="1.5"/>
+<text x="235.0" y="303.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">인코더: Conv2d → ReLU</text>
+<text x="235.0" y="332.5" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">1 → 4 channels · k=3, s=2, p=1</text>
+<path d="M235,365 L235,384" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="35" y="395" width="400" height="92" rx="12" fill="#fff2d9" stroke="#996014" stroke-width="1.5"/>
+<text x="235.0" y="433.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">중간 특징 z</text>
+<text x="235.0" y="462.5" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">(N, 4, 14, 14)</text>
+<path d="M235,495 L235,514" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="35" y="525" width="400" height="92" rx="12" fill="#f1ebf9" stroke="#7444a5" stroke-width="1.5"/>
+<text x="235.0" y="563.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">디코더: ConvTranspose2d</text>
+<text x="235.0" y="592.5" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">→ Sigmoid · k=4, s=2, p=1</text>
+<path d="M235,625 L235,644" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="35" y="655" width="400" height="92" rx="12" fill="#e8f5ef" stroke="#176d58" stroke-width="1.5"/>
+<text x="235.0" y="693.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">복원 출력 recon</text>
+<text x="235.0" y="722.5" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">(N, 1, 28, 28)</text>
+<rect x="485" y="135" width="390" height="92" rx="12" fill="#e8f5ef" stroke="#176d58" stroke-width="1.5"/>
+<text x="680.0" y="173.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">정답 clean</text>
+<text x="680.0" y="202.5" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">(N, 1, 28, 28)</text>
+<rect x="485" y="265" width="390" height="92" rx="12" fill="#f1ebf9" stroke="#7444a5" stroke-width="1.5"/>
+<text x="680.0" y="303.15" font-size="19" fill="#172033" font-weight="700" text-anchor="middle">Conv2d weight: (4, 1, 3, 3)</text>
+<text x="680.0" y="332.15" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">36 weights + 4 biases = 40</text>
+<rect x="485" y="395" width="390" height="92" rx="12" fill="#fff2d9" stroke="#996014" stroke-width="1.5"/>
+<text x="680.0" y="433.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">이미지 한 장당 값의 개수</text>
+<text x="680.0" y="462.5" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">1×28×28 = 4×14×14 = 784</text>
+<rect x="485" y="525" width="390" height="92" rx="12" fill="#f1ebf9" stroke="#7444a5" stroke-width="1.5"/>
+<text x="680.0" y="563.15" font-size="19" fill="#172033" font-weight="700" text-anchor="middle">Transpose weight: (4, 1, 4, 4)</text>
+<text x="680.0" y="592.15" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">64 weights + 1 bias = 65</text>
+<rect x="485" y="655" width="390" height="92" rx="12" fill="#e8f5ef" stroke="#176d58" stroke-width="1.5"/>
+<text x="680.0" y="693.15" font-size="19" fill="#172033" font-weight="700" text-anchor="middle">전체 학습 파라미터: 105개</text>
+<text x="680.0" y="722.15" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">ReLU / Sigmoid: 파라미터 없음</text>
+<rect x="485" y="805" width="390" height="102" rx="12" fill="#e8f5ef" stroke="#176d58" stroke-width="1.5"/>
+<text x="680.0" y="848.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">MSE(recon, clean)</text>
+<text x="680.0" y="877.5" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">같은 이미지의 같은 픽셀 비교</text>
+<path d="M435,701 L460,701 L460,856 L475,856" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M875,181 L897,181 L897,856 L885,856" fill="none" stroke="#59718a" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="60" y="827" font-size="20" fill="#172033" font-weight="400" text-anchor="start">복원 출력과 깨끗한 정답이</text>
+<text x="60" y="857" font-size="20" fill="#172033" font-weight="400" text-anchor="start">손실 계산에 함께 들어간다.</text>
+<rect x="35" y="940" width="840" height="66" rx="12" fill="#fff2d9" stroke="#996014" stroke-width="1.5"/>
+<text x="55" y="967" font-size="19" fill="#172033" font-weight="400" text-anchor="start">28×28 입력에서는 N과 이미지 한 장당 값의 개수 784개가 유지된다.</text>
+</svg>
