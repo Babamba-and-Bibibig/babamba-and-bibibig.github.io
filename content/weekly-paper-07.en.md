@@ -1,5 +1,5 @@
 +++
-title = "Weekly Paper 07: Autoencoder Reconstruction Error and Overfitting"
+title = "Weekly Paper 07"
 date = 2026-11-06
 slug = "weekly-paper-07"
 +++
