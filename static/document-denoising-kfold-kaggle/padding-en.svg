@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="850" viewBox="0 0 1000 850" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Keep the original pixels and exclude the added padding</title>
+<desc id="desc">An image with height 258 and width 540 receives 81 white rows above and below, reaching height 420. Selecting 81:339 on the height axis retains original rows 81 through 338. Batch tensor axes represent images, channels, height, and width.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker><marker id="update" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#b93745"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Droid Sans Fallback",sans-serif}</style>
+<rect width="1000" height="850" rx="16" fill="#f5f7fb"/>
+<text x="36" y="49" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Keep the original pixels and exclude the added padding</text>
+<text x="36" y="84" font-size="18" fill="#46566c" font-weight="400" text-anchor="start">All images have width 540; only the smaller height is padded.</text>
+<text x="225" y="137" font-size="23" fill="#172033" font-weight="700" text-anchor="middle">Original document</text>
+<text x="745" y="137" font-size="23" fill="#172033" font-weight="700" text-anchor="middle">Padded document</text>
+<rect x="45" y="212" width="360" height="172" rx="0" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="225" y="288" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">258 original rows</text>
+<text x="225" y="320" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle">W = 540</text>
+<rect x="565" y="158" width="360" height="280" rx="0" fill="#ffffff" stroke="#59718a" stroke-width="1.6"/>
+<rect x="565" y="212" width="360" height="172" rx="0" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="745" y="190" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">81 white rows above</text>
+<text x="745" y="288" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">The same 258 rows</text>
+<text x="745" y="320" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle">W = 540</text>
+<text x="745" y="418" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">81 white rows below</text>
+<path d="M420 298 H549" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="485" y="270" font-size="18" fill="#1b5fa7" font-weight="700" text-anchor="middle">F.pad</text>
+<text x="225" y="472" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">(C, H, W) = (1, 258, 540)</text>
+<text x="745" y="472" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">(C, H, W) = (1, 420, 540)</text>
+<text x="942" y="218" font-size="16" fill="#1b5fa7" font-weight="700" text-anchor="start">81</text>
+<text x="938" y="390" font-size="16" fill="#1b5fa7" font-weight="700" text-anchor="start">339</text>
+<line x1="928" y1="212" x2="936" y2="212" stroke="#1b5fa7" stroke-width="1.8"/>
+<line x1="928" y1="384" x2="936" y2="384" stroke="#1b5fa7" stroke-width="1.8"/>
+<rect x="40" y="515" width="920" height="112" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="65" y="552" font-size="22" fill="#172033" font-weight="700" text-anchor="start">Select the original area</text>
+<text x="935" y="552" font-size="23" fill="#b93745" font-weight="700" text-anchor="end">pred[:, :, 81:339, :]</text>
+<text x="65" y="591" font-size="20" fill="#172033" font-weight="400" text-anchor="start">Start 81 included · stop 339 excluded → 258 rows, indices 81–338</text>
+<text x="40" y="672" font-size="21" fill="#172033" font-weight="700" text-anchor="start">(24, 1, 420, 540): distinguish axis number, meaning, and size.</text>
+<rect x="40" y="698" width="218" height="117" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="149" y="732" font-size="20" fill="#1b5fa7" font-weight="700" text-anchor="middle">Axis 0 · B</text>
+<text x="149" y="763" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">24 images</text>
+<text x="149" y="793" font-size="17" fill="#46566c" font-weight="400" text-anchor="middle">Indices 0–23</text>
+<rect x="274" y="698" width="218" height="117" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="383" y="732" font-size="20" fill="#1b5fa7" font-weight="700" text-anchor="middle">Axis 1 · C</text>
+<text x="383" y="763" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">1 channel</text>
+<text x="383" y="793" font-size="17" fill="#46566c" font-weight="400" text-anchor="middle">Index 0</text>
+<rect x="508" y="698" width="218" height="117" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="617" y="732" font-size="20" fill="#1b5fa7" font-weight="700" text-anchor="middle">Axis 2 · H</text>
+<text x="617" y="763" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">Height: 420 rows</text>
+<text x="617" y="793" font-size="17" fill="#46566c" font-weight="400" text-anchor="middle">Indices 0–419</text>
+<rect x="742" y="698" width="218" height="117" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="851" y="732" font-size="20" fill="#1b5fa7" font-weight="700" text-anchor="middle">Axis 3 · W</text>
+<text x="851" y="763" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">Width: 540 columns</text>
+<text x="851" y="793" font-size="17" fill="#46566c" font-weight="400" text-anchor="middle">Indices 0–539</text>
+</svg>

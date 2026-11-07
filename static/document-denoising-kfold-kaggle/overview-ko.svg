@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="900" viewBox="0 0 1000 900" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">문서 복원: 입력, 정답, 학습을 연결하기</title>
+<desc id="desc">손상 이미지 X가 인코더, 중간 특징 z, 디코더를 지나 복원 출력 pred가 된다. 깨끗한 정답 Y는 pred와 손실을 계산할 때 사용한다. 학습에서는 역전파로 기울기를 계산하고 옵티마이저가 인코더와 디코더의 가중치를 갱신한다.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker><marker id="update" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#b93745"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Droid Sans Fallback",sans-serif}</style>
+<rect width="1000" height="900" rx="16" fill="#f5f7fb"/>
+<text x="36" y="49" font-size="29" fill="#172033" font-weight="700" text-anchor="start">문서 복원: 입력, 정답, 학습을 연결하기</text>
+<text x="36" y="84" font-size="18" fill="#46566c" font-weight="400" text-anchor="start">B: 이미지 수 · shape 순서: (B, C, H, W)</text>
+<rect x="40" y="122" width="435" height="82" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="257.5" y="156.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">손상 이미지 X</text>
+<text x="257.5" y="187.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">(B, 1, 420, 540)</text>
+<path d="M257.5 211 V232" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="242" width="435" height="82" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="257.5" y="276.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">인코더: Conv2d → ReLU</text>
+<text x="257.5" y="307.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">1 → 16 channels · k=3, s=2, p=1</text>
+<path d="M257.5 331 V352" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="362" width="435" height="82" rx="12" fill="#edf1f6" stroke="#59718a" stroke-width="1.6"/>
+<text x="257.5" y="396.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">중간 특징 z</text>
+<text x="257.5" y="427.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">(B, 16, 210, 270)</text>
+<path d="M257.5 451 V472" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="482" width="435" height="82" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="257.5" y="516.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">디코더: 전치 합성곱 → Sigmoid</text>
+<text x="257.5" y="547.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">16 → 1 channel · k=4, s=2, p=1</text>
+<path d="M257.5 571 V592" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="602" width="435" height="82" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="257.5" y="636.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">복원 출력 pred</text>
+<text x="257.5" y="667.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">(B, 1, 420, 540)</text>
+<rect x="560" y="122" width="400" height="82" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="760.0" y="156.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">깨끗한 정답 Y</text>
+<text x="760.0" y="187.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">(B, 1, 420, 540)</text>
+<rect x="560" y="602" width="400" height="82" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="760.0" y="636.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">손실: pred와 Y 비교</text>
+<text x="760.0" y="667.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">MSE(pred, Y)</text>
+<path d="M483 643 H550" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M960 163 H980 V643 H970" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="560" y="266" width="400" height="190" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="582" y="303" font-size="21" fill="#172033" font-weight="700" text-anchor="start">서로 다른 두 종류의 숫자</text>
+<text x="582" y="342" font-size="20" fill="#172033" font-weight="400" text-anchor="start">가중치·편향: 모델에 저장</text>
+<text x="582" y="375" font-size="20" fill="#172033" font-weight="400" text-anchor="start">중간 특징 z: 입력마다 계산</text>
+<text x="582" y="423" font-size="19" fill="#1b5fa7" font-weight="700" text-anchor="start">정답 Y는 손실 계산에 사용한다.</text>
+<text x="560" y="535" font-size="18" fill="#46566c" font-weight="400" text-anchor="start">실선: 데이터를 계산하는 흐름</text>
+<text x="560" y="565" font-size="18" fill="#b93745" font-weight="400" text-anchor="start">점선: 학습 중 가중치 갱신</text>
+<rect x="560" y="740" width="400" height="76" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="760.0" y="771.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">학습할 때</text>
+<text x="760.0" y="802.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">backward() → optimizer.step()</text>
+<path d="M760 692 V730" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M552 778 H20 V283 H30" fill="none" stroke="#b93745" stroke-width="2.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#update)"/>
+<path d="M20 523 H30" fill="none" stroke="#b93745" stroke-width="2.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#update)"/>
+<text x="64" y="739" font-size="20" fill="#46566c" font-weight="400" text-anchor="start">평가·추론에서는 현재 가중치로</text>
+<text x="64" y="770" font-size="20" fill="#46566c" font-weight="400" text-anchor="start">복원 결과를 계산한다.</text>
+<text x="40" y="863" font-size="20" fill="#172033" font-weight="700" text-anchor="start">정답은 클래스 번호 하나가 아니라 깨끗한 이미지 전체다.</text>
+</svg>

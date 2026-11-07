@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="920" viewBox="0 0 1000 920" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">6개 분할, 6번의 새 학습</title>
+<desc id="desc">144쌍을 각 24쌍의 A부터 F 그룹으로 나눈 예. 각 Fold에서 한 그룹 24쌍을 검증에 두고 나머지 다섯 그룹 120쌍으로 새 모델을 학습한다. 같은 Fold의 Epoch가 반복되는 동안 학습과 검증에 속한 원본 이미지 구성은 유지된다.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker><marker id="update" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#b93745"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Droid Sans Fallback",sans-serif}</style>
+<rect width="1000" height="920" rx="16" fill="#f5f7fb"/>
+<text x="36" y="49" font-size="29" fill="#172033" font-weight="700" text-anchor="start">6개 분할, 6번의 새 학습</text>
+<text x="36" y="84" font-size="18" fill="#46566c" font-weight="400" text-anchor="start">144쌍 → 각 그룹 24쌍 · 회차마다 학습 120쌍 + 검증 24쌍</text>
+<text x="154" y="128" font-size="20" fill="#46566c" font-weight="700" text-anchor="start">A~F: 표본을 나눈 묶음</text>
+<text x="862" y="128" font-size="19" fill="#46566c" font-weight="700" text-anchor="middle">처음부터 학습</text>
+<text x="198" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">A</text>
+<text x="294" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">B</text>
+<text x="390" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">C</text>
+<text x="486" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">D</text>
+<text x="582" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">E</text>
+<text x="678" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">F</text>
+<text x="42" y="222" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 1</text>
+<rect x="154" y="183" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="198.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">검증</text>
+<rect x="250" y="183" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="294.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="346" y="183" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="390.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="442" y="183" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="486.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="538" y="183" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="582.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="634" y="183" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="678.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<path d="M734 212.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="183" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="219.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">새 모델 1</text>
+<text x="42" y="297" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 2</text>
+<rect x="154" y="258" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="198.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="250" y="258" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="294.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">검증</text>
+<rect x="346" y="258" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="390.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="442" y="258" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="486.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="538" y="258" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="582.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="634" y="258" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="678.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<path d="M734 287.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="258" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="294.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">새 모델 2</text>
+<text x="42" y="372" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 3</text>
+<rect x="154" y="333" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="198.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="250" y="333" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="294.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="346" y="333" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="390.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">검증</text>
+<rect x="442" y="333" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="486.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="538" y="333" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="582.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="634" y="333" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="678.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<path d="M734 362.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="333" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="369.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">새 모델 3</text>
+<text x="42" y="447" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 4</text>
+<rect x="154" y="408" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="198.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="250" y="408" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="294.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="346" y="408" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="390.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="442" y="408" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="486.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">검증</text>
+<rect x="538" y="408" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="582.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="634" y="408" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="678.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<path d="M734 437.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="408" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="444.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">새 모델 4</text>
+<text x="42" y="522" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 5</text>
+<rect x="154" y="483" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="198.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="250" y="483" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="294.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="346" y="483" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="390.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="442" y="483" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="486.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="538" y="483" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="582.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">검증</text>
+<rect x="634" y="483" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="678.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<path d="M734 512.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="483" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="519.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">새 모델 5</text>
+<text x="42" y="597" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 6</text>
+<rect x="154" y="558" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="198.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="250" y="558" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="294.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="346" y="558" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="390.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="442" y="558" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="486.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="538" y="558" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="582.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습</text>
+<rect x="634" y="558" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="678.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">검증</text>
+<path d="M734 587.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="558" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="594.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">새 모델 6</text>
+<rect x="40" y="657" width="166" height="42" rx="7" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="123" y="686" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">학습 그룹</text>
+<rect x="226" y="657" width="166" height="42" rx="7" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="309" y="686" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">검증 그룹</text>
+<text x="427" y="685" font-size="19" fill="#46566c" font-weight="400" text-anchor="start">행이 바뀌면 모델과 optimizer도 새로 만든다.</text>
+<rect x="40" y="738" width="920" height="142" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="65" y="776" font-size="23" fill="#172033" font-weight="700" text-anchor="start">한 행 안에서 Epoch를 반복할 때</text>
+<text x="65" y="815" font-size="21" fill="#172033" font-weight="400" text-anchor="start">학습 120쌍과 검증 24쌍의 소속은 그대로다.</text>
+<text x="65" y="852" font-size="19" fill="#46566c" font-weight="400" text-anchor="start">shuffle=True는 학습 데이터 안에서 읽는 순서만 섞는다.</text>
+</svg>

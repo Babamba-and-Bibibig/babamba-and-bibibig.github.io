@@ -1,0 +1,60 @@
+/* Keep wide technical figures inside their own scrollable area. */
+.document-figure {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  margin: 1.8rem 0;
+  padding: .8rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid #94a3b866;
+  border-radius: .8rem;
+}
+.document-figure img {
+  display: block;
+  width: 100%;
+  min-width: 800px;
+  max-width: none;
+  height: auto;
+  margin: 0;
+  background: #f5f7fb;
+  border-radius: .5rem;
+  transform: none !important;
+  transition: none !important;
+}
+.document-figure figcaption {
+  margin-top: .75rem;
+  font-size: .94rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.document-math {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: .4rem 0;
+}
+.document-math .katex-display { margin: .4rem 0; }
+/* This stylesheet is loaded only by the two document-restoration articles. */
+#main-content article { min-width: 0; }
+#main-content article > table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+#main-content article > table th,
+#main-content article > table td {
+  min-width: 5rem;
+  word-break: keep-all;
+}
+#main-content article > table th { white-space: nowrap; }
+#main-content article .katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: .2rem 0;
+}
+@media (max-width: 700px) {
+  .document-figure { padding: .5rem; margin: 1.3rem 0; }
+  .document-figure figcaption { font-size: .9rem; }
+}

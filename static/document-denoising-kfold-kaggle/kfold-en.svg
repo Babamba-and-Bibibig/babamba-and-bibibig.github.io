@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="920" viewBox="0 0 1000 920" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Six splits, six fresh training runs</title>
+<desc id="desc">144 pairs are split into six groups A through F, each with 24 pairs. Each fold holds out one group for validation and trains a fresh model on the other 120 pairs. Within a fold, the train and validation memberships stay fixed across epochs.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker><marker id="update" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#b93745"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Droid Sans Fallback",sans-serif}</style>
+<rect width="1000" height="920" rx="16" fill="#f5f7fb"/>
+<text x="36" y="49" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Six splits, six fresh training runs</text>
+<text x="36" y="84" font-size="18" fill="#46566c" font-weight="400" text-anchor="start">144 pairs → 24 per group · each run: 120 training + 24 validation</text>
+<text x="154" y="128" font-size="20" fill="#46566c" font-weight="700" text-anchor="start">A–F: partitions of image pairs</text>
+<text x="862" y="128" font-size="19" fill="#46566c" font-weight="700" text-anchor="middle">Fresh training run</text>
+<text x="198" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">A</text>
+<text x="294" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">B</text>
+<text x="390" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">C</text>
+<text x="486" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">D</text>
+<text x="582" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">E</text>
+<text x="678" y="163" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">F</text>
+<text x="42" y="222" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 1</text>
+<rect x="154" y="183" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="198.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Val</text>
+<rect x="250" y="183" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="294.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="346" y="183" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="390.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="442" y="183" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="486.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="538" y="183" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="582.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="634" y="183" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="678.0" y="219.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<path d="M734 212.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="183" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="219.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">New model 1</text>
+<text x="42" y="297" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 2</text>
+<rect x="154" y="258" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="198.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="250" y="258" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="294.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Val</text>
+<rect x="346" y="258" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="390.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="442" y="258" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="486.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="538" y="258" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="582.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="634" y="258" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="678.0" y="294.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<path d="M734 287.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="258" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="294.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">New model 2</text>
+<text x="42" y="372" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 3</text>
+<rect x="154" y="333" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="198.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="250" y="333" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="294.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="346" y="333" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="390.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Val</text>
+<rect x="442" y="333" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="486.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="538" y="333" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="582.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="634" y="333" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="678.0" y="369.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<path d="M734 362.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="333" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="369.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">New model 3</text>
+<text x="42" y="447" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 4</text>
+<rect x="154" y="408" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="198.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="250" y="408" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="294.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="346" y="408" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="390.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="442" y="408" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="486.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Val</text>
+<rect x="538" y="408" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="582.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="634" y="408" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="678.0" y="444.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<path d="M734 437.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="408" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="444.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">New model 4</text>
+<text x="42" y="522" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 5</text>
+<rect x="154" y="483" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="198.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="250" y="483" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="294.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="346" y="483" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="390.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="442" y="483" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="486.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="538" y="483" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="582.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Val</text>
+<rect x="634" y="483" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="678.0" y="519.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<path d="M734 512.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="483" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="519.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">New model 5</text>
+<text x="42" y="597" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Fold 6</text>
+<rect x="154" y="558" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="198.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="250" y="558" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="294.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="346" y="558" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="390.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="442" y="558" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="486.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="538" y="558" width="88" height="59" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="582.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train</text>
+<rect x="634" y="558" width="88" height="59" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="678.0" y="594.5" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Val</text>
+<path d="M734 587.5 H753" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="766" y="558" width="194" height="59" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="863.0" y="594.85" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">New model 6</text>
+<rect x="40" y="657" width="166" height="42" rx="7" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="123" y="686" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Train group</text>
+<rect x="226" y="657" width="166" height="42" rx="7" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="309" y="686" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Validation</text>
+<text x="427" y="685" font-size="19" fill="#46566c" font-weight="400" text-anchor="start">New row → new model and optimizer.</text>
+<rect x="40" y="738" width="920" height="142" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="65" y="776" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Across epochs within the same row</text>
+<text x="65" y="815" font-size="21" fill="#172033" font-weight="400" text-anchor="start">The same 120 pairs stay in training, and the same 24 stay in validation.</text>
+<text x="65" y="852" font-size="19" fill="#46566c" font-weight="400" text-anchor="start">shuffle=True only changes the order within the training set.</text>
+</svg>

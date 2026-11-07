@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="925" viewBox="0 0 1000 925" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Two ways to aggregate the same pixel errors</title>
+<desc id="desc">Square the pixel errors on the same unpadded original areas. The left path takes an image-wise mean and square root, then averages image scores. The right path sums all squared errors, divides by the total pixel count, and takes one final square root. Both the square-root timing and, for unequal image sizes, image weighting differ.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker><marker id="update" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#b93745"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Droid Sans Fallback",sans-serif}</style>
+<rect width="1000" height="925" rx="16" fill="#f5f7fb"/>
+<text x="36" y="49" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Two ways to aggregate the same pixel errors</text>
+<text x="36" y="84" font-size="18" fill="#46566c" font-weight="400" text-anchor="start">Both paths use exactly the same original areas, with padding excluded.</text>
+<rect x="40" y="122" width="920" height="94" rx="12" fill="#edf1f6" stroke="#59718a" stroke-width="1.6"/>
+<text x="500.0" y="162.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">Subtract matching predicted and target pixels, then square each error.</text>
+<text x="500.0" y="193.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">Individual squared pixel errors — no averaging yet</text>
+<path d="M500 224 V250 H265 V282" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M500 250 H745 V282" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="292" width="450" height="92" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="265.0" y="331.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Mean squared error within each image</text>
+<text x="265.0" y="362.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">One MSE per image</text>
+<rect x="530" y="292" width="430" height="92" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="745.0" y="331.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Sum all squared pixel errors</text>
+<text x="745.0" y="362.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">SSE: sum of squared errors</text>
+<path d="M265 392 V412" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M745 392 V412" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="422" width="450" height="92" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="265.0" y="461.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Square root for each image</text>
+<text x="265.0" y="492.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">One RMSE per image</text>
+<rect x="530" y="422" width="430" height="92" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="745.0" y="461.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Divide by the total pixel count</text>
+<text x="745.0" y="492.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">Pooled pixel MSE</text>
+<path d="M265 522 V542" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M745 522 V542" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="552" width="450" height="92" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="265.0" y="591.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Average the image RMSE values</text>
+<text x="265.0" y="622.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">Mean per-image RMSE</text>
+<rect x="530" y="552" width="430" height="92" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="745.0" y="591.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">One square root at the end</text>
+<text x="745.0" y="622.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">Pooled pixel RMSE</text>
+<text x="265" y="686" font-size="21" fill="#1b5fa7" font-weight="700" text-anchor="middle">Equal weight for each image</text>
+<text x="745" y="686" font-size="21" fill="#b93745" font-weight="700" text-anchor="middle">Equal weight for each pixel</text>
+<rect x="40" y="733" width="920" height="151" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="65" y="772" font-size="23" fill="#172033" font-weight="700" text-anchor="start">The square root is applied at different stages.</text>
+<text x="65" y="812" font-size="21" fill="#172033" font-weight="400" text-anchor="start">Even equally sized images can produce different scores.</text>
+<text x="65" y="851" font-size="20" fill="#46566c" font-weight="400" text-anchor="start">With unequal sizes, larger images contribute more to the pooled score.</text>
+</svg>

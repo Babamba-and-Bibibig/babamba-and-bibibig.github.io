@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="925" viewBox="0 0 1000 925" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">같은 픽셀 오차를 두 방식으로 모으면</title>
+<desc id="desc">패딩을 제외한 같은 원본 영역에서 픽셀 차이를 제곱한다. 왼쪽은 이미지마다 평균제곱오차와 제곱근을 구한 다음 이미지 점수를 평균한다. 오른쪽은 모든 제곱오차를 합쳐 전체 픽셀 수로 나눈 뒤 마지막에 제곱근을 적용한다. 제곱근 적용 시점이 다르며, 이미지 크기가 다르면 각 이미지의 비중도 달라진다.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker><marker id="update" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#b93745"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Droid Sans Fallback",sans-serif}</style>
+<rect width="1000" height="925" rx="16" fill="#f5f7fb"/>
+<text x="36" y="49" font-size="29" fill="#172033" font-weight="700" text-anchor="start">같은 픽셀 오차를 두 방식으로 모으면</text>
+<text x="36" y="84" font-size="18" fill="#46566c" font-weight="400" text-anchor="start">두 경로 모두 패딩을 제외한 동일한 원본 영역을 사용한다.</text>
+<rect x="40" y="122" width="920" height="94" rx="12" fill="#edf1f6" stroke="#59718a" stroke-width="1.6"/>
+<text x="500.0" y="162.0" font-size="22" fill="#172033" font-weight="700" text-anchor="middle">같은 위치의 예측·정답 픽셀을 빼고, 차이를 제곱한다.</text>
+<text x="500.0" y="193.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">아직 평균을 내지 않은 픽셀별 제곱오차</text>
+<path d="M500 224 V250 H265 V282" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M500 250 H745 V282" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="292" width="450" height="92" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="265.0" y="331.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">이미지마다 제곱오차 평균</text>
+<text x="265.0" y="362.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">이미지별 MSE</text>
+<rect x="530" y="292" width="430" height="92" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="745.0" y="331.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">모든 제곱오차를 합산</text>
+<text x="745.0" y="362.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">SSE: 전체 제곱오차의 합</text>
+<path d="M265 392 V412" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M745 392 V412" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="422" width="450" height="92" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="265.0" y="461.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">이미지마다 제곱근 적용</text>
+<text x="265.0" y="492.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">이미지별 RMSE</text>
+<rect x="530" y="422" width="430" height="92" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="745.0" y="461.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">전체 픽셀 수로 나눔</text>
+<text x="745.0" y="492.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">전체 픽셀 MSE</text>
+<path d="M265 522 V542" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M745 522 V542" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="552" width="450" height="92" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="265.0" y="591.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">이미지별 RMSE를 평균</text>
+<text x="265.0" y="622.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">Mean per-image RMSE</text>
+<rect x="530" y="552" width="430" height="92" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="745.0" y="591.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">마지막에 제곱근 한 번</text>
+<text x="745.0" y="622.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">Pooled pixel RMSE</text>
+<text x="265" y="686" font-size="21" fill="#1b5fa7" font-weight="700" text-anchor="middle">이미지 한 장당 같은 비중</text>
+<text x="745" y="686" font-size="21" fill="#b93745" font-weight="700" text-anchor="middle">픽셀 하나당 같은 비중</text>
+<rect x="40" y="733" width="920" height="151" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="65" y="772" font-size="23" fill="#172033" font-weight="700" text-anchor="start">제곱근을 적용하는 시점이 다르다.</text>
+<text x="65" y="812" font-size="21" fill="#172033" font-weight="400" text-anchor="start">이미지 크기가 같아도 두 결과는 달라질 수 있다.</text>
+<text x="65" y="851" font-size="20" fill="#46566c" font-weight="400" text-anchor="start">크기가 다르면 전체 픽셀 집계에서 큰 이미지의 비중이 더 커진다.</text>
+</svg>

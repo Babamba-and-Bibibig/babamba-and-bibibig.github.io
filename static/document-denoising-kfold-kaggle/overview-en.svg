@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="900" viewBox="0 0 1000 900" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Document restoration: inputs, targets, and learning</title>
+<desc id="desc">Noisy input X passes through the encoder, features z, and decoder to produce pred. Clean target Y is compared with pred in the loss. During training, backpropagation computes gradients and the optimizer updates encoder and decoder parameters.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker><marker id="update" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#b93745"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo","Droid Sans Fallback",sans-serif}</style>
+<rect width="1000" height="900" rx="16" fill="#f5f7fb"/>
+<text x="36" y="49" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Document restoration: inputs, targets, and learning</text>
+<text x="36" y="84" font-size="18" fill="#46566c" font-weight="400" text-anchor="start">B: number of images · shape order: (B, C, H, W)</text>
+<rect x="40" y="122" width="435" height="82" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="257.5" y="156.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">Noisy input X</text>
+<text x="257.5" y="187.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">(B, 1, 420, 540)</text>
+<path d="M257.5 211 V232" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="242" width="435" height="82" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="257.5" y="276.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">Encoder: Conv2d → ReLU</text>
+<text x="257.5" y="307.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">1 → 16 channels · k=3, s=2, p=1</text>
+<path d="M257.5 331 V352" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="362" width="435" height="82" rx="12" fill="#edf1f6" stroke="#59718a" stroke-width="1.6"/>
+<text x="257.5" y="396.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">Intermediate features z</text>
+<text x="257.5" y="427.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">(B, 16, 210, 270)</text>
+<path d="M257.5 451 V472" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="482" width="435" height="82" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="257.5" y="516.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">Decoder: ConvTranspose2d → Sigmoid</text>
+<text x="257.5" y="547.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">16 → 1 channel · k=4, s=2, p=1</text>
+<path d="M257.5 571 V592" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="602" width="435" height="82" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="257.5" y="636.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">Restored output pred</text>
+<text x="257.5" y="667.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">(B, 1, 420, 540)</text>
+<rect x="560" y="122" width="400" height="82" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="760.0" y="156.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">Clean target Y</text>
+<text x="760.0" y="187.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">(B, 1, 420, 540)</text>
+<rect x="560" y="602" width="400" height="82" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="760.0" y="636.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">Loss: compare pred with Y</text>
+<text x="760.0" y="667.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">MSE(pred, Y)</text>
+<path d="M483 643 H550" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M960 163 H980 V643 H970" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="560" y="266" width="400" height="190" rx="12" fill="#ffffff" stroke="#a8b5c5" stroke-width="1.6"/>
+<text x="582" y="303" font-size="21" fill="#172033" font-weight="700" text-anchor="start">Two different kinds of values</text>
+<text x="582" y="342" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Parameters: stored in the model</text>
+<text x="582" y="375" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Features z: computed from each input</text>
+<text x="582" y="423" font-size="18" fill="#1b5fa7" font-weight="700" text-anchor="start">Target Y is used to compute the loss.</text>
+<text x="560" y="535" font-size="18" fill="#46566c" font-weight="400" text-anchor="start">Solid arrows: forward computation</text>
+<text x="560" y="565" font-size="18" fill="#b93745" font-weight="400" text-anchor="start">Dashed arrows: parameter updates</text>
+<rect x="560" y="740" width="400" height="76" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="760.0" y="771.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">During training</text>
+<text x="760.0" y="802.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle">backward() → optimizer.step()</text>
+<path d="M760 692 V730" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M552 778 H20 V283 H30" fill="none" stroke="#b93745" stroke-width="2.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#update)"/>
+<path d="M20 523 H30" fill="none" stroke="#b93745" stroke-width="2.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#update)"/>
+<text x="64" y="739" font-size="20" fill="#46566c" font-weight="400" text-anchor="start">Evaluation and inference use</text>
+<text x="64" y="770" font-size="20" fill="#46566c" font-weight="400" text-anchor="start">the currently learned parameters.</text>
+<text x="40" y="863" font-size="20" fill="#172033" font-weight="700" text-anchor="start">The target is an entire clean image, rather than a class label.</text>
+</svg>
