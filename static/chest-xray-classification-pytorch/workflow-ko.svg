@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1085" viewBox="0 0 1000 1085" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">학습·검증·테스트는 서로 다른 역할을 맡는다</title>
+<desc id="desc">기존 학습 5,216장과 검증 16장을 합친 5,232장을 층화 분할해 새 학습 4,185장과 검증 1,047장으로 나눈다. 학습은 가중치를 갱신하고 검증은 모델 선택에 사용한다. 기존 테스트 624장은 따로 보존해 선택이 끝난 뒤 평가한다.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif}</style>
+<rect width="1000" height="1085" rx="16" fill="#f5f7fb"/>
+<text x="36" y="49" font-size="29" fill="#172033" font-weight="700" text-anchor="start" data-width="928">학습·검증·테스트는 서로 다른 역할을 맡는다</text>
+<text x="36" y="84" font-size="19" fill="#46566c" font-weight="400" text-anchor="start" data-width="928">분할은 이미지 내용을 바꾸지 않고, 어떤 샘플을 어디에 사용할지 정한다.</text>
+<rect x="50" y="125" width="540" height="106" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="320.0" y="170.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="510">기존 train 5,216장 + val 16장</text>
+<text x="320.0" y="201.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="510">합계 5,232장 · 클래스 번호 대응 확인</text>
+<rect x="665" y="125" width="285" height="106" rx="12" fill="#edf1f6" stroke="#59718a" stroke-width="1.6"/>
+<text x="807.5" y="170.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="255">기존 test 624장</text>
+<text x="807.5" y="201.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="255">따로 보존</text>
+<path d="M320 239 V267" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="50" y="277" width="540" height="100" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.6"/>
+<text x="320.0" y="319.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="510">정답 라벨에 따라 80:20 층화 분할</text>
+<text x="320.0" y="350.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="510">정상·폐렴의 구성 비율을 비슷하게 유지</text>
+<path d="M320 385 V407 H250 V430" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M320 407 H725 V430" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="50" y="440" width="400" height="116" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="250.0" y="475.0" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="370">새 학습 4,185장</text>
+<text x="250.0" y="506.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="370">정상 1,079 · 폐렴 3,106</text>
+<text x="250.0" y="537.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="370">가중치 갱신에 사용</text>
+<rect x="500" y="440" width="450" height="116" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="725.0" y="475.0" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="420">새 검증 1,047장</text>
+<text x="725.0" y="506.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="420">정상 270 · 폐렴 777</text>
+<text x="725.0" y="537.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="420">모델과 학습 설정 선택에 사용</text>
+<path d="M250 564 V592" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M725 564 V592" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="50" y="602" width="400" height="125" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="250.0" y="641.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="370">학습 한 배치</text>
+<text x="250.0" y="672.5" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="370">예측 → 손실 → 역전파</text>
+<text x="250.0" y="703.5" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="370">optimizer.step() → 가중치 갱신</text>
+<rect x="500" y="602" width="450" height="125" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="725.0" y="641.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="420">검증 한 번</text>
+<text x="725.0" y="672.5" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="420">eval() + no_grad()</text>
+<text x="725.0" y="703.5" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="420">가중치 갱신 없이 지표 계산</text>
+<path d="M250 735 V765 H500 V787" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M725 735 V765 H500" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round"/>
+<rect x="230" y="797" width="540" height="83" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.6"/>
+<text x="500.0" y="846.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="510">검증 결과를 바탕으로 모델 선택</text>
+<path d="M500 888 V920 H725 V940" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="500" y="950" width="450" height="83" rx="12" fill="#edf1f6" stroke="#59718a" stroke-width="1.6"/>
+<text x="725.0" y="999.5" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="420">선택이 끝난 뒤 test 624장 평가</text>
+<path d="M958 178 H978 V992 H960" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+<text x="50" y="993" font-size="19" fill="#46566c" font-weight="400" text-anchor="start" data-width="420">점선: 보존한 테스트 데이터</text>
+<text x="50" y="1061" font-size="19" fill="#172033" font-weight="400" text-anchor="start" data-width="900">테스트 결과를 반복해서 보며 모델을 고르면, 테스트도 모델 선택에 사용한 것이다.</text>
+</svg>

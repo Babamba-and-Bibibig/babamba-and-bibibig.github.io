@@ -1,0 +1,50 @@
+/* Figures stay readable and scroll inside the article on narrow screens. */
+.xray-figure {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  margin: 1.8rem 0;
+  padding: .8rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid #94a3b866;
+  border-radius: .8rem;
+}
+.xray-figure img {
+  display: block;
+  width: 100%;
+  min-width: 800px;
+  max-width: none;
+  height: auto;
+  margin: 0;
+  background: #f5f7fb;
+  border-radius: .5rem;
+  transform: none !important;
+  transition: none !important;
+}
+.xray-figure figcaption {
+  margin-top: .75rem;
+  font-size: .94rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.xray-table {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+.xray-table table { margin-block: .5rem; }
+.xray-table th { white-space: nowrap; }
+.xray-table td { min-width: 5rem; }
+.xray-note {
+  padding: .75rem 1rem;
+  border-inline-start: 3px solid #8b9cb2;
+  overflow-wrap: anywhere;
+}
+.xray-note > :first-child { margin-top: 0; }
+.xray-note > :last-child { margin-bottom: 0; }
+@media (max-width: 700px) {
+  .xray-figure { padding: .5rem; margin: 1.3rem 0; }
+  .xray-figure figcaption { font-size: .9rem; }
+}
+/* Shared references.css keeps citations compact; no local override is needed. */

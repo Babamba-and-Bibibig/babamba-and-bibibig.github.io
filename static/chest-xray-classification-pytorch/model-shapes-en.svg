@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1090" viewBox="0 0 1000 1090" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">From an image batch to scores for each class</title>
+<desc id="desc">CustomCNN preserves batch size B through these shapes: (B,3,224,224), (B,16,224,224), (B,16,112,112), (B,32,112,112), (B,32,56,56), (B,100352), and (B,2). The classifier has 200,706 parameters; the entire model has 205,794.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif}</style>
+<rect width="1000" height="1090" rx="16" fill="#f5f7fb"/>
+<text x="36" y="49" font-size="29" fill="#172033" font-weight="700" text-anchor="start" data-width="928">From an image batch to scores for each class</text>
+<text x="36" y="84" font-size="19" fill="#46566c" font-weight="400" text-anchor="start" data-width="928">B is the current batch size. Images keep the same order from input to output.</text>
+<rect x="50" y="130" width="500" height="80" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="300.0" y="162.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="470">Input images</text>
+<text x="300.0" y="193.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="470">(B, 3, 224, 224)</text>
+<path d="M300 218 V234" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="50" y="244" width="500" height="80" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="300.0" y="276.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="470">Conv2d(3 → 16) + ReLU</text>
+<text x="300.0" y="307.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="470">(B, 16, 224, 224)</text>
+<path d="M300 332 V348" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="50" y="358" width="500" height="80" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="300.0" y="390.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="470">MaxPool2d(2)</text>
+<text x="300.0" y="421.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="470">(B, 16, 112, 112)</text>
+<path d="M300 446 V462" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="50" y="472" width="500" height="80" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="300.0" y="504.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="470">Conv2d(16 → 32) + ReLU</text>
+<text x="300.0" y="535.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="470">(B, 32, 112, 112)</text>
+<path d="M300 560 V576" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="50" y="586" width="500" height="80" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="300.0" y="618.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="470">MaxPool2d(2)</text>
+<text x="300.0" y="649.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="470">(B, 32, 56, 56)</text>
+<path d="M300 674 V690" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="50" y="700" width="500" height="80" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="300.0" y="732.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="470">Flatten(start_dim=1)</text>
+<text x="300.0" y="763.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="470">(B, 100352)</text>
+<path d="M300 788 V804" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="50" y="814" width="500" height="80" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="300.0" y="846.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="470">Linear(100352 → 2)</text>
+<text x="300.0" y="877.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="470">(B, 2)</text>
+<rect x="610" y="130" width="340" height="158" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.6"/>
+<text x="780.0" y="170.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="310">Four tensor axes</text>
+<text x="780.0" y="201.5" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="310">B: batch · C: channels</text>
+<text x="780.0" y="232.5" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="310">H: height · W: width</text>
+<text x="780.0" y="263.5" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="310">Order: (B, C, H, W)</text>
+<rect x="610" y="325" width="340" height="124" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.6"/>
+<text x="780.0" y="364.0" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="310">Convolution settings</text>
+<text x="780.0" y="395.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="310">kernel_size=3, stride=1</text>
+<text x="780.0" y="426.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="310">padding=1 preserves H and W</text>
+<rect x="610" y="486" width="340" height="124" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.6"/>
+<text x="780.0" y="525.0" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="310">Pooling settings</text>
+<text x="780.0" y="556.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="310">kernel_size=2, stride=2</text>
+<text x="780.0" y="587.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="310">Halves the even H and W here</text>
+<rect x="610" y="647" width="340" height="124" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="780.0" y="686.0" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="310">Classifier parameters</text>
+<text x="780.0" y="717.0" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="310">100,352 × 2 + 2</text>
+<text x="780.0" y="748.0" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="310">200,706 parameters</text>
+<rect x="610" y="808" width="340" height="85" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.6"/>
+<text x="780.0" y="843.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="310">Total: 205,794 parameters</text>
+<text x="780.0" y="874.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="310">Includes weights and biases</text>
+<rect x="50" y="945" width="900" height="105" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.6"/>
+<text x="500.0" y="990.0" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="870">Output (B, 2): NORMAL and PNEUMONIA scores for each image</text>
+<text x="500.0" y="1021.0" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="870">These raw scores are logits, not probabilities or class labels.</text>
+</svg>

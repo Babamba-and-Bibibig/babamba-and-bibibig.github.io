@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1090" viewBox="0 0 1000 1090" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">재현율과 정밀도는 세는 대상이 다르다</title>
+<desc id="desc">Partial 모델의 제공된 검증 기록이다. 실제 정답을 행, 예측을 열로 놓은 혼동 행렬은 [[252,18],[16,761]]이다. 정상 재현율은 252/270, 폐렴 재현율은 761/777, 폐렴 정밀도는 761/779다. 전체 1,047장 중 1,013장을 맞혔다. 새로 실행한 실험 결과는 아니다.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif}</style>
+<rect width="1000" height="1090" rx="16" fill="#f5f7fb"/>
+<text x="36" y="49" font-size="29" fill="#172033" font-weight="700" text-anchor="start" data-width="928">재현율과 정밀도는 세는 대상이 다르다</text>
+<text x="36" y="84" font-size="19" fill="#46566c" font-weight="400" text-anchor="start" data-width="928">Partial 모델의 기존 검증 기록 · 새로 학습한 결과가 아니다.</text>
+<text x="470" y="151" font-size="23" fill="#172033" font-weight="700" text-anchor="middle" data-width="600">열: 모델이 예측한 클래스</text>
+<text x="360" y="205" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="240">NORMAL</text>
+<text x="600" y="205" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="240">PNEUMONIA</text>
+<text x="840" y="184" font-size="20" fill="#172033" font-weight="700" text-anchor="middle" data-width="200">실제 정답별</text>
+<text x="840" y="214" font-size="20" fill="#172033" font-weight="700" text-anchor="middle" data-width="200">이미지 수</text>
+<text x="40" y="265" font-size="19" fill="#172033" font-weight="700" text-anchor="start" data-width="185">행: 실제 정답</text>
+<text x="40" y="322" font-size="20" fill="#172033" font-weight="700" text-anchor="start" data-width="185">NORMAL</text>
+<text x="40" y="462" font-size="20" fill="#172033" font-weight="700" text-anchor="start" data-width="185">PNEUMONIA</text>
+<rect x="240" y="240" width="240" height="140" rx="0" fill="#e5f3ec" stroke="#216951" stroke-width="1.6"/>
+<text x="360" y="325" font-size="48" fill="#216951" font-weight="700" text-anchor="middle" data-width="210">252</text>
+<rect x="480" y="240" width="240" height="140" rx="0" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="600" y="325" font-size="48" fill="#b93745" font-weight="700" text-anchor="middle" data-width="210">18</text>
+<rect x="240" y="380" width="240" height="140" rx="0" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="360" y="465" font-size="48" fill="#b93745" font-weight="700" text-anchor="middle" data-width="210">16</text>
+<rect x="480" y="380" width="240" height="140" rx="0" fill="#e5f3ec" stroke="#216951" stroke-width="1.6"/>
+<text x="600" y="465" font-size="48" fill="#216951" font-weight="700" text-anchor="middle" data-width="210">761</text>
+<text x="840" y="325" font-size="29" fill="#172033" font-weight="700" text-anchor="middle" data-width="170">270</text>
+<text x="840" y="465" font-size="29" fill="#172033" font-weight="700" text-anchor="middle" data-width="170">777</text>
+<text x="40" y="566" font-size="19" fill="#172033" font-weight="700" text-anchor="start" data-width="190">예측별 이미지 수</text>
+<text x="360" y="566" font-size="26" fill="#172033" font-weight="700" text-anchor="middle" data-width="220">268</text>
+<text x="600" y="566" font-size="26" fill="#172033" font-weight="700" text-anchor="middle" data-width="220">779</text>
+<text x="840" y="566" font-size="24" fill="#172033" font-weight="700" text-anchor="middle" data-width="200">총 1,047</text>
+<rect x="40" y="628" width="440" height="138" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="260.0" y="674.0" font-size="23" fill="#172033" font-weight="700" text-anchor="middle" data-width="410">정상 재현율</text>
+<text x="260.0" y="705.0" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">실제 정상 270장 중 252장 정답</text>
+<text x="260.0" y="736.0" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">252 / 270 = 93.33%</text>
+<rect x="520" y="628" width="440" height="138" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="740.0" y="674.0" font-size="23" fill="#172033" font-weight="700" text-anchor="middle" data-width="410">폐렴 재현율</text>
+<text x="740.0" y="705.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">실제 폐렴 777장 중 761장 정답</text>
+<text x="740.0" y="736.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">761 / 777 = 97.94%</text>
+<rect x="40" y="801" width="440" height="138" rx="12" fill="#fcebee" stroke="#b93745" stroke-width="1.6"/>
+<text x="260.0" y="847.0" font-size="23" fill="#172033" font-weight="700" text-anchor="middle" data-width="410">폐렴 정밀도</text>
+<text x="260.0" y="878.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">폐렴으로 예측한 779장 중 761장 정답</text>
+<text x="260.0" y="909.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">761 / 779 = 97.69%</text>
+<rect x="520" y="801" width="440" height="138" rx="12" fill="#e5f3ec" stroke="#216951" stroke-width="1.6"/>
+<text x="740.0" y="847.0" font-size="23" fill="#172033" font-weight="700" text-anchor="middle" data-width="410">전체 정확도</text>
+<text x="740.0" y="878.0" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">전체 1,047장 중 1,013장 정답</text>
+<text x="740.0" y="909.0" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">1,013 / 1,047 = 96.75%</text>
+<text x="40" y="996" font-size="21" fill="#1b5fa7" font-weight="700" text-anchor="start" data-width="920">재현율: 실제로 그 클래스인 이미지들을 기준으로 센다.</text>
+<text x="40" y="1036" font-size="21" fill="#b93745" font-weight="700" text-anchor="start" data-width="920">정밀도: 모델이 그 클래스로 예측한 이미지들을 기준으로 센다.</text>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1135" viewBox="0 0 1000 1135" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">인덱스는 어느 데이터셋을 기준으로 하는가</title>
+<desc id="desc">선택 인덱스 목록이 [5220, …]인 설명용 예시다. train_set[0]은 merged_dataset[5220]을 요청하고, 앞 데이터셋의 5,216개 샘플을 지나 original_val[4]에 연결된다. ImageFolder.samples는 경로와 라벨을 보관하며 dataset[i]는 파일 읽기와 변환을 거친 이미지와 라벨을 반환한다.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif}</style>
+<rect width="1000" height="1135" rx="16" fill="#f5f7fb"/>
+<text x="36" y="49" font-size="29" fill="#172033" font-weight="700" text-anchor="start" data-width="928">인덱스는 어느 데이터셋을 기준으로 하는가</text>
+<text x="36" y="84" font-size="19" fill="#46566c" font-weight="400" text-anchor="start" data-width="928">파일을 복사하지 않아도 원본 객체와 선택 인덱스를 연결해 사용할 수 있다.</text>
+<rect x="40" y="125" width="440" height="100" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="260.0" y="167.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="410">original_train · 5,216개</text>
+<text x="260.0" y="198.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">자체 샘플 인덱스 0~5215</text>
+<rect x="520" y="125" width="440" height="100" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="740.0" y="167.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="410">original_val · 16개</text>
+<text x="740.0" y="198.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">자체 샘플 인덱스 0~15</text>
+<path d="M260 233 V255 H500 V277" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M740 233 V255 H500" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round"/>
+<rect x="40" y="287" width="920" height="110" rx="12" fill="#edf1f6" stroke="#59718a" stroke-width="1.6"/>
+<text x="500.0" y="319.0" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="890">merged_dataset · ConcatDataset</text>
+<text x="500.0" y="350.0" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="890">0~5215 → original_train / 5216~5231 → original_val</text>
+<text x="500.0" y="381.0" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="890">연결한 순서와 각 원본의 길이로 요청할 샘플을 찾는다.</text>
+<rect x="40" y="435" width="920" height="80" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.6"/>
+<text x="500.0" y="467.5" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="890">설명용 예시: train_idx = [5220, …]</text>
+<text x="500.0" y="498.5" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="890">실제 분할에서 첫 번째로 뽑혔다는 뜻은 아니다.</text>
+<rect x="70" y="555" width="410" height="80" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="275.0" y="587.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="380">train_set[0]</text>
+<text x="275.0" y="618.5" font-size="20" fill="#46566c" font-weight="400" text-anchor="middle" data-width="380">Subset 안의 샘플 인덱스 0</text>
+<path d="M275 643 V675" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="70" y="685" width="410" height="80" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="275.0" y="717.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="380">merged_dataset[5220]</text>
+<text x="275.0" y="748.5" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="380">train_idx[0]에서 얻은 원본 인덱스</text>
+<path d="M275 773 V805" fill="none" stroke="#59718a" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="70" y="815" width="410" height="80" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="275.0" y="847.5" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="380">original_val[4]</text>
+<text x="275.0" y="878.5" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="380">5,220 − 앞 데이터 5,216개 = 4</text>
+<text x="530" y="585" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="420">Subset은 원본 Dataset과</text>
+<text x="530" y="616" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="420">선택 인덱스를 함께 보관한다.</text>
+<text x="530" y="715" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="420">인덱스를 적용할 때는</text>
+<text x="530" y="746" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="420">그 인덱스의 기준 Dataset을 맞춘다.</text>
+<text x="530" y="845" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="420">ImageFolder가 파일을 읽고</text>
+<text x="530" y="876" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="420">설정된 transform을 실행한다.</text>
+<text x="40" y="953" font-size="23" fill="#172033" font-weight="700" text-anchor="start" data-width="920">저장한 정보와 반환한 데이터의 차이</text>
+<rect x="40" y="981" width="440" height="112" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.6"/>
+<text x="260.0" y="1014.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="410">original_val.samples[4]</text>
+<text x="260.0" y="1045.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">(파일 경로 문자열, 정답 라벨)</text>
+<text x="260.0" y="1076.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">이 속성 조회는 픽셀을 읽지 않는다.</text>
+<rect x="520" y="981" width="440" height="112" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.6"/>
+<text x="740.0" y="1014.0" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="410">original_val[4]</text>
+<text x="740.0" y="1045.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">(변환한 이미지, 정답 라벨)</text>
+<text x="740.0" y="1076.0" font-size="19" fill="#46566c" font-weight="400" text-anchor="middle" data-width="410">샘플 요청 시 읽기·변환을 실행한다.</text>
+</svg>
