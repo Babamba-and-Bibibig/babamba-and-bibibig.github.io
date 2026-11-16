@@ -21,6 +21,8 @@ styles = ["image-classification-evaluation/article.css"]
 
 먼저 전체 작업에서 필요한 입력과 출력을 나눈다.
 
+<div class="eval-table">
+
 | 단계 | 입력 | 처리 후 남아야 할 정보 |
 | --- | --- | --- |
 | 원본 조사 | 클래스별 이미지 폴더 | 파일 경로, 클래스 이름과 번호, 샘플 개수 |
@@ -30,6 +32,8 @@ styles = ["image-classification-evaluation/article.css"]
 | 학습 | 점수와 정답 | 손실과 수정된 모델 가중치 |
 | 검증 | 현재 모델의 점수와 정답 | 정답 목록과 예측 목록 |
 | 결과 분석 | 두 목록과 원본 연결 정보 | 지표, 혼동 행렬, 오분류 파일과 두 클래스 이름 |
+
+</div>
 
 **샘플 인덱스(Sample Index)**는 어떤 샘플을 꺼낼지 지정하는 정수다. **클래스 번호(Class ID)**는 그 샘플이 어느 종류에 속하는지 나타내는 정수다. 인덱스는 0부터 시작한다. 샘플이 100개라는 것은 샘플 인덱스가 0부터 99까지 있다는 뜻이지, 클래스가 100개라는 뜻은 아니다.
 
@@ -41,12 +45,16 @@ styles = ["image-classification-evaluation/article.css"]
 
 기본 `ImageFolder`는 `root` 바로 아래의 하위 폴더 이름을 클래스 이름으로 사용한다. 각 클래스 폴더 안에서는 더 아래의 폴더도 탐색한다. `train`이라는 이름의 뜻을 이해해서 학습용 폴더를 자동으로 찾아주는 것은 아니다.[^folder]
 
+<div class="eval-table">
+
 | 실제 파일 경로의 형태 | 클래스 폴더의 부모인 `root` |
 | --- | --- |
 | `animals/cat/a.png`, `animals/dog/b.png` | `animals` |
 | `animals/images/cat/a.png` | `animals/images` |
 | `chest_xray/train/NORMAL/a.jpeg` | `chest_xray/train` |
 | `images/a.png`와 별도 `labels.csv` | 기본 ImageFolder만으로 CSV 정답을 연결할 수 없음 |
+
+</div>
 
 `chest_xray` 바로 아래에 `train`과 `test`가 있다면, 그 폴더를 `root`로 지정했을 때 두 이름이 클래스가 된다. 정상과 폐렴을 구분하려던 목적과 다른 정답 체계가 만들어지는 것이다.
 
@@ -76,6 +84,8 @@ print("클래스 번호:", dataset.class_to_idx)
 
 `ImageFolder`를 만들면 파일 경로와 라벨 정보를 조사한다. 모든 이미지의 픽셀을 미리 읽어 쌓아 두지는 않는다. 실제 픽셀은 샘플을 요청할 때 읽는다.[^folder]
 
+<div class="eval-table">
+
 | 표현 | 자료형 | 저장 내용·역할 |
 | --- | --- | --- |
 | `dataset` | `ImageFolder` 객체 | 샘플을 읽는 규칙과 아래 정보 전체 |
@@ -84,6 +94,8 @@ print("클래스 번호:", dataset.class_to_idx)
 | `dataset.samples` | 튜플 리스트 `list[tuple[str, int]]` | 샘플별 `(파일 경로, 정답 번호)` |
 | `dataset.targets` | 정수 리스트 `list[int]` | samples와 같은 순서의 정답 번호 |
 | `len(dataset)` | 정수 `int` | 전체 샘플 개수 |
+
+</div>
 
 리스트는 순서가 있는 목록이고, 튜플은 여기서 경로와 라벨 두 값을 한 쌍으로 묶는다. 딕셔너리는 이름처럼 정한 키로 값을 찾는 자료구조다. `targets`는 데이터셋 전체가 아니라 그 안의 정답 목록이다.
 
@@ -124,10 +136,14 @@ assert sum(class_count.values()) == len(dataset)
 
 같은 샘플 인덱스를 사용해도 조회하는 대상에 따라 반환값이 달라진다.
 
+<div class="eval-table">
+
 | 표현 | 수행하는 일 | 반환값 |
 | --- | --- | --- |
 | `dataset.samples[i]` | 저장된 목록 조회 | 경로 문자열과 정답 정수 |
 | `dataset[i]` | 파일 읽기와 설정된 변환 실행 | 이미지 객체 또는 텐서와 정답 |
+
+</div>
 
 변환을 지정하지 않은 기본 PIL 로더에서는 **Pillow 이미지**를 받는다. Pillow는 이미지 파일을 읽고 다루는 라이브러리다. `type(img)`는 객체의 종류를 알려주고, `img.size`는 너비와 높이를 담은 튜플이다.
 
@@ -147,12 +163,16 @@ img.close()
 
 **텐서(Tensor)**는 PyTorch에서 여러 축의 숫자를 계산하는 자료형이다. 이후 전처리가 이미지를 텐서로 바꾸면 조사하는 방법도 달라진다.
 
+<div class="eval-table">
+
 | 확인할 것 | Pillow 이미지 | PyTorch 텐서 |
 | --- | --- | --- |
 | 객체 종류 | `type(img)` | `type(img)` |
 | 크기 | `img.size`: `(너비, 높이)` | `img.shape`: 이미지 한 장이면 보통 `(채널, 높이, 너비)` |
 | 숫자의 자료형 | 필요하면 `np.asarray(img).dtype` | `img.dtype` |
 | 색상 모드 | `img.mode` | 같은 `mode` 속성은 없음 |
+
+</div>
 
 여기서 `np`는 `import numpy as np`로 불러온 NumPy다. `asarray`는 이미지를 숫자 배열로 바꿔 조사할 때 사용한다. `dtype`은 객체 종류가 아니라 내부 숫자의 자료형을 뜻한다. 텐서의 `img.size()`는 호출하는 메서드이고, Pillow의 `img.size`는 저장된 속성이라는 차이도 있다.
 
@@ -263,10 +283,14 @@ val_dataset = Subset(val_base, val_idx)
 
 원본이 네 샘플이고 설명용 선택 목록이 `[3, 1]`이라면, Subset의 첫 샘플은 원본의 네 번째 샘플이다. 요청할 때 쓰는 인덱스는 각각 0과 3으로 다르다. 선택 목록의 첫 원소에 원본 인덱스 3이 들어 있기 때문에 연결할 수 있다.
 
+<div class="eval-table">
+
 | Subset 내부 샘플 인덱스 | 선택 목록에서 꺼낸 원본 샘플 인덱스 | 실제 요청되는 샘플 |
 | ---: | ---: | --- |
 | 0 | 3 | `val_base[3]` |
 | 1 | 1 | `val_base[1]` |
+
+</div>
 
 이 예에서는 `val_dataset[0]`을 요청하면 `val_dataset.indices[0]`을 읽고, 그 결과 3으로 `val_base[3]`을 요청한다. 샘플을 조회하는 번호의 기준은 달라지지만, 연결된 원본 파일과 기본 클래스 번호는 유지된다. 무작위 변환을 사용한다면 같은 파일을 다시 읽어도 변환된 픽셀은 달라질 수 있다.
 
@@ -277,11 +301,15 @@ val_dataset = Subset(val_base, val_idx)
 
 이후 배치를 제공할 `DataLoader`까지 연결하면 객체는 다음과 같다. **DataLoader**는 데이터셋에서 샘플을 꺼내 여러 샘플의 묶음인 **배치(Batch)**로 제공하는 객체다.
 
+<div class="eval-table">
+
 | 변수 | 실제 종류 | 포함 범위·역할 |
 | --- | --- | --- |
 | `val_base` | ImageFolder | 원본 전체의 경로·라벨·클래스 정보와 검증 전처리 |
 | `val_dataset` | Subset | 원본 중 검증용으로 선택한 샘플 |
 | `val_loader` | DataLoader | 선택된 검증 샘플을 배치로 제공 |
+
+</div>
 
 `val_dataset.dataset is val_base`는 두 표현이 같은 객체를 가리키는지 검사한다. `is`는 값이 비슷한지가 아니라 객체가 동일한지를 비교한다. 아래에서 만들 `val_loader.dataset`은 바로 `val_dataset`이다. DataLoader에 ImageFolder를 직접 넣었다면 그 속성도 ImageFolder가 된다. `.dataset`이라는 이름만으로 내부 종류를 단정하지 않는다.
 
@@ -318,12 +346,16 @@ assert images.shape[0] == labels.shape[0]
 
 검증 샘플이 100개이고 배치 크기가 32인 **개수 예시**를 보자.
 
+<div class="eval-table">
+
 | 확인 대상 | 값 | 무엇을 센 것인가 |
 | --- | ---: | --- |
 | `len(val_dataset)` | 100 | 검증 샘플 개수 |
 | `len(val_loader.dataset)` | 100 | DataLoader에 전달한 데이터셋의 샘플 개수 |
 | `len(val_loader)` | 4 | 배치 개수 |
 | 반복 중 `len(labels)` | 32, 32, 32, 4 | 현재 배치의 실제 샘플 개수 |
+
+</div>
 
 전체 처리 개수를 누적할 때는 `total += len(labels)`를 사용한다. `len(val_loader)`를 배치마다 더하면 배치 개수를 반복해서 더하게 된다. 이 예시에서 `drop_last=True`라면 마지막 4개를 제외한 96개만 처리한다.
 
@@ -350,6 +382,8 @@ if len(val_loader) >= 2:
 
 모델의 확률 변환 전 점수를 **로짓(Logits)**이라고 한다. 음수가 될 수 있으며 합이 1일 필요도 없다. 클래스 개수를 `K`라고 하면 다음 구조를 사용한다.
 
+<div class="eval-table">
+
 | 변수 | 자료형·구조 | 축의 의미 |
 | --- | --- | --- |
 | `images` | 실수형 텐서 `(B, C, H, W)` | 샘플, 채널, 높이, 너비 |
@@ -357,6 +391,8 @@ if len(val_loader) >= 2:
 | `labels` | `torch.int64` 텐서 `(B,)` | 샘플별 정답 클래스 번호 |
 | `preds` | 정수형 텐서 `(B,)` | 샘플별 예측 클래스 번호 |
 | `loss` | 기본 평균 설정에서 shape `()`인 텐서 | 배치 손실을 나타내는 값 하나 |
+
+</div>
 
 모델은 `C`채널 입력을 받고 `K`개 점수를 출력하도록 준비되어 있어야 한다. ImageNet의 기본 1,000클래스 출력을 그대로 두고 두 클래스에 맞는 모델을 완성했다고 볼 수는 없다.
 
@@ -385,6 +421,8 @@ preds = logits.argmax(dim=1)
 
 학습은 이전 기울기 초기화, 점수 계산, 손실 계산, 기울기 계산, 가중치 갱신 순서로 진행한다. 모델의 각 층과 뉴런을 구성하는 일, 데이터를 넣어 가중치를 실제로 학습하는 일은 별개다.
 
+<div class="eval-table">
+
 | 표현 | 실제로 하는 일 | 혼동하기 쉬운 부분 |
 | --- | --- | --- |
 | `model.train()` | 학습 모드로 전환 | 호출만으로 가중치가 갱신되지 않음 |
@@ -393,6 +431,8 @@ preds = logits.argmax(dim=1)
 | `optimizer.step()` | 기울기를 이용한 가중치 갱신 | 학습에서 파라미터를 수정하는 단계 |
 | `model.eval()` | 평가 모드로 전환 | 기울기 기록을 자동으로 끄지는 않음 |
 | `with torch.no_grad():` | 해당 범위의 역전파용 기록 비활성화 | 평가 모드로 자동 전환하지 않음 |
+
+</div>
 
 학습 모드와 평가 모드의 차이는 Dropout, BatchNorm처럼 모드에 따라 동작이 달라지는 층에 영향을 준다. **Dropout**은 학습 중 일부 중간 출력을 무작위로 제외하는 층이고, **BatchNorm**은 학습·평가 때 사용하는 통계 처리 방식이 다른 층이다. 현재는 두 기능의 내부 구현보다 `eval()`과 `no_grad()`가 서로 다른 설정이라는 점을 확인하면 된다.[^autograd]
 
@@ -485,12 +525,16 @@ Dataset과 DataLoader는 텐서가 아니므로 `val_loader.dataset.cpu()`처럼
 
 PNEUMONIA를 찾는 대상으로 정했다면 이를 **양성(Positive)**, 나머지를 **음성(Negative)**이라고 부른다. 양성은 좋은 결과라는 뜻이 아니라, 지금 찾아내려는 대상이라는 뜻이다.
 
+<div class="eval-table">
+
 | 지표 | 먼저 모으는 샘플 | 그중 확인하는 것 |
 | --- | --- | --- |
 | 정확도 | 평가한 모든 샘플 | 실제 클래스와 예측 클래스가 같은가 |
 | PNEUMONIA 정밀도 | 모델이 PNEUMONIA라고 예측한 샘플 | 실제 PNEUMONIA인가 |
 | PNEUMONIA 재현율 | 실제 PNEUMONIA인 샘플 | 모델이 PNEUMONIA로 찾아냈는가 |
 | PNEUMONIA support | 실제 PNEUMONIA인 샘플 | 비율이 아니라 이 샘플들의 개수 |
+
+</div>
 
 정밀도와 재현율의 분자는 같다. 해당 클래스를 맞힌 개수다. 다른 것은 비교 대상 전체다. 정밀도는 “찾았다고 한 것들이 얼마나 맞는가”, 재현율은 “실제로 있는 것들을 얼마나 찾았는가”를 묻는다.[^metrics]
 
@@ -508,15 +552,21 @@ PNEUMONIA를 찾는 대상으로 정했다면 이를 **양성(Positive)**, 나�
 
 다음 값은 지표를 이해하기 위한 **계산 예시**다. 이번 글에서 실제 모델을 학습해 얻은 성능이 아니다.
 
+<div class="eval-table">
+
 | 실제 정답 ↓ / 예측 → | NORMAL | PNEUMONIA | 행 합계 |
 | --- | ---: | ---: | ---: |
 | NORMAL | 222 | 48 | 270 |
 | PNEUMONIA | 12 | 765 | 777 |
 | 열 합계 | 234 | 813 | 1,047 |
 
+</div>
+
 222개는 정상을 정상으로 맞힌 샘플이고, 48개는 정상을 폐렴으로 잘못 예측한 샘플이다. 12개는 폐렴을 정상으로 놓친 샘플이며, 765개는 폐렴을 폐렴으로 맞힌 샘플이다.
 
 폐렴을 양성으로 정했을 때 이 네 칸을 부르는 이름도 함께 정리한다.
+
+<div class="eval-table">
 
 | 이름 | 뜻 | 예시 개수 |
 | --- | --- | ---: |
@@ -524,6 +574,8 @@ PNEUMONIA를 찾는 대상으로 정했다면 이를 **양성(Positive)**, 나�
 | 거짓양성(False Positive, FP) | 실제 음성을 양성으로 잘못 예측 | 48 |
 | 거짓음성(False Negative, FN) | 실제 양성을 음성으로 놓침 | 12 |
 | 참양성(True Positive, TP) | 실제 양성을 양성으로 맞힘 | 765 |
+
+</div>
 
 <figure class="eval-figure">
 <img src="/image-classification-evaluation/confusion-ko.svg" alt="계산 예시 혼동 행렬의 행은 실제 클래스이고 열은 예측 클래스다. 폐렴 정밀도의 분모는 폐렴 예측 열의 합 813, 재현율의 분모는 실제 폐렴 행의 합 777이다." loading="lazy">
@@ -534,6 +586,8 @@ PNEUMONIA를 찾는 대상으로 정했다면 이를 **양성(Positive)**, 나�
 
 대상을 확인한 뒤 실제로 계산하면 다음과 같다.
 
+<div class="eval-table">
+
 | 구하려는 값 | 이 예시에서의 계산 | 결과 |
 | --- | --- | ---: |
 | 전체 정확도 | 맞힌 222개와 765개를 합쳐 전체 1,047개로 나눔 | 약 94.27% |
@@ -541,6 +595,8 @@ PNEUMONIA를 찾는 대상으로 정했다면 이를 **양성(Positive)**, 나�
 | NORMAL 재현율 | 정상으로 맞힌 222개 / 실제 정상 270개 | 약 82.22% |
 | PNEUMONIA 정밀도 | 폐렴으로 맞힌 765개 / 폐렴 예측 813개 | 약 94.10% |
 | PNEUMONIA 재현율 | 폐렴으로 맞힌 765개 / 실제 폐렴 777개 | 약 98.46% |
+
+</div>
 
 전체 정확도가 높다고 두 클래스의 재현율이 비슷한 것은 아니다. 이 표에서는 정상 재현율과 폐렴 재현율 사이에 차이가 있다. 어떤 종류의 실수가 많았는지까지 보려면 전체 정확도와 클래스별 지표를 함께 읽어야 한다.
 
@@ -635,11 +691,15 @@ print(report)
 
 `digits=4`는 표시할 소수점 자릿수다. `zero_division=0`은 정의되지 않는 지표를 0으로 표시하겠다는 정책이다. 샘플이나 예측이 없다는 문제를 해결하거나, 모두 실제로 측정된 0으로 바꾸는 설정은 아니다. `support`와 예측 개수도 함께 봐야 한다.
 
+<div class="eval-table">
+
 | 보고서 항목 | 무엇을 평균하는가 | 같은 비중을 갖는 대상 |
 | --- | --- | --- |
 | `accuracy` | 전체에서 맞힌 샘플의 비율 | 각 평가 샘플 |
 | `macro avg` | 클래스별 지표를 같은 비중으로 평균 | 각 클래스 |
 | `weighted avg` | 클래스별 지표를 support에 비례해 평균 | 해당 지표에 대한 클래스 비중이 실제 샘플 수를 따름 |
+
+</div>
 
 macro F1은 **클래스별 F1의 평균**이다. macro precision과 macro recall을 먼저 구한 뒤 둘로 F1을 계산하는 방식과 일반적으로 같지 않다. 평균을 무엇에 적용하는지와 연산 순서를 함께 확인해야 한다.
 
@@ -659,10 +719,14 @@ print(classification_report(
 
 예상 혼동 행렬은 `[[2, 0], [1, 2]]`다. 전체 다섯 샘플 중 네 개를 맞혔으므로 정확도는 80%다.
 
+<div class="eval-table">
+
 | 클래스 | 정밀도 | 재현율 | F1 | support |
 | --- | ---: | ---: | ---: | ---: |
 | NORMAL | 0.67 | 1.00 | 0.80 | 2 |
 | PNEUMONIA | 1.00 | 0.67 | 0.80 | 3 |
+
+</div>
 
 동일한 결과 목록과 클래스 순서를 사용했다면 보고서의 재현율은 혼동 행렬에서 직접 계산한 재현율과 같아야 한다. 표시할 때 반올림된 차이만 허용한다. F1 하나가 높다는 이유만으로 업무에서 가장 좋은 모델이라고 결론 내리지 말고, 놓침과 잘못된 탐지의 비용에 맞춰 개별 지표도 확인한다.
 
@@ -680,12 +744,16 @@ print(classification_report(
 
 이 조건에서 결과 목록의 `i`는 `val_dataset[i]`에 대응한다. 그 샘플의 원본 인덱스는 `val_dataset.indices[i]`에 저장되어 있고, 그 인덱스로 `val_base.samples`를 조회하면 파일 경로와 원본 라벨을 얻는다.
 
+<div class="eval-table">
+
 | 변수 | 자료형 | 어디에서 만들어졌는가 | 조회할 대상 |
 | --- | --- | --- | --- |
 | `i` | 정수 | 결과 목록을 순회할 때 붙인 인덱스 | `val_dataset.indices[i]` |
 | `origin_idx` | 정수 | 선택 목록에 저장된 원본 샘플 인덱스 | `val_base.samples[origin_idx]` |
 | `true_label` | 정수 | ImageFolder 라벨이 배치를 거쳐 `y_true`에 저장됨 | `val_base.classes[true_label]` |
 | `pred_label` | 정수 | 클래스별 점수의 argmax 결과 | `val_base.classes[pred_label]` |
+
+</div>
 
 예측 번호를 클래스 이름으로 바꾸려면 모델의 0번 출력이 학습 데이터의 클래스 0을 뜻해야 한다. 학습과 검증의 `class_to_idx`가 같아야 하는 이유다. `true_label`이라는 변수 이름 때문에 조회가 되는 것이 아니라, 저장된 값의 출처와 번호 체계가 맞기 때문에 조회할 수 있다.
 
@@ -747,6 +815,8 @@ if not found_error:
 
 오류가 났을 때는 함수 이름을 바꾸기 전에 현재 변수의 종류와 필요한 작업을 확인한다.
 
+<div class="eval-table">
+
 | 목적 | 맞는 표현 | 구분할 것 |
 | --- | --- | --- |
 | 선택한 인덱스 조회 | `val_dataset.indices[i]` | 리스트 조회는 `[]`, 함수 호출은 `()` |
@@ -758,9 +828,13 @@ if not found_error:
 | 기울기 기록 끄기 | `with torch.no_grad():` | 초기화·평가 모드 전환과 구분 |
 | 조건 위반 시 중단 | `assert cm.sum() == len(y_true)` | 비교식만 적는 것과 검사 실패 시 중단하는 것은 다름 |
 
+</div>
+
 여기서 `values`는 합을 구할 목록·배열·텐서를 가리키는 예시 이름이고, `col_idx`는 열 인덱스다. 속성 이름도 `transform`, `drop_last`, `plt.imshow`, `classification_report`처럼 정확히 써야 한다. `val_loader`와 `val_laoder`는 서로 다른 변수 이름이다.
 
 검사가 통과했다고 확인하지 않은 의미까지 참이 되는 것은 아니다.
+
+<div class="eval-table">
 
 | 통과한 검사 | 확인한 것 | 아직 확인하지 못한 것 |
 | --- | --- | --- |
@@ -770,6 +844,8 @@ if not found_error:
 | 이미지와 라벨의 배치 크기가 같음 | 개수 일치 | 모든 이미지와 정답의 올바른 연결 |
 | 정답·예측 목록의 길이가 같음 | 결과 개수 일치 | 결과 순서와 원본 파일의 동일성 |
 | 전체 클래스 개수 행렬의 합이 결과 수와 같음 | 결과가 전부 집계됨 | 새로운 데이터에서의 성능 |
+
+</div>
 
 `assert`는 실습과 개발 검증에 유용하다. Python을 최적화 옵션으로 실행하면 생략될 수 있으므로, 배포 프로그램의 필수 입력 검사까지 assert에만 맡기지 않는다.[^assert]
 
@@ -823,11 +899,15 @@ fn main() {
 
 </details>
 
+<div class="eval-table">
+
 | 학습 구분 | 지금 할 일 |
 | --- | --- |
 | 실무 필수 | 원본 구조 조사, 클래스 대응 확인, 분할·전처리·배치 구성, 검증 결과 수집, 지표와 오분류 파일 연결 |
 | 원리만 이해 | 손실과 가중치 갱신의 역할, 배치 평균의 가중 방식, 정밀도와 재현율의 기준 집합, F1과 클래스 평균의 의미 |
 | 필요할 때 참고 | F1의 수학적 유도, 복잡한 중첩 Subset, 병렬 로딩 설정, 그룹 분할의 세부 구현 |
+
+</div>
 
 종료 기준은 빈 노트북에서 데이터 구조를 조사해 `ImageFolder → Subset → DataLoader`를 연결하고, 정답·예측을 모아 지표와 오분류 파일을 구할 수 있는 것이다. 사용한 각 숫자가 샘플 개수인지, 배치 개수인지, 원본 인덱스인지, 클래스 번호인지 설명할 수 있어야 한다.
 
@@ -861,6 +941,8 @@ python examples-ko.py --data-root ./chest_xray/train --epochs 3 --device auto --
 
 `--output-dir`을 지정했을 때 아래 파일을 저장한다. 출력 폴더는 `data-root` 바깥에 있는 새 폴더여야 한다. 클래스 부모 폴더 안에 결과 폴더를 만들면 다음 조사에서 새 클래스로 오인할 수 있기 때문이다.
 
+<div class="eval-table">
+
 | 저장 파일 | 내용 |
 | --- | --- |
 | `summary.json` | 클래스 대응, 전처리·분할 설정, 학습 기록, 검증 지표 |
@@ -868,6 +950,8 @@ python examples-ko.py --data-root ./chest_xray/train --epochs 3 --device auto --
 | `predictions.csv` | 결과 인덱스·원본 인덱스·파일 경로·실제와 예측 |
 | `errors.csv` | 그중 오분류 샘플만 추린 기록 |
 | `first-error.png` | 오분류가 있을 때 실제·예측 이름을 함께 표시한 원본 이미지 |
+
+</div>
 
 합성 데이터를 출력 폴더에 보존하는 경우 `demo-data/`도 생성된다. 출력 폴더를 지정하지 않은 합성 실행에서는 임시 데이터를 실행 뒤 정리한다. 222·48·12·765는 별도 계산 예시로 출력하며, 실행한 모델의 성능과 구분한다.
 

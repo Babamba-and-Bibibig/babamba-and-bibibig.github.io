@@ -21,6 +21,8 @@ The goal is to predict an image's class and, when the prediction is wrong, ident
 
 First, separate the inputs and outputs needed at each stage.
 
+<div class="eval-table">
+
 | Stage | Input | Information that must remain after processing |
 | --- | --- | --- |
 | Inspect the source | Class-based image folders | File paths, class names and IDs, sample counts |
@@ -30,6 +32,8 @@ First, separate the inputs and outputs needed at each stage.
 | Train | Scores and labels | Loss and updated model weights |
 | Validate | Scores from the current model and labels | Lists of true and predicted labels |
 | Analyze results | Both lists and their links to the source | Metrics, a confusion matrix, misclassified files, and both class names |
+
+</div>
 
 A **sample index** is an integer that selects a sample. A **class ID** is an integer that identifies the category a sample belongs to. Indices start at 0. Having 100 samples means there are sample indices from 0 through 99; it does not mean there are 100 classes.
 
@@ -41,12 +45,16 @@ Before writing code, ask three questions. Do you need pixels, a file path, or a 
 
 By default, `ImageFolder` uses the names of the subdirectories directly below `root` as class names. It also searches deeper directories within each class folder. It does not understand the word `train` and automatically find the training folder.[^folder]
 
+<div class="eval-table">
+
 | Example file paths | `root`, the parent of the class folders |
 | --- | --- |
 | `animals/cat/a.png`, `animals/dog/b.png` | `animals` |
 | `animals/images/cat/a.png` | `animals/images` |
 | `chest_xray/train/NORMAL/a.jpeg` | `chest_xray/train` |
 | `images/a.png` and a separate `labels.csv` | The default ImageFolder cannot attach labels from the CSV |
+
+</div>
 
 If `train` and `test` are directly below `chest_xray`, using `chest_xray` as `root` makes those two names the classes. That creates a label system different from the intended distinction between normal and pneumonia.
 
@@ -76,6 +84,8 @@ The relative path `Path("chest_xray/train")` is interpreted from the current wor
 
 Constructing an `ImageFolder` inspects file paths and labels. It does not load and store every image's pixels in advance. The pixels are read when a sample is requested.[^folder]
 
+<div class="eval-table">
+
 | Expression | Type | Contents or role |
 | --- | --- | --- |
 | `dataset` | `ImageFolder` object | The rules for reading samples and all the information below |
@@ -84,6 +94,8 @@ Constructing an `ImageFolder` inspects file paths and labels. It does not load a
 | `dataset.samples` | List of tuples, `list[tuple[str, int]]` | `(file path, label ID)` for each sample |
 | `dataset.targets` | List of integers, `list[int]` | Label IDs in the same order as samples |
 | `len(dataset)` | Integer, `int` | Total number of samples |
+
+</div>
 
 A list is an ordered collection. A tuple groups the path and label into a pair here. A dictionary retrieves a value using a key, such as a class name. `targets` is the list of labels within the dataset, not the complete dataset.
 
@@ -124,10 +136,14 @@ assert sum(class_count.values()) == len(dataset)
 
 The same sample index can produce different return values depending on what you access.
 
+<div class="eval-table">
+
 | Expression | Operation | Return value |
 | --- | --- | --- |
 | `dataset.samples[i]` | Look up the stored list | A path string and an integer label |
 | `dataset[i]` | Read the file and apply configured transforms | An image object or tensor, together with its label |
+
+</div>
 
 With the default PIL loader and no transform, the image is a **Pillow image**. Pillow is a library for reading and working with image files. `type(img)` reports the object's type, and `img.size` is a tuple containing width and height.
 
@@ -147,12 +163,16 @@ Get the file name from the path in `samples` instead of assuming it is available
 
 A **tensor** is PyTorch's data type for calculating with numbers arranged along multiple axes. Once preprocessing converts the image to a tensor, the way to inspect it changes too.
 
+<div class="eval-table">
+
 | What to inspect | Pillow image | PyTorch tensor |
 | --- | --- | --- |
 | Object type | `type(img)` | `type(img)` |
 | Dimensions | `img.size`: `(width, height)` | `img.shape`: usually `(channels, height, width)` for one image |
 | Numeric data type | `np.asarray(img).dtype` when needed | `img.dtype` |
 | Color mode | `img.mode` | No equivalent `mode` attribute |
+
+</div>
 
 Here, `np` refers to NumPy imported with `import numpy as np`. `asarray` converts the image to a numeric array for inspection. `dtype` describes the type of the numbers inside the object, rather than the object's own type. Also distinguish the tensor method `img.size()`, which is called, from the Pillow attribute `img.size`.
 
@@ -263,10 +283,14 @@ Checking that the index lists do not overlap only prevents repeated use of the s
 
 Suppose the original dataset has four samples and an illustrative selection list is `[3, 1]`. The first sample in the Subset is the fourth sample in the original dataset. The indices used to request them differ: 0 and 3. They are connected because the first entry in the selection list contains original index 3.
 
+<div class="eval-table">
+
 | Sample index within the Subset | Original sample index retrieved from the selection list | Sample actually requested |
 | ---: | ---: | --- |
 | 0 | 3 | `val_base[3]` |
 | 1 | 1 | `val_base[1]` |
+
+</div>
 
 In this example, requesting `val_dataset[0]` reads `val_dataset.indices[0]`, then uses the resulting 3 to request `val_base[3]`. The index's reference changes, while the linked original file and its default class ID remain the same. With a random transform, reading the same file again can still produce different transformed pixels.
 
@@ -277,11 +301,15 @@ In this example, requesting `val_dataset[0]` reads `val_dataset.indices[0]`, the
 
 Once we connect a `DataLoader` to provide batches, the objects have the following roles. A **DataLoader** retrieves samples from a dataset and provides them in **batches**, which are groups of samples.
 
+<div class="eval-table">
+
 | Variable | Actual type | Scope and role |
 | --- | --- | --- |
 | `val_base` | ImageFolder | Paths, labels, and class information for the complete source, plus validation preprocessing |
 | `val_dataset` | Subset | Samples selected from the source for validation |
 | `val_loader` | DataLoader | Provides the selected validation samples in batches |
+
+</div>
 
 `val_dataset.dataset is val_base` checks whether the two expressions refer to the same object. `is` compares object identity, not whether their values are similar. The `val_loader.dataset` created below is exactly `val_dataset`. If an ImageFolder were passed directly to the DataLoader, that attribute would instead be an ImageFolder. Do not infer its type from the name `.dataset` alone.
 
@@ -318,12 +346,16 @@ Let `B` be the number of samples in the current batch. The image batch shape is 
 
 Consider a **counting example** with 100 validation samples and a batch size of 32.
 
+<div class="eval-table">
+
 | What is inspected | Value | What is counted |
 | --- | ---: | --- |
 | `len(val_dataset)` | 100 | Validation samples |
 | `len(val_loader.dataset)` | 100 | Samples in the dataset passed to the DataLoader |
 | `len(val_loader)` | 4 | Batches |
 | `len(labels)` during iteration | 32, 32, 32, 4 | Actual samples in the current batch |
+
+</div>
 
 Use `total += len(labels)` to accumulate the number of processed samples. Adding `len(val_loader)` on each iteration repeatedly adds the batch count. With `drop_last=True`, this example would process only 96 samples, excluding the last 4.
 
@@ -350,6 +382,8 @@ For example, ReLU changes negative values to 0 and leaves positive values unchan
 
 The model's scores before conversion to probabilities are called **logits**. They can be negative and do not need to sum to 1. Let `K` be the number of classes. The structures are then:
 
+<div class="eval-table">
+
 | Variable | Type and shape | Meaning of the axes |
 | --- | --- | --- |
 | `images` | Floating-point tensor `(B, C, H, W)` | Samples, channels, height, width |
@@ -357,6 +391,8 @@ The model's scores before conversion to probabilities are called **logits**. The
 | `labels` | `torch.int64` tensor `(B,)` | One true class ID per sample |
 | `preds` | Integer tensor `(B,)` | One predicted class ID per sample |
 | `loss` | Tensor of shape `()` with the default mean reduction | One value representing the batch loss |
+
+</div>
 
 The model must be prepared to accept `C` input channels and produce `K` scores. Leaving an ImageNet model's default 1,000-class output unchanged does not complete a model for this two-class task.
 
@@ -385,6 +421,8 @@ A **gradient** describes how the loss responds to changes in a weight. **Backpro
 
 Training proceeds through clearing previous gradients, calculating scores, calculating loss, calculating gradients, and updating weights. Constructing the model's layers and neurons is separate from using data to train their weights.
 
+<div class="eval-table">
+
 | Expression | What it does | A common confusion |
 | --- | --- | --- |
 | `model.train()` | Switches to training mode | Calling it does not update weights |
@@ -393,6 +431,8 @@ Training proceeds through clearing previous gradients, calculating scores, calcu
 | `optimizer.step()` | Updates weights using gradients | This is the parameter-update step in training |
 | `model.eval()` | Switches to evaluation mode | It does not automatically disable gradient recording |
 | `with torch.no_grad():` | Disables recording for backpropagation within the block | It does not automatically switch to evaluation mode |
+
+</div>
 
 Training and evaluation modes affect layers whose behavior changes between modes, such as Dropout and BatchNorm. **Dropout** randomly excludes some intermediate outputs during training. **BatchNorm** uses different statistical handling during training and evaluation. For now, understanding that `eval()` and `no_grad()` control different settings matters more than the internal implementation of these layers.[^autograd]
 
@@ -485,12 +525,16 @@ Before memorizing metrics, consider which samples form the denominator. **Accura
 
 If PNEUMONIA is the class we want to find, we call it **positive** and the other class **negative**. Positive does not mean a good outcome; it identifies the target we are looking for.
 
+<div class="eval-table">
+
 | Metric | Samples selected first | What to check within that group |
 | --- | --- | --- |
 | Accuracy | All evaluated samples | Whether the true and predicted classes match |
 | PNEUMONIA precision | Samples the model predicts as PNEUMONIA | Whether they are actually PNEUMONIA |
 | PNEUMONIA recall | Samples that are actually PNEUMONIA | Whether the model finds them as PNEUMONIA |
 | PNEUMONIA support | Samples that are actually PNEUMONIA | Their count, rather than a proportion |
+
+</div>
 
 Precision and recall have the same numerator: the number of correct predictions for that class. Their reference groups differ. Precision asks, “How many of the reported findings are correct?” Recall asks, “How many of the actual targets were found?”[^metrics]
 
@@ -508,15 +552,21 @@ A **confusion matrix** counts samples for each combination of true and predicted
 
 The following values are a **calculation example** for understanding the metrics. They are not performance results obtained by training a model for this article.
 
+<div class="eval-table">
+
 | True class ↓ / Predicted class → | NORMAL | PNEUMONIA | Row total |
 | --- | ---: | ---: | ---: |
 | NORMAL | 222 | 48 | 270 |
 | PNEUMONIA | 12 | 765 | 777 |
 | Column total | 234 | 813 | 1,047 |
 
+</div>
+
 The 222 samples are normal images correctly predicted as normal, while 48 are normal images incorrectly predicted as pneumonia. The 12 samples are pneumonia images missed as normal, while 765 are pneumonia images correctly predicted as pneumonia.
 
 With pneumonia defined as positive, the four cells have the following names.
+
+<div class="eval-table">
 
 | Name | Meaning | Example count |
 | --- | --- | ---: |
@@ -524,6 +574,8 @@ With pneumonia defined as positive, the four cells have the following names.
 | False Positive, FP | An actual negative incorrectly predicted as positive | 48 |
 | False Negative, FN | An actual positive missed as negative | 12 |
 | True Positive, TP | An actual positive correctly predicted as positive | 765 |
+
+</div>
 
 <figure class="eval-figure">
 <img src="/image-classification-evaluation/confusion-en.svg" alt="The example confusion matrix uses rows for true classes and columns for predictions. Pneumonia precision uses the predicted-pneumonia column total of 813 as its denominator, while recall uses the actual-pneumonia row total of 777." loading="lazy">
@@ -534,6 +586,8 @@ Because the row and column class orders match, the diagonal counts correct predi
 
 After identifying what each count represents, calculate the metrics as follows.
 
+<div class="eval-table">
+
 | Quantity | Calculation in this example | Result |
 | --- | --- | ---: |
 | Overall accuracy | Add the 222 and 765 correct predictions, then divide by all 1,047 samples | About 94.27% |
@@ -541,6 +595,8 @@ After identifying what each count represents, calculate the metrics as follows.
 | NORMAL recall | 222 correctly predicted normal / 270 actually normal | About 82.22% |
 | PNEUMONIA precision | 765 correctly predicted pneumonia / 813 predicted pneumonia | About 94.10% |
 | PNEUMONIA recall | 765 correctly predicted pneumonia / 777 actually pneumonia | About 98.46% |
+
+</div>
 
 High overall accuracy does not mean the two classes have similar recall. Here, normal recall differs from pneumonia recall. To see which kinds of mistakes occur more often, read the per-class metrics alongside overall accuracy.
 
@@ -635,11 +691,15 @@ print(report)
 
 `digits=4` sets the number of decimal places displayed. `zero_division=0` chooses to display an undefined metric as 0. It does not resolve missing samples or predictions, or turn every displayed zero into an observed performance value. Check support and prediction counts as well.
 
+<div class="eval-table">
+
 | Report entry | What is averaged | What receives equal weight |
 | --- | --- | --- |
 | `accuracy` | The proportion of correctly classified samples overall | Each evaluated sample |
 | `macro avg` | Per-class metrics with equal class weights | Each class |
 | `weighted avg` | Per-class metrics weighted in proportion to support | A class's weight for the metric follows its actual sample count |
+
+</div>
 
 Macro F1 is the **average of the per-class F1 scores**. It generally differs from first calculating macro precision and macro recall, then using those two values to calculate F1. Check both what is being averaged and the order of operations.
 
@@ -659,10 +719,14 @@ print(classification_report(
 
 The expected confusion matrix is `[[2, 0], [1, 2]]`. Four of the five samples are correct, giving 80% accuracy.
 
+<div class="eval-table">
+
 | Class | Precision | Recall | F1 | Support |
 | --- | ---: | ---: | ---: | ---: |
 | NORMAL | 0.67 | 1.00 | 0.80 | 2 |
 | PNEUMONIA | 1.00 | 0.67 | 0.80 | 3 |
+
+</div>
 
 With the same result lists and class order, the report's recall must match the recall calculated directly from the confusion matrix, allowing only display-rounding differences. A high F1 alone does not establish that a model is the best choice for a task. Also inspect individual metrics against the costs of misses and incorrect detections.
 
@@ -680,12 +744,16 @@ The current code preserves that correspondence under these conditions:
 
 Under these conditions, result-list index `i` corresponds to `val_dataset[i]`. That sample's original index is stored in `val_dataset.indices[i]`. Looking up `val_base.samples` with the original index gives the file path and original label.
 
+<div class="eval-table">
+
 | Variable | Type | Where it comes from | What it indexes |
 | --- | --- | --- | --- |
 | `i` | Integer | The index attached while iterating over results | `val_dataset.indices[i]` |
 | `origin_idx` | Integer | The original sample index stored in the selection list | `val_base.samples[origin_idx]` |
 | `true_label` | Integer | An ImageFolder label passed through a batch into `y_true` | `val_base.classes[true_label]` |
 | `pred_label` | Integer | The argmax of the per-class scores | `val_base.classes[pred_label]` |
+
+</div>
 
 To convert a predicted ID to a class name, model output 0 must represent class 0 in the training data. This is why the training and validation `class_to_idx` mappings must match. The lookup works because the stored value's origin and numbering system match, not because the variable happens to be named `true_label`.
 
@@ -747,6 +815,8 @@ The displayed image is **read from the original file**. The model received a ten
 
 When an error occurs, identify the current variable's type and the required operation before changing function names.
 
+<div class="eval-table">
+
 | Purpose | Correct expression | What to distinguish |
 | --- | --- | --- |
 | Retrieve a selected index | `val_dataset.indices[i]` | List lookup uses `[]`; function calls use `()` |
@@ -758,9 +828,13 @@ When an error occurs, identify the current variable's type and the required oper
 | Disable gradient recording | `with torch.no_grad():` | Separate this from clearing gradients or switching evaluation mode |
 | Stop when a condition fails | `assert cm.sum() == len(y_true)` | Writing a comparison alone differs from stopping on a failed check |
 
+</div>
+
 Here, `values` is an example name for the list, array, or tensor being summed, and `col_idx` is a column index. Names such as `transform`, `drop_last`, `plt.imshow`, and `classification_report` must also be spelled correctly. `val_loader` and `val_laoder` are different variable names.
 
 A passed check does not establish meanings or relationships it did not inspect.
+
+<div class="eval-table">
 
 | Passed check | What it establishes | What it does not establish |
 | --- | --- | --- |
@@ -770,6 +844,8 @@ A passed check does not establish meanings or relationships it did not inspect.
 | Image and label batch sizes match | Matching counts | Correct pairing of every image and label |
 | True-label and prediction list lengths match | Matching result counts | Result order and original file identity |
 | The full-class count matrix sums to the result count | All results were counted | Performance on new data |
+
+</div>
 
 `assert` is useful for experiments and development checks. Python can omit it when run with optimization options, so do not rely only on assertions for required input validation in deployed programs.[^assert]
 
@@ -823,11 +899,15 @@ The practical goal of this article is to inspect data and connect evaluation res
 
 </details>
 
+<div class="eval-table">
+
 | Learning priority | What to do now |
 | --- | --- |
 | Essential for practical work | Inspect the source structure, verify class mappings, prepare splits, transforms and batches, collect validation results, and connect metrics to misclassified files |
 | Understand the principle | Roles of loss and weight updates, weighting batch means, the reference groups for precision and recall, and the meaning of F1 and class averages |
 | Refer to when needed | Mathematical derivation of F1, complex nested Subsets, parallel loading settings, and group-splitting implementation details |
+
+</div>
 
 The stopping point is being able to start from an empty notebook, inspect the data structure, connect `ImageFolder → Subset → DataLoader`, collect labels and predictions, and produce metrics and misclassified file paths. You should be able to explain whether each number is a sample count, batch count, original index, or class ID.
 
@@ -861,6 +941,8 @@ python examples-en.py --data-root ./chest_xray/train --epochs 3 --device auto --
 
 The following files are saved when `--output-dir` is specified. The output directory must be a new directory outside `data-root`. A results directory created inside the parent of the class folders could be mistaken for a new class on the next inspection.
 
+<div class="eval-table">
+
 | Output file | Contents |
 | --- | --- |
 | `summary.json` | Class mapping, preprocessing and split settings, training history, and validation metrics |
@@ -868,6 +950,8 @@ The following files are saved when `--output-dir` is specified. The output direc
 | `predictions.csv` | Result index, original index, file path, true label, and prediction |
 | `errors.csv` | Only the misclassified samples from those records |
 | `first-error.png` | The original image with both true and predicted names, when an error exists |
+
+</div>
 
 When synthetic data is preserved in the output directory, a `demo-data/` directory is created too. A synthetic run without an output directory cleans up its temporary data afterward. The values 222, 48, 12, and 765 are printed as a separate arithmetic example, distinct from the executed model's performance.
 
