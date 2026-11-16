@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="990" viewBox="0 0 1000 990" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Precision uses predicted positives; recall uses actual positives</title>
+<desc id="desc">Calculation example, not measured model performance. Rows are actual classes and columns are predicted classes, ordered NORMAL then PNEUMONIA. The matrix is [[222, 48], [12, 765]]. Taking PNEUMONIA as positive, precision is 765/(48+765) and recall is 765/(12+765). TN is correct NORMAL; FP is NORMAL predicted as PNEUMONIA; FN is PNEUMONIA predicted as NORMAL; TP is correct PNEUMONIA.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif}</style>
+<rect width="1000" height="990" rx="16" fill="#f5f7fb"/>
+<text x="36" y="50" font-size="24" fill="#172033" font-weight="700" text-anchor="start" data-width="928">Precision uses predicted positives; recall uses actual positives</text>
+<text x="36" y="86" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="928">Calculation example · not measured performance · positive class = PNEUMONIA</text>
+<text x="510" y="146" font-size="23" fill="#172033" font-weight="700" text-anchor="middle" data-width="580">Columns = predicted classes</text>
+<text x="360" y="190" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="260">NORMAL (0)</text>
+<text x="660" y="190" font-size="22" fill="#1b5fa7" font-weight="700" text-anchor="middle" data-width="260">PNEUMONIA (1)</text>
+<text x="136" y="270" font-size="20" fill="#172033" font-weight="400" text-anchor="middle" data-width="180">Actual NORMAL</text>
+<text x="136" y="301" font-size="20" fill="#172033" font-weight="400" text-anchor="middle" data-width="180">(0)</text>
+<text x="136" y="430" font-size="18" fill="#08786c" font-weight="700" text-anchor="middle" data-width="180">Actual PNEUMONIA</text>
+<text x="136" y="461" font-size="18" fill="#08786c" font-weight="700" text-anchor="middle" data-width="180">(1)</text>
+<rect x="230" y="215" width="280" height="145" rx="8" fill="#edf1f6" stroke="#59718a" stroke-width="1.5"/>
+<text x="370" y="269" font-size="42" fill="#59718a" font-weight="700" text-anchor="middle" data-width="250">222</text>
+<text x="370" y="305" font-size="24" fill="#59718a" font-weight="700" text-anchor="middle" data-width="250">TN</text>
+<text x="370" y="338" font-size="16" fill="#172033" font-weight="400" text-anchor="middle" data-width="256">NORMAL → NORMAL</text>
+<rect x="530" y="215" width="280" height="145" rx="8" fill="#fff0df" stroke="#9b4d08" stroke-width="1.5"/>
+<text x="670" y="269" font-size="42" fill="#9b4d08" font-weight="700" text-anchor="middle" data-width="250">48</text>
+<text x="670" y="305" font-size="24" fill="#9b4d08" font-weight="700" text-anchor="middle" data-width="250">FP</text>
+<text x="670" y="338" font-size="16" fill="#172033" font-weight="400" text-anchor="middle" data-width="256">NORMAL → PNEUMONIA</text>
+<rect x="230" y="375" width="280" height="145" rx="8" fill="#fbe9eb" stroke="#a32e42" stroke-width="1.5"/>
+<text x="370" y="429" font-size="42" fill="#a32e42" font-weight="700" text-anchor="middle" data-width="250">12</text>
+<text x="370" y="465" font-size="24" fill="#a32e42" font-weight="700" text-anchor="middle" data-width="250">FN</text>
+<text x="370" y="498" font-size="16" fill="#172033" font-weight="400" text-anchor="middle" data-width="256">PNEUMONIA → NORMAL</text>
+<rect x="530" y="375" width="280" height="145" rx="8" fill="#e7f5f1" stroke="#08786c" stroke-width="1.5"/>
+<text x="670" y="429" font-size="42" fill="#08786c" font-weight="700" text-anchor="middle" data-width="250">765</text>
+<text x="670" y="465" font-size="24" fill="#08786c" font-weight="700" text-anchor="middle" data-width="250">TP</text>
+<text x="670" y="498" font-size="16" fill="#172033" font-weight="400" text-anchor="middle" data-width="256">PNEUMONIA → PNEUMONIA</text>
+<text x="892" y="190" font-size="19" fill="#46566c" font-weight="700" text-anchor="middle" data-width="124">support</text>
+<text x="892" y="293" font-size="29" fill="#172033" font-weight="700" text-anchor="middle" data-width="124">270</text>
+<text x="892" y="453" font-size="29" fill="#172033" font-weight="700" text-anchor="middle" data-width="124">777</text>
+<text x="40" y="565" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="920">Row total = the number of actual samples in that class (support)</text>
+<rect x="40" y="604" width="440" height="281" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.5"/>
+<text x="64" y="646" font-size="25" fill="#1b5fa7" font-weight="700" text-anchor="start" data-width="392">Precision</text>
+<text x="64" y="686" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">Within the PNEUMONIA prediction</text>
+<text x="64" y="717" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">column, how many are truly positive?</text>
+<text x="64" y="766" font-size="25" fill="#1b5fa7" font-weight="700" text-anchor="start" data-width="392">TP / (FP + TP)</text>
+<text x="64" y="805" font-size="25" fill="#1b5fa7" font-weight="700" text-anchor="start" data-width="392">765 / (48 + 765)</text>
+<text x="64" y="852" font-size="19" fill="#46566c" font-weight="400" text-anchor="start" data-width="392">Reference set: predicted positives.</text>
+<rect x="520" y="604" width="440" height="281" rx="12" fill="#e7f5f1" stroke="#08786c" stroke-width="1.5"/>
+<text x="544" y="646" font-size="25" fill="#08786c" font-weight="700" text-anchor="start" data-width="392">Recall</text>
+<text x="544" y="686" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">Within the actual PNEUMONIA row,</text>
+<text x="544" y="717" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">how many did the model find?</text>
+<text x="544" y="766" font-size="25" fill="#08786c" font-weight="700" text-anchor="start" data-width="392">TP / (FN + TP)</text>
+<text x="544" y="805" font-size="25" fill="#08786c" font-weight="700" text-anchor="start" data-width="392">765 / (12 + 765)</text>
+<text x="544" y="852" font-size="19" fill="#46566c" font-weight="400" text-anchor="start" data-width="392">Reference set: actual positives.</text>
+<text x="40" y="932" font-size="20" fill="#172033" font-weight="700" text-anchor="start" data-width="920">For NORMAL-class metrics, use NORMAL as the positive class and apply the same rule.</text>
+</svg>

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1130" viewBox="0 0 1000 1130" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">같은 샘플을 끝까지 연결하기</title>
+<desc id="desc">4개 샘플을 가진 설명용 ImageFolder에서 Subset.indices는 [3, 1]이다. 순차 검증 결과의 인덱스 0은 원본 샘플 인덱스 3에 연결된다. samples[3]의 파일 경로로 이미지를 열고, 정답 클래스 번호 1은 classes[1]을 통해 PNEUMONIA로 바꾼다. 원본 샘플 인덱스 3과 클래스 번호 1은 서로 다른 의미다.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif}</style>
+<rect width="1000" height="1130" rx="16" fill="#f5f7fb"/>
+<text x="36" y="50" font-size="29" fill="#172033" font-weight="700" text-anchor="start" data-width="928">같은 샘플을 끝까지 연결하기</text>
+<text x="36" y="86" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="928">파일·번호는 구조를 설명하기 위한 예시다.</text>
+<rect x="40" y="119" width="920" height="312" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.5"/>
+<text x="64" y="155" font-size="23" fill="#172033" font-weight="700" text-anchor="start" data-width="872">val_base · ImageFolder · 전체 샘플 4개</text>
+<rect x="56" y="176" width="888" height="39" rx="4" fill="#e8eef5" stroke="#e8eef5" stroke-width="1.5"/>
+<text x="76" y="203" font-size="19" fill="#172033" font-weight="700" text-anchor="start" data-width="170">원본 인덱스 i</text>
+<text x="272" y="203" font-size="19" fill="#172033" font-weight="700" text-anchor="start" data-width="490">samples[i] = (파일 경로, 클래스 번호)</text>
+<text x="805" y="203" font-size="19" fill="#172033" font-weight="700" text-anchor="start" data-width="119">targets[i]</text>
+<text x="114" y="243" font-size="20" fill="#172033" font-weight="400" text-anchor="middle" data-width="130">0</text>
+<text x="272" y="243" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="510">(.../NORMAL/normal01.jpeg, 0)</text>
+<text x="849" y="243" font-size="20" fill="#172033" font-weight="400" text-anchor="middle" data-width="110">0</text>
+<text x="114" y="277" font-size="20" fill="#172033" font-weight="400" text-anchor="middle" data-width="130">1</text>
+<text x="272" y="277" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="510">(.../NORMAL/normal02.jpeg, 0)</text>
+<text x="849" y="277" font-size="20" fill="#172033" font-weight="400" text-anchor="middle" data-width="110">0</text>
+<text x="114" y="311" font-size="20" fill="#172033" font-weight="400" text-anchor="middle" data-width="130">2</text>
+<text x="272" y="311" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="510">(.../PNEUMONIA/pneumonia01.jpeg, 1)</text>
+<text x="849" y="311" font-size="20" fill="#172033" font-weight="400" text-anchor="middle" data-width="110">1</text>
+<rect x="56" y="319" width="888" height="34" rx="3" fill="#e8f1fb" stroke="#e8f1fb" stroke-width="1.5"/>
+<text x="114" y="345" font-size="20" fill="#1b5fa7" font-weight="700" text-anchor="middle" data-width="130">3</text>
+<text x="272" y="345" font-size="20" fill="#1b5fa7" font-weight="700" text-anchor="start" data-width="510">(.../PNEUMONIA/pneumonia02.jpeg, 1)</text>
+<text x="849" y="345" font-size="20" fill="#1b5fa7" font-weight="700" text-anchor="middle" data-width="110">1</text>
+<text x="64" y="385" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="872">classes = [&quot;NORMAL&quot;, &quot;PNEUMONIA&quot;]</text>
+<text x="64" y="414" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="872">class_to_idx = {&quot;NORMAL&quot;: 0, &quot;PNEUMONIA&quot;: 1}</text>
+<rect x="40" y="463" width="920" height="88" rx="12" fill="#edf1f6" stroke="#59718a" stroke-width="1.5"/>
+<text x="64" y="499" font-size="23" fill="#172033" font-weight="700" text-anchor="start" data-width="872">val_dataset = Subset(val_base, [3, 1])</text>
+<text x="64" y="530" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="872">val_dataset.indices[0] = 3  /  val_dataset.indices[1] = 1</text>
+<rect x="40" y="580" width="275" height="112" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.5"/>
+<text x="177.5" y="616" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="245">결과 목록의 인덱스 0</text>
+<text x="177.5" y="647" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="245">y_true[0], y_pred[0]</text>
+<text x="177.5" y="675" font-size="18" fill="#46566c" font-weight="400" text-anchor="middle" data-width="249">검증 샘플 인덱스 0</text>
+<path d="M323 636 H353" fill="none" stroke="#59718a" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="365" y="580" width="270" height="112" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.5"/>
+<text x="500" y="616" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="242">indices[0] = 3</text>
+<text x="500" y="647" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="242">원본 샘플 인덱스 3</text>
+<text x="500" y="675" font-size="18" fill="#46566c" font-weight="400" text-anchor="middle" data-width="240">선택 목록으로 변환</text>
+<path d="M643 636 H673" fill="none" stroke="#59718a" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="685" y="580" width="275" height="112" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.5"/>
+<text x="822.5" y="616" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="247">val_base.samples[3]</text>
+<text x="822.5" y="647" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="247">(파일 경로, 1)</text>
+<text x="822.5" y="675" font-size="18" fill="#46566c" font-weight="400" text-anchor="middle" data-width="247">파일 정보 조회</text>
+<text x="40" y="735" font-size="19" fill="#46566c" font-weight="400" text-anchor="start" data-width="920">조건: 기본 순차 로더로 전체 검증 샘플을 한 번씩, 반환 순서대로 수집</text>
+<text x="40" y="766" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="920">shuffle=False · drop_last=False · 샘플 순서 보존</text>
+<path d="M823 700 V795 H267 V818" fill="none" stroke="#59718a" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M823 795 H733 V818" fill="none" stroke="#59718a" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="40" y="830" width="440" height="176" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.5"/>
+<text x="64" y="865" font-size="23" fill="#172033" font-weight="700" text-anchor="start" data-width="392">파일 경로 → 원본 이미지</text>
+<text x="64" y="901" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="392">.../PNEUMONIA/</text>
+<text x="64" y="932" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="392">pneumonia02.jpeg</text>
+<text x="64" y="963" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="392">Image.open(img_path)로 읽는다.</text>
+<rect x="520" y="830" width="440" height="176" rx="12" fill="#e7f5f1" stroke="#08786c" stroke-width="1.5"/>
+<text x="544" y="865" font-size="23" fill="#08786c" font-weight="700" text-anchor="start" data-width="392">클래스 번호 → 클래스 이름</text>
+<text x="544" y="901" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">정답 번호: 1</text>
+<text x="544" y="932" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">val_base.classes[1]</text>
+<text x="544" y="963" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">→ &quot;PNEUMONIA&quot;</text>
+<text x="40" y="1052" font-size="22" fill="#172033" font-weight="700" text-anchor="start" data-width="920">원본 인덱스 3은 샘플을 고른다. 클래스 번호 1은 정답 종류를 가리킨다.</text>
+<text x="40" y="1090" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="920">두 숫자는 서로 대체해서 사용할 수 없다.</text>
+</svg>

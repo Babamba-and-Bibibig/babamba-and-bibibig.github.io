@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="990" viewBox="0 0 1000 990" role="img" aria-labelledby="title desc" lang="ko">
+<title id="title">정밀도는 예측한 열, 재현율은 실제 정답 행을 본다</title>
+<desc id="desc">계산 예시이며 실제 모델 성능이 아니다. 행은 실제 클래스이고 열은 예측 클래스다. 정상, 폐렴 순서에서 혼동 행렬은 [[222, 48], [12, 765]]이다. 폐렴을 양성으로 놓으면 정밀도는 765/(48+765), 재현율은 765/(12+765)다. TN은 정상 정답, FP는 정상을 폐렴으로 예측, FN은 폐렴을 정상으로 예측, TP는 폐렴 정답이다.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif}</style>
+<rect width="1000" height="990" rx="16" fill="#f5f7fb"/>
+<text x="36" y="50" font-size="25" fill="#172033" font-weight="700" text-anchor="start" data-width="928">정밀도는 예측한 열, 재현율은 실제 정답 행을 본다</text>
+<text x="36" y="86" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="928">계산 예시 · 실제 실험 성능 아님 · 양성 클래스 = PNEUMONIA</text>
+<text x="510" y="146" font-size="23" fill="#172033" font-weight="700" text-anchor="middle" data-width="580">열 = 모델이 예측한 클래스</text>
+<text x="360" y="190" font-size="22" fill="#172033" font-weight="700" text-anchor="middle" data-width="260">NORMAL (0)</text>
+<text x="660" y="190" font-size="22" fill="#1b5fa7" font-weight="700" text-anchor="middle" data-width="260">PNEUMONIA (1)</text>
+<text x="136" y="270" font-size="20" fill="#172033" font-weight="400" text-anchor="middle" data-width="180">실제 NORMAL</text>
+<text x="136" y="301" font-size="20" fill="#172033" font-weight="400" text-anchor="middle" data-width="180">(0)</text>
+<text x="136" y="430" font-size="18" fill="#08786c" font-weight="700" text-anchor="middle" data-width="180">실제 PNEUMONIA</text>
+<text x="136" y="461" font-size="18" fill="#08786c" font-weight="700" text-anchor="middle" data-width="180">(1)</text>
+<rect x="230" y="215" width="280" height="145" rx="8" fill="#edf1f6" stroke="#59718a" stroke-width="1.5"/>
+<text x="370" y="269" font-size="42" fill="#59718a" font-weight="700" text-anchor="middle" data-width="250">222</text>
+<text x="370" y="305" font-size="24" fill="#59718a" font-weight="700" text-anchor="middle" data-width="250">TN</text>
+<text x="370" y="338" font-size="18" fill="#172033" font-weight="400" text-anchor="middle" data-width="256">정상 → 정상</text>
+<rect x="530" y="215" width="280" height="145" rx="8" fill="#fff0df" stroke="#9b4d08" stroke-width="1.5"/>
+<text x="670" y="269" font-size="42" fill="#9b4d08" font-weight="700" text-anchor="middle" data-width="250">48</text>
+<text x="670" y="305" font-size="24" fill="#9b4d08" font-weight="700" text-anchor="middle" data-width="250">FP</text>
+<text x="670" y="338" font-size="18" fill="#172033" font-weight="400" text-anchor="middle" data-width="256">정상 → 폐렴</text>
+<rect x="230" y="375" width="280" height="145" rx="8" fill="#fbe9eb" stroke="#a32e42" stroke-width="1.5"/>
+<text x="370" y="429" font-size="42" fill="#a32e42" font-weight="700" text-anchor="middle" data-width="250">12</text>
+<text x="370" y="465" font-size="24" fill="#a32e42" font-weight="700" text-anchor="middle" data-width="250">FN</text>
+<text x="370" y="498" font-size="18" fill="#172033" font-weight="400" text-anchor="middle" data-width="256">폐렴 → 정상</text>
+<rect x="530" y="375" width="280" height="145" rx="8" fill="#e7f5f1" stroke="#08786c" stroke-width="1.5"/>
+<text x="670" y="429" font-size="42" fill="#08786c" font-weight="700" text-anchor="middle" data-width="250">765</text>
+<text x="670" y="465" font-size="24" fill="#08786c" font-weight="700" text-anchor="middle" data-width="250">TP</text>
+<text x="670" y="498" font-size="18" fill="#172033" font-weight="400" text-anchor="middle" data-width="256">폐렴 → 폐렴</text>
+<text x="892" y="190" font-size="19" fill="#46566c" font-weight="700" text-anchor="middle" data-width="124">support</text>
+<text x="892" y="293" font-size="29" fill="#172033" font-weight="700" text-anchor="middle" data-width="124">270</text>
+<text x="892" y="453" font-size="29" fill="#172033" font-weight="700" text-anchor="middle" data-width="124">777</text>
+<text x="40" y="565" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="920">행의 합계 = 해당 클래스의 실제 샘플 수(support)</text>
+<rect x="40" y="604" width="440" height="281" rx="12" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.5"/>
+<text x="64" y="646" font-size="25" fill="#1b5fa7" font-weight="700" text-anchor="start" data-width="392">정밀도(Precision)</text>
+<text x="64" y="686" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">예측이 PNEUMONIA인 열에서</text>
+<text x="64" y="717" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">실제 PNEUMONIA인 것의 비율</text>
+<text x="64" y="766" font-size="25" fill="#1b5fa7" font-weight="700" text-anchor="start" data-width="392">TP / (FP + TP)</text>
+<text x="64" y="805" font-size="25" fill="#1b5fa7" font-weight="700" text-anchor="start" data-width="392">765 / (48 + 765)</text>
+<text x="64" y="852" font-size="19" fill="#46566c" font-weight="400" text-anchor="start" data-width="392">예측을 양성으로 한 집합이 기준이다.</text>
+<rect x="520" y="604" width="440" height="281" rx="12" fill="#e7f5f1" stroke="#08786c" stroke-width="1.5"/>
+<text x="544" y="646" font-size="25" fill="#08786c" font-weight="700" text-anchor="start" data-width="392">재현율(Recall)</text>
+<text x="544" y="686" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">실제가 PNEUMONIA인 행에서</text>
+<text x="544" y="717" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">PNEUMONIA로 찾아낸 것의 비율</text>
+<text x="544" y="766" font-size="25" fill="#08786c" font-weight="700" text-anchor="start" data-width="392">TP / (FN + TP)</text>
+<text x="544" y="805" font-size="25" fill="#08786c" font-weight="700" text-anchor="start" data-width="392">765 / (12 + 765)</text>
+<text x="544" y="852" font-size="19" fill="#46566c" font-weight="400" text-anchor="start" data-width="392">실제 양성인 집합이 기준이다.</text>
+<text x="40" y="932" font-size="20" fill="#172033" font-weight="700" text-anchor="start" data-width="920">정상 클래스의 지표를 구할 때는 NORMAL을 기준 클래스로 바꾸어 같은 원리를 적용한다.</text>
+</svg>

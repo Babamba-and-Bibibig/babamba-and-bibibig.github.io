@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="960" viewBox="0 0 1000 960" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Give every sample equal weight in the overall mean</title>
+<desc id="desc">One hundred validation samples form batches of 32, 32, 32, and 4. Multiply each batch mean by its sample count, sum the totals, then divide by the total samples processed. Averaging the four batch means equally gives each sample in the last small batch more weight. This assumes standard mean CrossEntropyLoss without class weights or ignored labels.</desc>
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11 Z" fill="#59718a"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK KR","Noto Sans KR","Pretendard","Apple SD Gothic Neo",system-ui,sans-serif}</style>
+<rect width="1000" height="960" rx="16" fill="#f5f7fb"/>
+<text x="36" y="50" font-size="27" fill="#172033" font-weight="700" text-anchor="start" data-width="928">Give every sample equal weight in the overall mean</text>
+<text x="36" y="86" font-size="20" fill="#46566c" font-weight="400" text-anchor="start" data-width="928">100 validation samples · batch_size=32 · drop_last=False</text>
+<text x="40" y="140" font-size="23" fill="#172033" font-weight="700" text-anchor="start" data-width="920">There are four batches, but the mean describes 100 samples.</text>
+<text x="40" y="177" font-size="19" fill="#46566c" font-weight="400" text-anchor="start" data-width="920">Bar widths are proportional to the number of samples.</text>
+<rect x="40" y="201" width="288" height="65" rx="0" fill="#e8f1fb" stroke="#1b5fa7" stroke-width="1.5"/>
+<text x="184.0" y="242" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="268">Batch 1 · 32</text>
+<rect x="328" y="201" width="288" height="65" rx="0" fill="#dfebfa" stroke="#1b5fa7" stroke-width="1.5"/>
+<text x="472.0" y="242" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="268">Batch 2 · 32</text>
+<rect x="616" y="201" width="288" height="65" rx="0" fill="#d6e6f7" stroke="#1b5fa7" stroke-width="1.5"/>
+<text x="760.0" y="242" font-size="21" fill="#172033" font-weight="700" text-anchor="middle" data-width="268">Batch 3 · 32</text>
+<rect x="904" y="201" width="36" height="65" rx="0" fill="#fff0df" stroke="#9b4d08" stroke-width="1.5"/>
+<path d="M922.0 270 V288 H810" fill="none" stroke="#9b4d08" stroke-width="2.4" stroke-linejoin="round"/>
+<text x="805" y="309" font-size="20" fill="#9b4d08" font-weight="700" text-anchor="middle" data-width="280">Batch 4 · 4 samples</text>
+<rect x="40" y="350" width="440" height="410" rx="12" fill="#e7f5f1" stroke="#08786c" stroke-width="1.5"/>
+<text x="64" y="390" font-size="22" fill="#08786c" font-weight="700" text-anchor="start" data-width="392">Mean weighted by sample count</text>
+<text x="64" y="433" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">Multiply each batch mean</text>
+<text x="64" y="464" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">by the number of samples in it.</text>
+<path d="M260 486 V515" fill="none" stroke="#08786c" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="64" y="550" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">Add the batch totals to get</text>
+<text x="64" y="581" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">the sum of all sample losses.</text>
+<path d="M260 600 V627" fill="none" stroke="#08786c" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="64" y="662" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="392">Divide by the 100 samples processed.</text>
+<text x="64" y="693" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="392">Each sample has equal weight.</text>
+<text x="64" y="735" font-size="19" fill="#08786c" font-weight="700" text-anchor="start" data-width="392">total loss / samples processed</text>
+<rect x="520" y="350" width="440" height="410" rx="12" fill="#fff0df" stroke="#9b4d08" stroke-width="1.5"/>
+<text x="544" y="390" font-size="22" fill="#9b4d08" font-weight="700" text-anchor="start" data-width="392">Unweighted mean of batch means</text>
+<text x="544" y="433" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">A mean representing 32 samples</text>
+<text x="544" y="464" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">and a mean representing 4 samples</text>
+<text x="544" y="505" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">are given the same weight.</text>
+<path d="M740 539 V570" fill="none" stroke="#9b4d08" stroke-width="2.4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="544" y="607" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">Each sample in the small batch</text>
+<text x="544" y="638" font-size="21" fill="#172033" font-weight="400" text-anchor="start" data-width="392">receives more weight.</text>
+<text x="544" y="691" font-size="20" fill="#9b4d08" font-weight="700" text-anchor="start" data-width="392">With unequal batch sizes, this can</text>
+<text x="544" y="722" font-size="20" fill="#9b4d08" font-weight="700" text-anchor="start" data-width="392">differ from the overall sample mean.</text>
+<rect x="40" y="795" width="920" height="125" rx="12" fill="#ffffff" stroke="#59718a" stroke-width="1.5"/>
+<text x="64" y="834" font-size="22" fill="#172033" font-weight="700" text-anchor="start" data-width="872">When this calculation applies</text>
+<text x="64" y="867" font-size="20" fill="#172033" font-weight="400" text-anchor="start" data-width="872">CrossEntropyLoss(reduction=&quot;mean&quot;) · no class weights · no ignored labels</text>
+<text x="64" y="900" font-size="18" fill="#46566c" font-weight="400" text-anchor="start" data-width="872">Check what the loss averages. Weights or ignored labels can change its denominator.</text>
+</svg>
