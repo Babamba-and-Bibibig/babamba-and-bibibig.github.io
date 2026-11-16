@@ -17,7 +17,7 @@ This article follows file paths and labels through model inputs, predictions, an
 
 ## 01. Decide which information must stay connected
 
-The goal is to predict an image's class and, when the prediction is wrong, identify the file and the class it was mistaken for. A **class** is a category to distinguish, and a **label** is the known answer attached to an image. One image together with its label is a **sample**.
+The goal is to predict an image's class and, when the prediction is wrong, identify the file and the class it was mistaken for. A <strong>class</strong> is a category to distinguish, and a <strong>label</strong> is the known answer attached to an image. One image together with its label is a <strong>sample</strong>.
 
 First, separate the inputs and outputs needed at each stage.
 
@@ -35,13 +35,13 @@ First, separate the inputs and outputs needed at each stage.
 
 </div>
 
-A **sample index** is an integer that selects a sample. A **class ID** is an integer that identifies the category a sample belongs to. Indices start at 0. Having 100 samples means there are sample indices from 0 through 99; it does not mean there are 100 classes.
+A <strong>sample index</strong> is an integer that selects a sample. A <strong>class ID</strong> is an integer that identifies the category a sample belongs to. Indices start at 0. Having 100 samples means there are sample indices from 0 through 99; it does not mean there are 100 classes.
 
 Before writing code, ask three questions. Do you need pixels, a file path, or a label? Which object holds that information? When connecting it to other information, what establishes that both refer to the same sample?
 
 ## 02. Choose ImageFolder's root from the class folders
 
-`ImageFolder` is a torchvision dataset class that provides samples from class-based folders. Here, a **Dataset** is an object that reports the sample count and returns an image and its label when given a sample index.
+`ImageFolder` is a torchvision dataset class that provides samples from class-based folders. Here, a <strong>Dataset</strong> is an object that reports the sample count and returns an image and its label when given a sample index.
 
 By default, `ImageFolder` uses the names of the subdirectories directly below `root` as class names. It also searches deeper directories within each class folder. It does not understand the word `train` and automatically find the training folder.[^folder]
 
@@ -145,7 +145,7 @@ The same sample index can produce different return values depending on what you 
 
 </div>
 
-With the default PIL loader and no transform, the image is a **Pillow image**. Pillow is a library for reading and working with image files. `type(img)` reports the object's type, and `img.size` is a tuple containing width and height.
+With the default PIL loader and no transform, the image is a <strong>Pillow image</strong>. Pillow is a library for reading and working with image files. `type(img)` reports the object's type, and `img.size` is a tuple containing width and height.
 
 ~~~python
 img, label = dataset[0]
@@ -161,7 +161,7 @@ img.close()
 
 Get the file name from the path in `samples` instead of assuming it is available as `img.name`. The default PIL loader converts the image to RGB. An RGB `img.mode` therefore does not establish that the original file on disk was also RGB. To inspect the original mode, open the file itself with `Image.open(img_path)`.[^folder]
 
-A **tensor** is PyTorch's data type for calculating with numbers arranged along multiple axes. Once preprocessing converts the image to a tensor, the way to inspect it changes too.
+A <strong>tensor</strong> is PyTorch's data type for calculating with numbers arranged along multiple axes. Once preprocessing converts the image to a tensor, the way to inspect it changes too.
 
 <div class="eval-table">
 
@@ -178,9 +178,9 @@ Here, `np` refers to NumPy imported with `import numpy as np`. `asarray` convert
 
 ## 05. Match preprocessing to the model's input requirements
 
-**Preprocessing** converts source data into a form the model can receive. Before choosing transforms, determine the required channel count, height, and width. This example uses a floating-point RGB tensor with 3 channels, a height of 224, and a width of 224.
+<strong>Preprocessing</strong> converts source data into a form the model can receive. Before choosing transforms, determine the required channel count, height, and width. This example uses a floating-point RGB tensor with 3 channels, a height of 224, and a width of 224.
 
-In the single-image shape `(C, H, W)`, `C` is the channel count, `H` is height, and `W` is width. Axis numbers 0, 1, and 2 correspond to those three meanings. `Resize((224, 224))` receives **one tuple containing height and width**. It is different from `Resize(224, 224)`.
+In the single-image shape `(C, H, W)`, `C` is the channel count, `H` is height, and `W` is width. Axis numbers 0, 1, and 2 correspond to those three meanings. `Resize((224, 224))` receives <strong>one tuple containing height and width</strong>. It is different from `Resize(224, 224)`.
 
 `Compose` runs transforms in their listed order. For ordinary 8-bit RGB or grayscale images, `ToTensor` creates a floating-point tensor with channels first and divides pixel values by 255. It does not apply the same range conversion to every input data type.[^transforms]
 
@@ -208,15 +208,15 @@ print(image_tensor.min().item(), image_tensor.max().item())
 
 Using `Grayscale(num_output_channels=1)` gives the image tensor one channel. The model must also be configured for one input channel. For Normalize, explained below, do not apply the three RGB means and standard deviations directly to a single-channel tensor.
 
-**Data augmentation** modifies training images in ways that preserve their labels. `RandomHorizontalFlip(p=0.5)` flips an image horizontally with a 50% probability when it is read. It does not change the file or increase the number of samples. Do not add flipping automatically when image orientation carries meaning. The validation preprocessing here uses no random augmentation.
+<strong>Data augmentation</strong> modifies training images in ways that preserve their labels. `RandomHorizontalFlip(p=0.5)` flips an image horizontally with a 50% probability when it is read. It does not change the file or increase the number of samples. Do not add flipping automatically when image orientation carries meaning. The validation preprocessing here uses no random augmentation.
 
 ### Normalize uses the reference values you supply
 
-**Standardization** changes the numerical reference by subtracting a mean and dividing by a standard deviation. The mean describes the center of the values, and the standard deviation describes their spread around that center. Subtracting the mean expresses whether a value is above or below the center. Dividing by the standard deviation expresses that difference relative to a chosen scale of variation.
+<strong>Standardization</strong> changes the numerical reference by subtracting a mean and dividing by a standard deviation. The mean describes the center of the values, and the standard deviation describes their spread around that center. Subtracting the mean expresses whether a value is above or below the center. Dividing by the standard deviation expresses that difference relative to a chosen scale of variation.
 
 `Normalize(mean=..., std=...)` uses the fixed mean and standard deviation supplied for each channel. It does not recalculate statistics for each image. Its output can fall outside the 0–1 range, and using reference values from another dataset does not make your image's mean zero. If you calculate your own reference statistics, calculate them from the training data and reuse them for validation and testing.[^normalize]
 
-**Pretraining** means learning weights from another dataset in advance. **Transfer learning** means using that model for a new task. When reusing weights, first check the preprocessing those weights expect.
+<strong>Pretraining</strong> means learning weights from another dataset in advance. <strong>Transfer learning</strong> means using that model for a new task. When reusing weights, first check the preprocessing those weights expect.
 
 ~~~python
 from torchvision.models import ResNet18_Weights
@@ -237,7 +237,7 @@ Training uses labels to change the model's weights. Validation evaluates the cur
 
 First, divide the original sample indices into training and validation lists. There is no need to read image pixels to make this split. `targets` identifies each sample's class, providing the information needed to consider class proportions.
 
-A **stratified split** preserves the original class proportions in both parts as closely as possible. If the original ratio is 20:80, the split tries to retain a similar ratio; it does not balance the classes to 50:50.[^split]
+A <strong>stratified split</strong> preserves the original class proportions in both parts as closely as possible. If the original ratio is 20:80, the split tries to retain a similar ratio; it does not balance the classes to 50:50.[^split]
 
 ~~~python
 from sklearn.model_selection import train_test_split
@@ -257,7 +257,7 @@ assert set(train_idx).isdisjoint(val_idx)
 
 `test_size=0.2` assigns about 20% to the second returned list. Although the parameter contains the word `test`, we use that part for validation here. `stratify` receives the per-sample labels, and `random_state` is a random seed for reproducing the split with the same inputs and conditions. `set(...).isdisjoint(...)` checks that the two sets share no elements. Stratification can fail when a class has too few samples or a split is too small.
 
-Next, use **Subset** to provide only the selected indices. A Subset connects an original dataset to an index list; it does not copy image files. `ImageFolder` has no `indices` argument for this purpose, and the default `dataset[train_idx]` is not a way to select a whole list of integer indices.[^data]
+Next, use <strong>Subset</strong> to provide only the selected indices. A Subset connects an original dataset to an index list; it does not copy image files. `ImageFolder` has no `indices` argument for this purpose, and the default `dataset[train_idx]` is not a way to select a whole list of integer indices.[^data]
 
 To configure training and validation preprocessing independently, create separate `ImageFolder` objects for reading the source. Verify that both use the same sample list and class IDs, then apply split indices that refer to that common list.
 
@@ -299,7 +299,7 @@ In this example, requesting `val_dataset[0]` reads `val_dataset.indices[0]`, the
 <figcaption>Follow the sample index used to find a file separately from the class ID used to find a name. The selection list is an example of this mapping.</figcaption>
 </figure>
 
-Once we connect a `DataLoader` to provide batches, the objects have the following roles. A **DataLoader** retrieves samples from a dataset and provides them in **batches**, which are groups of samples.
+Once we connect a `DataLoader` to provide batches, the objects have the following roles. A <strong>DataLoader</strong> retrieves samples from a dataset and provides them in <strong>batches</strong>, which are groups of samples.
 
 <div class="eval-table">
 
@@ -344,7 +344,7 @@ Splitting divides samples into sets, while shuffling changes the order within a 
 
 Let `B` be the number of samples in the current batch. The image batch shape is `(B, C, H, W)`, and the label shape is `(B,)`. Axis 0 represents samples, axis 1 channels, axis 2 height, and axis 3 width. Default batching requires image tensors of the same size. ImageFolder itself does not make all image dimensions equal.
 
-Consider a **counting example** with 100 validation samples and a batch size of 32.
+Consider a <strong>counting example</strong> with 100 validation samples and a batch size of 32.
 
 <div class="eval-table">
 
@@ -361,7 +361,7 @@ Use `total += len(labels)` to accumulate the number of processed samples. Adding
 
 ### next retrieves the next batch from an iterator
 
-An **iterable** is an object from which a traversal can begin. An **iterator** tracks how far that traversal has progressed. Calling `iter()` on a DataLoader gives an iterator that retrieves batches. `next()` retrieves one next batch from that iterator.[^iteration]
+An <strong>iterable</strong> is an object from which a traversal can begin. An <strong>iterator</strong> tracks how far that traversal has progressed. Calling `iter()` on a DataLoader gives an iterator that retrieves batches. `next()` retrieves one next batch from that iterator.[^iteration]
 
 ~~~python
 batch_iter = iter(val_loader)
@@ -376,11 +376,11 @@ Repeating `next(iter(val_loader))` does not advance the same iterator. Each call
 
 ## 09. Model scores, activation functions, and loss functions have different roles
 
-Consider a classification task with one correct class per image. The model uses the image's numbers and learnable **weights** to calculate intermediate values, then produces a score for each class. An **activation function** transforms intermediate values before passing them to the next calculation. A **loss function** compares the final scores with the true label and produces a number that defines what training should improve.
+Consider a classification task with one correct class per image. The model uses the image's numbers and learnable <strong>weights</strong> to calculate intermediate values, then produces a score for each class. An <strong>activation function</strong> transforms intermediate values before passing them to the next calculation. A <strong>loss function</strong> compares the final scores with the true label and produces a number that defines what training should improve.
 
 For example, ReLU changes negative values to 0 and leaves positive values unchanged. A sequence consisting only of weighted sums can be combined into one calculation of the same form. Adding a transform such as ReLU, whose response depends on its input, allows more complex relationships to be represented. An activation function does not receive the true label, while a classification loss needs to compare predictions with that label.
 
-The model's scores before conversion to probabilities are called **logits**. They can be negative and do not need to sum to 1. Let `K` be the number of classes. The structures are then:
+The model's scores before conversion to probabilities are called <strong>logits</strong>. They can be negative and do not need to sum to 1. Let `K` be the number of classes. The structures are then:
 
 <div class="eval-table">
 
@@ -398,7 +398,7 @@ The model must be prepared to accept `C` input channels and produce `K` scores. 
 
 In this case, `CrossEntropyLoss` receives logits and integer labels. It evaluates whether the correct class receives a sufficiently high score relative to the other classes, handling the necessary log-probability calculation internally. Do not apply Softmax beforehand.[^loss]
 
-**Softmax** transforms one sample's scores into probabilities that sum to 1. **argmax** returns the index of the largest value, rather than that value itself. Axis 1 of `logits` is the class axis, so `argmax(dim=1)` returns a class ID for each sample. Softmax preserves the ordering of the scores; if only a predicted class ID is needed, there is no reason to calculate Softmax first.
+<strong>Softmax</strong> transforms one sample's scores into probabilities that sum to 1. <strong>argmax</strong> returns the index of the largest value, rather than that value itself. Axis 1 of `logits` is the class axis, so `argmax(dim=1)` returns a class ID for each sample. Softmax preserves the ordering of the scores; if only a predicted class ID is needed, there is no reason to calculate Softmax first.
 
 ~~~python
 from torch import nn
@@ -417,7 +417,7 @@ Other losses require their own matching output and label structures. `BCEWithLog
 
 ## 10. Separate training mode from weight updates
 
-A **gradient** describes how the loss responds to changes in a weight. **Backpropagation** starts from the loss and calculates gradients for the weights. An **optimizer** uses those gradients to update the weights.
+A <strong>gradient</strong> describes how the loss responds to changes in a weight. <strong>Backpropagation</strong> starts from the loss and calculates gradients for the weights. An <strong>optimizer</strong> uses those gradients to update the weights.
 
 Training proceeds through clearing previous gradients, calculating scores, calculating loss, calculating gradients, and updating weights. Constructing the model's layers and neurons is separate from using data to train their weights.
 
@@ -434,7 +434,7 @@ Training proceeds through clearing previous gradients, calculating scores, calcu
 
 </div>
 
-Training and evaluation modes affect layers whose behavior changes between modes, such as Dropout and BatchNorm. **Dropout** randomly excludes some intermediate outputs during training. **BatchNorm** uses different statistical handling during training and evaluation. For now, understanding that `eval()` and `no_grad()` control different settings matters more than the internal implementation of these layers.[^autograd]
+Training and evaluation modes affect layers whose behavior changes between modes, such as Dropout and BatchNorm. <strong>Dropout</strong> randomly excludes some intermediate outputs during training. <strong>BatchNorm</strong> uses different statistical handling during training and evaluation. For now, understanding that `eval()` and `no_grad()` control different settings matters more than the internal implementation of these layers.[^autograd]
 
 Place the model, inputs, and labels on the same device for the calculation. For an ordinary single-device model, the first parameter tensor's `.device` identifies the model's device. Here, `next(model.parameters())` retrieves the first parameter; it retrieves a different kind of object from the batch iterator in the earlier section.
 
@@ -458,7 +458,7 @@ for images, labels in train_loader:
     optimizer.step()
 ~~~
 
-Ordinary batch training clears previous gradients so that the update uses the new batch's gradients. This is necessary because PyTorch accumulates gradients during `backward()`. A traversal that uses every training sample once, as in this setup, is one **epoch**.
+Ordinary batch training clears previous gradients so that the update uses the new batch's gradients. This is necessary because PyTorch accumulates gradients during `backward()`. A traversal that uses every training sample once, as in this setup, is one <strong>epoch</strong>.
 
 The device names are `mps` for an Apple GPU on a Mac, `cuda` for an NVIDIA GPU, and `cpu` for a CPU. Select a device after checking actual support. The code fragments in the article assume that an appropriate model is ready. The final section provides a runnable example that also constructs the model.
 
@@ -521,9 +521,9 @@ Accuracy likewise uses the total correct count divided by the total processed co
 
 ## 12. Accuracy, precision, and recall use different sample groups
 
-Before memorizing metrics, consider which samples form the denominator. **Accuracy** is the proportion of all evaluated samples whose predicted class is correct. **Precision** and **recall** focus on one class but evaluate it against different groups of samples.
+Before memorizing metrics, consider which samples form the denominator. <strong>Accuracy</strong> is the proportion of all evaluated samples whose predicted class is correct. <strong>Precision</strong> and <strong>recall</strong> focus on one class but evaluate it against different groups of samples.
 
-If PNEUMONIA is the class we want to find, we call it **positive** and the other class **negative**. Positive does not mean a good outcome; it identifies the target we are looking for.
+If PNEUMONIA is the class we want to find, we call it <strong>positive</strong> and the other class <strong>negative</strong>. Positive does not mean a good outcome; it identifies the target we are looking for.
 
 <div class="eval-table">
 
@@ -540,7 +540,7 @@ Precision and recall have the same numerator: the number of correct predictions 
 
 If every actual pneumonia image is found, recall is 100%. Suppose the model now incorrectly calls more normal images pneumonia, while the number of actual pneumonia images and the number found remain unchanged. Recall does not change. Precision falls because more incorrect results are included among the samples called pneumonia. This is why the two metrics reveal different kinds of mistakes.
 
-**Class imbalance** means that classes have different sample counts. As a calculation example, predicting normal for all 990 normal samples and 10 defective samples gives 99% accuracy but 0% recall for defects. Accuracy counts each sample once, so a class with more samples has more influence on the overall value.
+<strong>Class imbalance</strong> means that classes have different sample counts. As a calculation example, predicting normal for all 990 normal samples and 10 defective samples gives 99% accuracy but 0% recall for defects. Accuracy counts each sample once, so a class with more samples has more influence on the overall value.
 
 `support` is the number of samples with that true label in the current evaluation. It does not automatically mean the class count in the original complete dataset. Nor should 777 images be interpreted as 777 patients without separately establishing that each patient has exactly one image.
 
@@ -548,9 +548,9 @@ Choose which metric to prioritize by considering what happens after a prediction
 
 ## 13. A confusion matrix preserves the direction of mistakes
 
-A **confusion matrix** counts samples for each combination of true and predicted classes. In scikit-learn, rows represent true classes and columns represent predicted classes. Each horizontal row corresponds to one true class, and each vertical column to one predicted class.[^cm]
+A <strong>confusion matrix</strong> counts samples for each combination of true and predicted classes. In scikit-learn, rows represent true classes and columns represent predicted classes. Each horizontal row corresponds to one true class, and each vertical column to one predicted class.[^cm]
 
-The following values are a **calculation example** for understanding the metrics. They are not performance results obtained by training a model for this article.
+The following values are a <strong>calculation example</strong> for understanding the metrics. They are not performance results obtained by training a model for this article.
 
 <div class="eval-table">
 
@@ -636,7 +636,7 @@ cm = confusion_matrix(y_true, y_pred, labels=class_ids)
 
 ## 15. Calculating metrics from the matrix makes the axes explicit
 
-`cm` is a two-dimensional NumPy array. Here, it is a **count matrix** containing all classes, with no normalization or sample weighting. Under those conditions, its total must equal the number of evaluated samples.
+`cm` is a two-dimensional NumPy array. Here, it is a <strong>count matrix</strong> containing all classes, with no normalization or sample weighting. Under those conditions, its total must equal the number of evaluated samples.
 
 ~~~python
 assert len(y_true) > 0
@@ -667,7 +667,7 @@ In `row[row_idx]`, however, the same integer is used as a column index within th
 
 ## 16. Read F1 and the classification report by class
 
-The **F1 score** evaluates precision and recall together. It uses their **harmonic mean**, making a high score difficult to achieve when only one of the two is high. Before considering the mathematical derivation, focus on its purpose: checking both whether reported findings are correct and whether actual targets were missed.
+The <strong>F1 score</strong> evaluates precision and recall together. It uses their <strong>harmonic mean</strong>, making a high score difficult to achieve when only one of the two is high. Before considering the mathematical derivation, focus on its purpose: checking both whether reported findings are correct and whether actual targets were missed.
 
 Writing precision as `P` and recall as `R`, F1 is `2 × P × R / (P + R)`, with both values expressed as proportions from 0 to 1. For example, 100% precision and 20% recall give an F1 of about 33.3%. If both metrics are 80%, F1 is also 80%. Equal values alone are not evidence of good performance: if both are 10%, F1 is 10% too.
 
@@ -701,7 +701,7 @@ print(report)
 
 </div>
 
-Macro F1 is the **average of the per-class F1 scores**. It generally differs from first calculating macro precision and macro recall, then using those two values to calculate F1. Check both what is being averaged and the order of operations.
+Macro F1 is the <strong>average of the per-class F1 scores</strong>. It generally differs from first calculating macro precision and macro recall, then using those two values to calculate F1. Check both what is being averaged and the order of operations.
 
 To check the calculation with five samples without overwriting actual results, use this example.
 
@@ -763,7 +763,7 @@ Equal list lengths verify counts only. Comparing original and collected labels a
 
 ## 18. Display both the true and predicted names for misclassified images
 
-**Error analysis** examines incorrect samples to investigate the kinds of errors that occur. Break the process into comparing labels and predictions, selecting an error, looking up its original index, retrieving its file path, reading the image, and displaying the true and predicted names.
+<strong>Error analysis</strong> examines incorrect samples to investigate the kinds of errors that occur. Break the process into comparing labels and predictions, selecting an error, looking up its original index, retrieving its file path, reading the image, and displaying the true and predicted names.
 
 `zip(y_true, y_pred)` retrieves pairs of values at matching list indices. `enumerate()` adds the result index `i` to each pair. Because `zip` stops at the shorter input, check the lengths first.
 
@@ -809,7 +809,7 @@ if not found_error:
 
 Calling `plt.title(pred_name)` after `plt.title(true_name)` replaces the same title with the second value. To display both, combine them into one string and set the title once. The English title above can be used without configuring a Korean font. With a Korean font configured, the true and predicted labels can instead be written in Korean.
 
-The displayed image is **read from the original file**. The model received a tensor processed by transforms such as Resize or Normalize, so do not assume the two have the same appearance. The original image can suggest possible causes of an error, but one image does not establish the cause. The next step is to inspect the actual model input as well.
+The displayed image is <strong>read from the original file</strong>. The model received a tensor processed by transforms such as Resize or Normalize, so do not assume the two have the same appearance. The original image can suggest possible causes of an error, but one image does not establish the cause. The next step is to inspect the actual model input as well.
 
 ## 19. Check object types and the scope of a check before changing syntax
 
@@ -921,11 +921,11 @@ The script creates 24 blue images and 24 red images so that the connections can 
 
 For a quick run, the downloadable example uses 64×64 inputs and a 25% validation split. The 224×224 inputs and 20% split in the article are separate settings used to explain individual concepts. For an actual model, choose values that match its input structure and the requirements of the split.
 
-The example's small CNN accepts RGB inputs of shape `(B, 3, 64, 64)`, calculates intermediate features with convolutions and ReLU, and outputs `K` class scores. **Convolution** applies the same kernel weights across different parts of an image. The intermediate channel counts are 8 and 16. Two pooling operations reduce height and width to 16×16, after which the features are flattened per sample and passed to the output layer. **Pooling** here reduces spatial size by taking a representative value from each small region. The constructor receives the class count; `forward` receives the actual image batch. The model is intended to check execution of the evaluation flow, not to establish the best architecture for a real task.
+The example's small CNN accepts RGB inputs of shape `(B, 3, 64, 64)`, calculates intermediate features with convolutions and ReLU, and outputs `K` class scores. <strong>Convolution</strong> applies the same kernel weights across different parts of an image. The intermediate channel counts are 8 and 16. Two pooling operations reduce height and width to 16×16, after which the features are flattened per sample and passed to the output layer. <strong>Pooling</strong> here reduces spatial size by taking a representative value from each small region. The constructor receives the class count; `forward` receives the actual image batch. The model is intended to check execution of the evaluation flow, not to establish the best architecture for a real task.
 
 The required packages are `torch`, `torchvision`, `scikit-learn`, `numpy`, `Pillow`, and `matplotlib`. Install them in the Python environment you use, with a compatible PyTorch and torchvision combination for your operating system and GPU. Select GPU installation commands for your environment from the [official PyTorch installation guide](https://pytorch.org/get-started/locally/).
 
-The following commands work in **macOS zsh and Linux bash or zsh** from the directory where you downloaded the example file. Run them with `python` from your active Python environment.
+The following commands work in <strong>macOS zsh and Linux bash or zsh</strong> from the directory where you downloaded the example file. Run them with `python` from your active Python environment.
 
 ~~~bash
 python examples-en.py --demo --device cpu --output-dir runs/demo-01
