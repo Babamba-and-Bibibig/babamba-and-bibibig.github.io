@@ -1,0 +1,51 @@
+SSD detection evaluation examples: verification record
+Date: 2026-11-24 (Asia/Seoul)
+
+Environment
+  CPU-only Python environment, separate from the user's training environment.
+  Python 3.12.14
+  torch==2.15.0+cpu
+  torchvision==0.29.2+cpu
+  torchmetrics==1.9.0
+  pycocotools==2.0.11
+  matplotlib==3.10.8
+  Pillow==13.0.0
+  Backend: pycocotools
+
+1. Standard-library calculation
+Command: python examples.py --demo
+  TP, FP, TP:       AP = 0.8349835
+  FP, TP, TP:       AP = 0.6666667
+  Mean batch AP:         0.7500000
+  Global AP:             0.8349835
+  TP, FP (one GT):  AP = 1.0000000
+All arithmetic assertions passed.
+
+2. Actual TorchMetrics API with synthetic boxes
+Command: python examples.py --verify-metric
+  Two images, one class, two ground-truth objects.
+  Score order: TP(0.9), FP(0.8), TP(0.7).
+  Whole-loader mAP: 0.8349835 (within 1e-6).
+  Mean of two separate batch APs: 0.7500000.
+  FP-first order AP: 0.6666667.
+  TP followed by FP, one ground truth: AP=1.0000000.
+  Extended precision shape: (10, 101, 1, 4, 3).
+  Extracted mAP@0.50 and mAP@0.75 match the summary keys.
+  Single-class output reshaping and class-name lookup passed.
+All synthetic metric assertions passed.
+
+3. Targeted plotting and custom-IoU checks
+  Green ground-truth and red prediction boxes use the same image.
+  A display threshold changes the drawn count without changing predictions.
+  Two temporary test JPGs were read, inferred and plotted with their own results.
+  The six-IoU list [0.50, 0.75, 0.80, 0.85, 0.90, 0.95] produces six entries;
+  their mean agrees with map in the fixture.
+  An empty validation loader raises a clear ValueError.
+These checks used Matplotlib's noninteractive Agg backend.
+
+Scope
+  This verifies arithmetic, tensor/API contracts, whole-loader accumulation,
+  per-IoU extraction and the plotting helpers with deterministic synthetic data.
+  It does not evaluate the user's trained SSD, reproduce their reported pet
+  detection scores, test CUDA/MPS execution, or verify checkpoint restoration.
+  No real dataset or model weights were downloaded and no model was trained.
