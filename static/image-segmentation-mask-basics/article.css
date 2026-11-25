@@ -1,0 +1,40 @@
+/* This article's diagrams and tables retain the site's shared typography. */
+.seg-figure {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 1.6rem 0;
+}
+.seg-figure img {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin: 0 auto;
+  border: 1px solid #94a3b844;
+  border-radius: .7rem;
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+.seg-figure figcaption {
+  margin: .6rem auto 0;
+  max-width: 560px;
+  font-size: .92rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.seg-table {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+.seg-table table { width: 100%; margin-block: .5rem; }
+.seg-table th { white-space: nowrap; }
+.seg-table td { min-width: 5.5rem; }
+@media (max-width: 600px) {
+  .seg-figure { margin-block: 1.25rem; }
+  .seg-figure figcaption { font-size: .9rem; }
+}

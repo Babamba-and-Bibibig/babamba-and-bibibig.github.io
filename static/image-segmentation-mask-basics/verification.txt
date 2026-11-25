@@ -1,0 +1,103 @@
+Segmentation examples — execution verification
+
+Date: 2026-11-25 (Asia/Seoul)
+
+Environment
+Python: 3.12.14
+Platform: Linux-6.18.57-x86_64-with-glibc2.41
+NumPy: 2.3.5
+OpenCV: 5.1.0
+opencv-python-headless: 5.1.0.95
+PyTorch: 2.15.0+cpu
+PyTorch device: CPU
+
+Working directory: the directory containing examples.py
+Executed command: .venv/bin/python examples.py --torch-check
+Portable equivalent after installing dependencies: python examples.py --torch-check
+Exit code: 0
+
+Standard output
+---------------
+image: (120, 200, 3) uint8
+semantic: (120, 200) uint8 [0 1 2]
+ball: (120, 200) bool
+onehot: (3, 120, 200) uint8
+onehot -> class IDs: True
+class counts: {'sky': 14782, 'ground': 6000, 'ball': 3218}
+ball pixels: 3218
+ball fraction: 13.4083%
+num_labels (including background): 3
+instances: (2, 120, 200) bool
+region areas (sorted): [1257, 1961]
+empty instances: (0, 120, 200)
+touching regions: 1
+paired flip / nearest resize / overlay / ID checks: OK
+torch image: (1, 3, 120, 200) torch.float32
+torch target: (1, 120, 200) torch.int64
+torch logits: (1, 3, 120, 200)
+torch prediction: (1, 120, 200)
+CrossEntropyLoss and backward: OK (randomly initialized model; no accuracy evaluation)
+
+Verified scope
+--------------
+- Synthetic RGB scene: height 120, width 200, two separated filled circles.
+- RGB component comparisons and per-pixel boolean reduction.
+- One-hot conversion, exactly one class per pixel, and argmax round-trip.
+- Class counts agree with one-hot sums and the total image pixel count.
+- Connected regions: two separated balls, empty foreground, touching circles,
+  and the different behavior of 4-neighbor and 8-neighbor connectivity.
+- Reconstruction of the semantic class-ID mask from the region masks.
+- The same horizontal flip applied to the image and its target mask.
+- Resize to height 60 and width 100: INTER_AREA for the image,
+  INTER_NEAREST for the class-ID mask; matching spatial dimensions
+  and no new class IDs in the resized mask.
+- Ball-only overlay with alpha 0.45 and RGB (255, 220, 0):
+  the original sky and ground pixels remain unchanged.
+- Negative and out-of-range class IDs are rejected before lookup-table indexing.
+- PyTorch CPU input (1, 3, 120, 200), integer target (1, 120, 200),
+  a randomly initialized Conv2d(3, C, kernel_size=3, padding=1),
+  raw logits passed into CrossEntropyLoss, a finite scalar loss,
+  and finite gradients on model.weight after loss.backward().
+- Prediction argmax over the class dimension produces shape (1, 120, 200).
+
+Limits
+------
+This is a synthetic-data and input/shape/gradient check.
+No real dataset, pretrained checkpoint, learning curve, segmentation accuracy,
+GPU execution, or production performance was evaluated.
+The convolution's initial random weights are not evidence of a useful trained model.
+Exact RGB matching in the synthetic scene is not a general method for detecting
+objects in photographs.
+
+
+Article code checks (Korean edition)
+------------------------------------
+Executed all 18 Python code blocks in order, with Matplotlib Agg.
+The file-inspection block used a temporary synthetic PNG created from the example mask.
+No external dataset path or annotations were tested.
+stdout:
+(120, 200, 3) uint8 72000
+(120, 200, 3) bool
+(120, 200) bool
+[0 1 2]
+3
+(120, 200)
+int32
+2
+(2, 120, 200)
+[[1 0 0]
+ [0 1 0]
+ [0 0 1]]
+(120, 200)
+True
+[14782  6000  3218]
+ball: 3218 pixels, 13.41%
+(120, 200, 3) uint8
+L (200, 120)
+(120, 200) uint8
+[0 1 2]
+(1, 3, 120, 200) torch.float32
+(1, 120, 200) torch.int64
+(1, 3, 120, 200)
+(1, 120, 200)
+0

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 560 644" width="560" height="644" role="img" aria-labelledby="title desc">
+<title id="title">같은 픽셀, 서로 다른 저장 값</title><desc id="desc">RGB, semantic class IDs, and connected-region labels for two separated circles.</desc>
+<style>text{font-family:"Noto Sans CJK KR",Arial,sans-serif} .mono{font-family:monospace}</style>
+<rect x="0" y="0" width="560" height="644" rx="14" fill="#fcfbf8" stroke="none"/>
+<text x="24" y="38" font-size="26" font-weight="700" fill="#20232b" text-anchor="start">같은 픽셀, 서로 다른 저장 값</text>
+<text x="24" y="75" font-size="23" font-weight="700" fill="#20232b" text-anchor="start">01  RGB 이미지</text>
+<image x="24" y="90" width="220.00000000000003" height="132.0" preserveAspectRatio="none" style="image-rendering:pixelated" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAB4CAIAAAA48Cq8AAACoklEQVR4nO3dsXHbQBCGUcvjjlSEUxWjMhyrDhWhwIlzdyMHmvE48IwAEv/u4vBeAzxAH5YkxDk8vPx8/wJH+9q9ANYkLCKERYSwiBAWEcIiQlhECIsIYREhLCKERYSwiBAWEcIiQlhECIsIYREhLCKERYSwiBAWEcIiQlhECIsIYREhLCKERYSwiBAWEcIiQlhECIsIYREhLCLOEdbT82P3EtjnYdoepLsaev3xK7cS7jEorJvHkrwGGhHWIe908hqlOazDPzzJa4i2sKKfx9fO6+n5cf4B9oRV8C1v/qnfaOO5mna8DWGV3TuYdq73uuFEzTnk6rCK70jNOdG73HmWJhx1aVgt9zknnOXtDjxFvQded+e96+75ie7aH7vU3gM/x790riDRQWNbRWH1Xj3zh1ZuhV3HbmL1S//tW9qqCGvCwJiwhksxsZrVFF9/XcXDmjMq5qzkCkysTpWtF19X2bCmDYlp61mYidWmvvLKVxQWEcIiQlhECIsIYRERDGvmd/shq1r+R0TBsGb+wm7IqrqWUfa63gqJEBYRwiJCWEQIiwhhtan/Ylj5itmwhny3/2vaehZmYnWqDL34ooqHNWdIzFnJFZhYzWpyr7+oKsKaMComrOFSTKx+6ehbLqqisHoHxvxxlVth17GbWFMkCmi8ourCWv6HIvc7dqm9B25Hv4ns6HcLe5BuZA/S3eyavJ1dk/exz/vN7PP+OU+mWJVn6RAxIqwPnv61kkFhffC8wjWMC+u/TvFxlX+dIyxOx/8KiRAWEcIi4tvb7+/da2BBJhYRwiJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhEfEHHuzX/QDwKCwAAAAASUVORK5CYII="/>
+<rect x="24" y="90" width="220.00000000000003" height="132.0" rx="0" fill="none" stroke="#dcdfe4"/>
+<text x="265" y="120" font-size="20" font-weight="700" fill="#20232b" text-anchor="start" class="mono">(120, 200, 3)</text>
+<text x="265" y="158" font-size="19" font-weight="400" fill="#20232b" text-anchor="start">픽셀마다 색상 값 3개</text>
+<text x="265" y="189" font-size="19" font-weight="400" fill="#20232b" text-anchor="start">[230, 60, 50]</text>
+<text x="24" y="255" font-size="23" font-weight="700" fill="#20232b" text-anchor="start">02  시맨틱 마스크</text>
+<image x="24" y="270" width="220.00000000000003" height="132.0" preserveAspectRatio="none" style="image-rendering:pixelated" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAB4CAIAAAA48Cq8AAACoklEQVR4nO3dwW3bQBCG0Si9pBNfcnEH6SU1+exODOTqq0vIwUCQQ4CQEv+Z4fK9BrSkP44kWljefr1/fIGjfe1eAGsSFhHCIkJYRAiLCGERISwihEWEsIgQFhHCIkJYRAiLCGERISwihEWEsIgQFhHCIkJYRAiLCGERISwihEWEsIgQFhHCIkJYRAiLCGERISwihEWEsIgQFhHnCOvt6bl7Cexzm7YH6a6Gvr2+5FbCIwaFdfdYktdAI8I65J1OXqM0h3X4hyd5DdEWVvTz+Np5vT09zz/AnrAKvuXNP/UbbTxX0463IayyewfTzvVed5yoOYdcHVbxHak5J3qXB8/ShKMuDavlPueEs7zdgaeo98Dr7rx33T0/0V37Y5fae+Dn+JfOFSQ6aGyrKKzeq2f+0MqtsOvYTax+6b99S1sVYU0YGBPWcCkmVrOa4uuvq3hYc0bFnJVcgYnVqbL14usqG9a0ITFtPQszsdrUV175isIiQlhECIsIYREhLCKCYc38bj9kVcv/iCgY1sxf2A1ZVdcyyl7XWyERwiJCWEQIiwhhESGsNvVfDCtfMRvWkO/2f0xbz8JMrE6VoRdfVPGw5gyJOSu5AhOrWU3u9RdVRVgTRsWENVyKidUvHX3LRVUUVu/AmD+ucivsOnYTa4pEAY1XVF1Yy/9Q5HHHLrX3wO3oN5Ed/e5hD9KN7EG6m12Tt7Nr8j72eb+bfd7/z5MpVuVZOkSMCOuTp3+tZFBYnzyvcA3jwvqnU3xc5W/nCIvT8b9CIoRFhLCIuH3/+aN7DSzIxCJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhESEsIn4DMVrek9DJrV8AAAAASUVORK5CYII="/>
+<rect x="24" y="270" width="220.00000000000003" height="132.0" rx="0" fill="none" stroke="#dcdfe4"/>
+<text x="265" y="300" font-size="20" font-weight="700" fill="#20232b" text-anchor="start" class="mono">(120, 200)</text>
+<text x="265" y="338" font-size="19" font-weight="400" fill="#20232b" text-anchor="start">0 하늘 · 1 땅 · 2 공</text>
+<text x="265" y="369" font-size="19" font-weight="400" fill="#20232b" text-anchor="start">두 공 모두 클래스 2</text>
+<text x="37.2" y="297.0" font-size="19" font-weight="700" fill="#20232b" text-anchor="middle">0</text>
+<text x="37.2" y="390.5" font-size="19" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+<text x="84.5" y="341.0" font-size="19" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<text x="183.5" y="341.0" font-size="19" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<text x="24" y="435" font-size="23" font-weight="700" fill="#20232b" text-anchor="start">03  연결 영역 번호</text>
+<image x="24" y="450" width="220.00000000000003" height="132.0" preserveAspectRatio="none" style="image-rendering:pixelated" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAB4CAIAAAA48Cq8AAACq0lEQVR4nO3dzWkcURCFUcsZaWUUgqIxOBCBonEIRiunIgzeeyEQszBoetS3ql73OWuhfjAfNf0zvL57/fP3C+zta/cCOCZhESEsIoRFhLCIEBYRwiJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhEbFGWC8Pj91LYJu7aXuQbmro26+fuZXwGYPCunksyWugEWHt8k0nr1Gaw9r95EleQ7SFFT0fP3Ze90/Pv398717FB3rCKrjKO0xb90/P1/zZtNQawiq7d7B6W1cmdWlOXtVhFd+RWrStG5K6NCGv0rBa7nOu1dYnk7rUm1fdnfeuu+cL3bXfsard/9tWazzSOYNEB41tFYXVOzbmD61cAV1tmVj90p99S1sVYU0YGBPWcComVrOacVI/tOJhzRkVc1ZyBiZWp8pBUjy0smFNGxLT1nNgJlab+vOeyiMKiwhhESEsIoRFhLCICIY189p+yKq6ng2XHTcY1sxf2A1ZVdev8MqO66uQCGERISwihEWEsIgQVpv6C8PKI2bDGnJt/27aeg7MxOpUOUKKB2Q8rDlDYs5KzsDEalYzSOrP5yrCmjAqJqzhVEysfulx0vJcsiis3oExf1zlPvuup90m1hSJAhp3MqoLq2tszB9X7/btoHd/LDv6TWRHv1vYg/RK9iDdzK7J17Nr8jb2eb+Zfd4/5s0UR+VdOkSMCOuNt38dyaCw3nhf4TGMC+u/Xh4eNbSWNcJiOZ4VEiEsIoRFhLCIEBYRwiJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhESEsIoRFhLCIEBYRwiJCWEQIiwhhEfEPpzDf9FzmxfYAAAAASUVORK5CYII="/>
+<rect x="24" y="450" width="220.00000000000003" height="132.0" rx="0" fill="none" stroke="#dcdfe4"/>
+<text x="265" y="480" font-size="20" font-weight="700" fill="#20232b" text-anchor="start" class="mono">(120, 200)</text>
+<text x="265" y="518" font-size="19" font-weight="400" fill="#20232b" text-anchor="start">0 공 이외의 영역</text>
+<text x="265" y="549" font-size="19" font-weight="400" fill="#20232b" text-anchor="start">1·2 서로 다른 공 영역</text>
+<text x="84.5" y="521.0" font-size="19" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+<text x="183.5" y="521.0" font-size="19" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<line x1="24" y1="606" x2="536" y2="606" stroke="#dcdfe4" stroke-width="1"/>
+<text x="24" y="633" font-size="19" font-weight="400" fill="#596171" text-anchor="start">표시 색과 마스크에 저장된 숫자는 다르다.</text>
+</svg>

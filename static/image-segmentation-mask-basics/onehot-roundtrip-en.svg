@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 560 657" width="560" height="657" role="img" aria-labelledby="title desc">
+<title id="title">Class IDs ↔ one mask per class</title><desc id="desc">A complete 3 by 4 class-ID mask is converted to three class masks, then restored with argmax over axis 0.</desc>
+<style>text{font-family:"Noto Sans CJK KR",Arial,sans-serif} .mono{font-family:monospace}</style>
+<rect x="0" y="0" width="560" height="657" rx="14" fill="#fcfbf8" stroke="none"/>
+<text x="24" y="38" font-size="26" font-weight="700" fill="#20232b" text-anchor="start">Class IDs ↔ one mask per class</text>
+<text x="280" y="77" font-size="21" font-weight="400" fill="#20232b" text-anchor="middle" class="mono">mask: (H, W) = (3, 4)</text>
+<rect x="192" y="94" width="44" height="44" rx="0" fill="#dee7f0" stroke="#dcdfe4"/>
+<text x="214.0" y="124.8" font-size="22" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="236" y="94" width="44" height="44" rx="0" fill="#dee7f0" stroke="#dcdfe4"/>
+<text x="258.0" y="124.8" font-size="22" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="280" y="94" width="44" height="44" rx="0" fill="#b92b3e" stroke="#dcdfe4"/>
+<text x="302.0" y="124.8" font-size="22" font-weight="400" fill="#ffffff" text-anchor="middle">2</text>
+<rect x="324" y="94" width="44" height="44" rx="0" fill="#dee7f0" stroke="#dcdfe4"/>
+<text x="346.0" y="124.8" font-size="22" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="192" y="138" width="44" height="44" rx="0" fill="#dee7f0" stroke="#dcdfe4"/>
+<text x="214.0" y="168.8" font-size="22" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="236" y="138" width="44" height="44" rx="0" fill="#b92b3e" stroke="#dcdfe4"/>
+<text x="258.0" y="168.8" font-size="22" font-weight="400" fill="#ffffff" text-anchor="middle">2</text>
+<rect x="280" y="138" width="44" height="44" rx="0" fill="#b92b3e" stroke="#dcdfe4"/>
+<text x="302.0" y="168.8" font-size="22" font-weight="400" fill="#ffffff" text-anchor="middle">2</text>
+<rect x="324" y="138" width="44" height="44" rx="0" fill="#dee7f0" stroke="#dcdfe4"/>
+<text x="346.0" y="168.8" font-size="22" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="192" y="182" width="44" height="44" rx="0" fill="#49805d" stroke="#dcdfe4"/>
+<text x="214.0" y="212.8" font-size="22" font-weight="400" fill="#ffffff" text-anchor="middle">1</text>
+<rect x="236" y="182" width="44" height="44" rx="0" fill="#49805d" stroke="#dcdfe4"/>
+<text x="258.0" y="212.8" font-size="22" font-weight="400" fill="#ffffff" text-anchor="middle">1</text>
+<rect x="280" y="182" width="44" height="44" rx="0" fill="#49805d" stroke="#dcdfe4"/>
+<text x="302.0" y="212.8" font-size="22" font-weight="400" fill="#ffffff" text-anchor="middle">1</text>
+<rect x="324" y="182" width="44" height="44" rx="0" fill="#49805d" stroke="#dcdfe4"/>
+<text x="346.0" y="212.8" font-size="22" font-weight="400" fill="#ffffff" text-anchor="middle">1</text>
+<line x1="280" y1="239" x2="280" y2="257" stroke="#b92b3e" stroke-width="2"/>
+<path d="M275,255 L280,263 L285,255" fill="none" stroke="#b92b3e" stroke-width="2"/>
+<text x="280" y="296" font-size="20" font-weight="400" fill="#20232b" text-anchor="middle" class="mono">np.eye(C)[mask].transpose(2, 0, 1)</text>
+<text x="280" y="327" font-size="20" font-weight="400" fill="#20232b" text-anchor="middle" class="mono">onehot: (C, H, W) = (3, 3, 4)</text>
+<text x="100" y="366" font-size="22" font-weight="700" fill="#20232b" text-anchor="middle">Class 0</text>
+<rect x="30" y="380" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="47.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<rect x="65" y="380" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="82.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<rect x="100" y="380" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="117.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="135" y="380" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="152.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<rect x="30" y="415" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="47.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<rect x="65" y="415" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="82.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="100" y="415" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="117.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="135" y="415" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="152.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<rect x="30" y="450" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="47.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="65" y="450" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="82.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="100" y="450" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="117.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="135" y="450" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="152.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<text x="276" y="366" font-size="22" font-weight="700" fill="#20232b" text-anchor="middle">Class 1</text>
+<rect x="206" y="380" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="223.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="241" y="380" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="258.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="276" y="380" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="293.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="311" y="380" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="328.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="206" y="415" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="223.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="241" y="415" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="258.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="276" y="415" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="293.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="311" y="415" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="328.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="206" y="450" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="223.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<rect x="241" y="450" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="258.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<rect x="276" y="450" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="293.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<rect x="311" y="450" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="328.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<text x="452" y="366" font-size="22" font-weight="700" fill="#20232b" text-anchor="middle">Class 2</text>
+<rect x="382" y="380" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="399.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="417" y="380" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="434.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="452" y="380" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="469.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<rect x="487" y="380" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="504.5" y="404.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="382" y="415" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="399.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="417" y="415" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="434.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<rect x="452" y="415" width="35" height="35" rx="0" fill="#f7e9ec" stroke="#dcdfe4"/>
+<text x="469.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">1</text>
+<rect x="487" y="415" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="504.5" y="439.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="382" y="450" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="399.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="417" y="450" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="434.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="452" y="450" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="469.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<rect x="487" y="450" width="35" height="35" rx="0" fill="#ffffff" stroke="#dcdfe4"/>
+<text x="504.5" y="474.5" font-size="18" font-weight="400" fill="#20232b" text-anchor="middle">0</text>
+<text x="280" y="521" font-size="21" font-weight="400" fill="#20232b" text-anchor="middle">Sum the 3 class values at each (y, x): 1</text>
+<line x1="280" y1="538" x2="280" y2="556" stroke="#b92b3e" stroke-width="2"/>
+<path d="M275,554 L280,562 L285,554" fill="none" stroke="#b92b3e" stroke-width="2"/>
+<rect x="24" y="576" width="512" height="57" rx="9" fill="#f7e9ec" stroke="none"/>
+<text x="280" y="612" font-size="23" font-weight="700" fill="#20232b" text-anchor="middle" class="mono">onehot.argmax(axis=0)  →  mask</text>
+</svg>
