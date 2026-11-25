@@ -11,17 +11,17 @@ styles = ["image-segmentation-mask-basics/article.css"]
 
 In image segmentation code, arrays can represent the same image while having different shapes. One variable has shape `(H, W, 3)`, another `(H, W)`, and another `(C, H, W)`. If we copy the code without understanding these differences, it is easy to miss why `axis=-1` is needed or what `mask[condition] = 2` actually changes.
 
-The first question is **what each pixel stores, and how many values it stores**. Three color components, one class ID, and one membership value per class require different operations. Once we know the output structure we need, we can decide which axes to keep and which to reduce.
+The first question is <strong>what each pixel stores, and how many values it stores</strong>. Three color components, one class ID, and one membership value per class require different operations. Once we know the output structure we need, we can decide which axes to keep and which to reduce.
 
 This article builds a small image containing sky, ground, and two balls. We use the same example throughout to connect array selection, mask conversion, visualization, and augmentation. We then check the formats needed to pass the mask into PyTorch. The runnable script is available as [examples.py](/image-segmentation-mask-basics/examples.py).
 
 ## 01. Images and masks store different information about the same pixels
 
-**Segmentation** assigns each image pixel to a region or category. A **class** is a category we want to distinguish. A **mask** is an array that stores information such as a class ID or a selection flag for each pixel. The word “mask” alone does not specify one particular data type or shape.
+<strong>Segmentation</strong> assigns each image pixel to a region or category. A <strong>class</strong> is a category we want to distinguish. A <strong>mask</strong> is an array that stores information such as a class ID or a selection flag for each pixel. The word “mask” alone does not specify one particular data type or shape.
 
 For this example, we define the class IDs as `0=sky`, `1=ground`, and `2=ball`. The size of an ID does not indicate a category's size or importance. Nor does `0` always mean background. It means sky in our semantic mask; another dataset may use a different convention.
 
-`H` is the image height and `W` is its width. **shape** lists the size of each axis in order, and an **axis** is a dimension along which we index an array. In the table below, `C` is the number of classes, not the number of RGB components.
+`H` is the image height and `W` is its width. <strong>shape</strong> lists the size of each axis in order, and an <strong>axis</strong> is a dimension along which we index an array. In the table below, `C` is the number of classes, not the number of RGB components.
 
 <div class="seg-table">
 
@@ -36,9 +36,9 @@ For this example, we define the class IDs as `0=sky`, `1=ground`, and `2=ball`. 
 
 `uint8` stores integers from 0 to 255. `bool` stores the truth values `True` and `False`. With only three classes in this example, `uint8` is sufficient for the class mask.
 
-In the RGB image, `toy[y, x]` contains three color values. At the same pixel, `semantic[y, x]` contains one class ID. Here, `y` is a row index and `x` is a column index. Matching height and width is necessary, but it is not the whole condition connecting these arrays. **The same row and column indices must refer to the same image pixel.** Flipping the image without its mask breaks this correspondence even though both shapes remain unchanged.
+In the RGB image, `toy[y, x]` contains three color values. At the same pixel, `semantic[y, x]` contains one class ID. Here, `y` is a row index and `x` is a column index. Matching height and width is necessary, but it is not the whole condition connecting these arrays. <strong>The same row and column indices must refer to the same image pixel.</strong> Flipping the image without its mask breaks this correspondence even though both shapes remain unchanged.
 
-**Semantic segmentation** gives every ball the same class ID. **Instance segmentation** also distinguishes the individual balls. The `2` in a semantic mask identifies the category “ball”; an instance ID identifies an individual region.
+<strong>Semantic segmentation</strong> gives every ball the same class ID. <strong>Instance segmentation</strong> also distinguishes the individual balls. The `2` in a semantic mask identifies the category “ball”; an instance ID identifies an individual region.
 
 <figure class="seg-figure">
   <img src="/image-segmentation-mask-basics/representations-en.svg" alt="The same two balls represented as an RGB image, a class mask, and connected-region labels" loading="lazy" />
@@ -74,7 +74,7 @@ print(toy.shape, toy.dtype, toy.size)
 
 `toy.size` is the total number of array elements. Each RGB component counts as an element, so this differs from the pixel count, `120 × 200 = 24,000`. To compare only the spatial dimensions of an image and a mask, compare `toy.shape[:2]` with `semantic.shape`.
 
-Every expression below starts from the same `toy` array. **An integer index selects one entry and removes that axis; a slice selects a range while retaining the axis.** Omitted trailing axes are selected in full.[^indexing]
+Every expression below starts from the same `toy` array. <strong>An integer index selects one entry and removes that axis; a slice selects a range while retaining the axis.</strong> Omitted trailing axes are selected in full.[^indexing]
 
 <div class="seg-table">
 
@@ -94,7 +94,7 @@ Every expression below starts from the same `toy` array. **An integer index sele
 
 NumPy selects pixels as `toy[y, x]`, while OpenCV takes a circle center as `(x, y)`. Keep those orders separate. Here, we interpret the array we created as RGB. `cv2.circle` writes the component values in the order supplied, so this convention works. In contrast, a typical color image read with `cv2.imread` uses BGR order and needs conversion when used as RGB.[^opencv-image]
 
-There is another practical distinction: basic slicing produces a **view**, which shares data with the original array. To edit a crop independently, make a copy with `crop = toy[20:80, 30:100].copy()`. Without `.copy()`, editing `crop` can also change the corresponding region in the original image.[^indexing]
+There is another practical distinction: basic slicing produces a <strong>view</strong>, which shares data with the original array. To edit a crop independently, make a copy with `crop = toy[20:80, 30:100].copy()`. Without `.copy()`, editing `crop` can also change the corresponding region in the original image.[^indexing]
 
 ## 03. Comparing three RGB values produces three Boolean results
 
@@ -111,7 +111,7 @@ print(result.shape, result.dtype)
 
 `==` compares corresponding elements. It does not treat the R, G, and B values as one indivisible item. A pixel with values `(230, 60, 50)` produces `[True, True, True]`. If only the last component differs, the result is `[True, True, False]`.
 
-The image contains many elements, but `BALL_RGB` contains only three values. **Broadcasting** makes this comparison possible. When arrays have different shapes, a value on an axis of size 1 can be applied repeatedly along the corresponding axis of the other array. NumPy does not need to build a huge copied array first.[^broadcasting]
+The image contains many elements, but `BALL_RGB` contains only three values. <strong>Broadcasting</strong> makes this comparison possible. When arrays have different shapes, a value on an axis of size 1 can be applied repeatedly along the corresponding axis of the other array. NumPy does not need to build a huge copied array first.[^broadcasting]
 
 Compare the shapes from right to left. A pair of axes is compatible if their sizes are equal or one of them is 1. Missing leading axes are treated as having size 1. For this example:
 
@@ -130,7 +130,7 @@ This rule does not depend on the meaning of an image. NumPy works from axis size
 
 ## 04. axis determines which elements are grouped for a calculation
 
-`result` currently stores three Boolean results per pixel. We want `ball` to store one result per pixel. We must not mix results from different pixels: **only the three components at the same row and column indices belong together.**
+`result` currently stores three Boolean results per pixel. We want `ball` to store one result per pixel. We must not mix results from different pixels: <strong>only the three components at the same row and column indices belong together.</strong>
 
 `np.all` checks whether all the supplied values are true. With `axis=-1`, it groups values along the last axis. That axis corresponds to the RGB components, so it matches the operation we need.[^all]
 
@@ -148,7 +148,7 @@ The row and column indices remain. For each row–column combination, NumPy chec
   <figcaption>The component axis is reduced. Keeping the row and column axes preserves the link to each original image pixel.</figcaption>
 </figure>
 
-A calculation that combines several elements into one result, such as a sum or maximum, is called a **reduction**. `sum`, `mean`, `max`, and `all` are examples. By default, the reduced axis disappears and the other axes remain. `argmax` also compares values along an axis and returns one index from that axis, but its result has a different meaning from the value returned by `max`.
+A calculation that combines several elements into one result, such as a sum or maximum, is called a <strong>reduction</strong>. `sum`, `mean`, `max`, and `all` are examples. By default, the reduced axis disappears and the other axes remain. `argmax` also compares values along an axis and returns one index from that axis, but its result has a different meaning from the value returned by `max`.
 
 For `result` with shape `(120, 200, 3)`, we can predict the following output structures.
 
@@ -191,7 +191,7 @@ print(np.unique(semantic))  # Inspect the distinct stored values.
 # [0 1 2]
 ~~~
 
-`semantic[ball] = 2` does not compare the values of the two arrays. It selects the row and column indices where `ball` is true and writes 2 into `semantic` at those indices. Unselected values stay unchanged. Selecting elements with a true/false array is called **Boolean indexing**.[^indexing]
+`semantic[ball] = 2` does not compare the values of the two arrays. It selects the row and column indices where `ball` is true and writes 2 into `semantic` at those indices. Unselected values stay unchanged. Selecting elements with a true/false array is called <strong>Boolean indexing</strong>.[^indexing]
 
 <div class="seg-table">
 
@@ -207,11 +207,11 @@ The last row illustrates the difference between these expressions. In the code t
 
 `semantic == 2` needs no `np.all`. `semantic` stores one value per pixel, so the comparison already produces one Boolean result per pixel. By contrast, `toy == BALL_RGB` produces three results per pixel and needs a step that combines them.
 
-An integer array containing 0s and 1s is not the same as a Boolean array. Inside `[]`, an integer array supplies integer indices. Use `binary.astype(bool)` **only when the intended rule is to exclude zeros and select every nonzero value**. To find only balls in a class mask, state the condition explicitly with `semantic == 2`.
+An integer array containing 0s and 1s is not the same as a Boolean array. Inside `[]`, an integer array supplies integer indices. Use `binary.astype(bool)` <strong>only when the intended rule is to exclude zeros and select every nonzero value</strong>. To find only balls in a class mask, state the condition explicitly with `semantic == 2`.
 
 ## 06. Separate connected regions to distinguish the two balls
 
-`ball` currently marks every ball pixel as true. To handle each ball separately, we can group pixels that are connected to one another and give each group its own number. Such a group is a **connected component**.
+`ball` currently marks every ball pixel as true. To handle each ball separately, we can group pixels that are connected to one another and give each group its own number. Such a group is a <strong>connected component</strong>.
 
 `cv2.connectedComponents` takes an 8-bit, single-channel array. Converting a Boolean array to `uint8` turns `False` into 0 and `True` into 1. We explicitly set `connectivity=8`, so pixels touching diagonally also count as connected. With `4`, only pixels sharing a side—above, below, left, or right—count as connected.[^components]
 
@@ -236,7 +236,7 @@ else:
 print(instance_masks.shape)  # (2, 120, 200)
 ~~~
 
-`num_labels` counts the labels, including background label 0. `labeled` stores a region ID at each pixel. Here, background means **every pixel that is zero in the current input `ball`**, which includes both sky and ground. It is not the same region as class 0, sky, in `semantic`.
+`num_labels` counts the labels, including background label 0. `labeled` stores a region ID at each pixel. Here, background means <strong>every pixel that is zero in the current input `ball`</strong>, which includes both sky and ground. It is not the same region as class 0, sky, in `semantic`.
 
 `range(1, num_labels)` excludes 0 and includes the last non-background label. `instances` is a Python list of `(H, W)` Boolean arrays. `np.stack` combines arrays of the same shape along a new axis. The size of that new first axis is the number of individual regions, not the number of classes. When no region is present, explicitly using shape `(0, H, W)` keeps the structure consistent for later processing.[^stack]
 
@@ -253,11 +253,11 @@ assert np.array_equal(rebuilt, semantic)
 
 `assert` checks a condition and stops execution if it is false. `np.array_equal` checks that two arrays have the same shape and values.
 
-This method does not solve instance segmentation in general. Touching balls can form one connected component, and a gap within one ball's mask can split it into several components. Noise can also form a separate component. A component ID does not encode an object category or guarantee a fixed left-to-right order. We interpret the component count as the ball count only under **this example's condition that each separate ball corresponds to exactly one connected region**.
+This method does not solve instance segmentation in general. Touching balls can form one connected component, and a gap within one ball's mask can split it into several components. Noise can also form a separate component. A component ID does not encode an object category or guarantee a fixed left-to-right order. We interpret the component count as the ball count only under <strong>this example's condition that each separate ball corresponds to exactly one connected region</strong>.
 
 ## 07. One-hot encoding replaces class IDs with class membership
 
-`semantic[y, x]` currently contains one class ID. For some operations, it is more convenient to keep a separate mask for each class. **One-hot encoding** represents each pixel with 1 for its class and 0 for every other class.
+`semantic[y, x]` currently contains one class ID. For some operations, it is more convenient to keep a separate mask for each class. <strong>One-hot encoding</strong> represents each pixel with 1 for its class and 0 for every other class.
 
 First, build a lookup table for our three classes. `np.eye(C)` creates a `(C, C)` array whose diagonal entries are 1 and whose other entries are 0. We can use its row indices as class IDs.[^eye]
 
@@ -291,7 +291,7 @@ This one-hot representation assumes that each pixel belongs to exactly one class
 
 To recover a class ID from one-hot data, find the class containing 1 at each pixel. We constructed the table so that its class indices match the original class IDs. Selecting the index of the largest value therefore recovers the ID.
 
-`max` returns the largest **value**; `argmax` returns the **index** where that value is stored. The class axis of `onehot` is axis 0, so that is the axis to compare.[^argmax]
+`max` returns the largest <strong>value</strong>; `argmax` returns the <strong>index</strong> where that value is stored. The class axis of `onehot` is axis 0, so that is the axis to compare.[^argmax]
 
 ~~~python
 back = onehot.argmax(axis=0)
@@ -309,7 +309,7 @@ If `onehot[:, y, x]` at one pixel is `[0, 0, 1]`, the maximum value is 1 and its
 
 ## 09. Use class IDs as a common reference when counting pixels
 
-Pixel counts by class are immediately useful for inspecting a dataset. If a class is almost absent or much more common than expected, that can prompt a check of mask conversion or data selection. These are **pixel counts, not object counts**.
+Pixel counts by class are immediately useful for inspecting a dataset. If a class is almost absent or much more common than expected, that can prompt a check of mask conversion or data selection. These are <strong>pixel counts, not object counts</strong>.
 
 We can find the ball class ID in `CLASS_NAMES` because we explicitly made the list indices match the actual class IDs.
 
@@ -335,11 +335,11 @@ print(f"ball: {count_from_mask} pixels, {ratio:.2f}%")
 
 When a Boolean array is summed, `True` contributes 1 and `False` contributes 0. The one-hot ball mask also contains 1 only at ball pixels, so both methods give the same count. `np.bincount` counts occurrences of nonnegative integers; each output index is the integer being counted.[^bincount]
 
-`minlength=C` makes the output **at least** `C` elements long. It does not restrict the length to exactly `C` or remove invalid labels. A mask containing 255 can produce an output extending through index 255, so the class-range checks in Section 07 must come first.
+`minlength=C` makes the output <strong>at least</strong> `C` elements long. It does not restrict the length to exactly `C` or remove invalid labels. A mask containing 255 can produce an output extending through index 255, so the class-range checks in Section 07 must come first.
 
 ## 10. Distinguish stored IDs from display colors
 
-To display a mask in color, create a **palette** that maps class IDs to RGB values. These colors help distinguish categories on screen; they do not change the target class IDs used for training.
+To display a mask in color, create a <strong>palette</strong> that maps class IDs to RGB values. These colors help distinguish categories on screen; they do not change the target class IDs used for training.
 
 ~~~python
 PALETTE = np.array([
@@ -355,7 +355,7 @@ print(color.shape, color.dtype)
 
 This is the same lookup principle used to obtain one-hot arrays from class IDs in Section 07. Here, each table row contains three RGB values, so each pixel receives three values. The original `semantic` remains an `(H, W)` integer array.
 
-Matplotlib can also display the class mask directly. A **colormap** maps numbers to display colors. Fixing `vmin` and `vmax` ensures that the same ID keeps the same color even when a particular class is absent from an image.[^imshow]
+Matplotlib can also display the class mask directly. A <strong>colormap</strong> maps numbers to display colors. Fixing `vmin` and `vmax` ensures that the same ID keeps the same color even when a particular class is absent from an image.[^imshow]
 
 ~~~python
 import matplotlib.pyplot as plt
@@ -374,7 +374,7 @@ The display option `interpolation="nearest"` prevents boundaries from looking sm
 
 ## 11. An overlay blends colors at corresponding pixels
 
-An **overlay** displays mask colors over an original image. It is useful for checking whether an image is paired with the right target and whether their boundaries still align after a transformation.
+An <strong>overlay</strong> displays mask colors over an original image. It is useful for checking whether an image is paired with the right target and whether their boundaries still align after a transformation.
 
 To make the mask look translucent, blend the original and display colors component by component at each pixel. `alpha` is the mask color's contribution: 0 keeps only the original image, while 1 keeps only the mask color.
 
@@ -399,7 +399,7 @@ Here, `toy` has three dimensions and `ball` has two. Because their first two axe
 
 ## 12. Apply the same spatial transformation to the image and target
 
-**Data augmentation** modifies existing training data so that a model can learn from a wider range of inputs. In segmentation, **each transformed image pixel must still correspond to the same array index in the target mask**.
+<strong>Data augmentation</strong> modifies existing training data so that a model can learn from a wider range of inputs. In segmentation, <strong>each transformed image pixel must still correspond to the same array index in the target mask</strong>.
 
 A horizontal flip reverses the column order. For the image, retain the RGB component axis. For the mask, move the class IDs without changing their values.
 
@@ -442,11 +442,11 @@ In a typical training setup, split the data into training and validation sets fi
 
 ## 13. Do not average class IDs when resizing a mask
 
-**Interpolation** determines new pixel values when an image is resized. Image colors can be blended to produce intermediate colors. Class IDs, however, identify categories, so averaging them has no useful meaning.
+<strong>Interpolation</strong> determines new pixel values when an image is resized. Image colors can be blended to produce intermediate colors. Class IDs, however, identify categories, so averaging them has no useful meaning.
 
 For example, blending a boundary between classes 0 and 2 can produce 1, introducing the ground class where there was no ground. An integer output data type does not prevent this error. Converting a fractional result back to an integer does not restore the original meaning.
 
-**Nearest-neighbor interpolation** chooses a source pixel and takes its value. Use it when resizing a class-ID mask to avoid blending the IDs.[^resize]
+<strong>Nearest-neighbor interpolation</strong> chooses a source pixel and takes its value. Use it when resizing a class-ID mask to avoid blending the IDs.[^resize]
 
 ~~~python
 new_H, new_W = 60, 100
@@ -505,9 +505,9 @@ Store target IDs in a lossless format such as PNG. JPEG compression can change p
 
 ## 15. Match the input, target, and output formats separately in PyTorch
 
-We can now connect these array operations to deep learning code. A **tensor** is PyTorch's data structure for multidimensional data. A **batch** is a group of images processed together. `N` below is the number of images in that batch.
+We can now connect these array operations to deep learning code. A <strong>tensor</strong> is PyTorch's data structure for multidimensional data. A <strong>batch</strong> is a group of images processed together. `N` below is the number of images in that batch.
 
-For a task that assigns one class to each pixel, the following formats apply when passing class-ID targets to `CrossEntropyLoss`. A **loss** measures the disagreement between model scores and targets.[^crossentropy]
+For a task that assigns one class to each pixel, the following formats apply when passing class-ID targets to `CrossEntropyLoss`. A <strong>loss</strong> measures the disagreement between model scores and targets.[^crossentropy]
 
 <div class="seg-table">
 
@@ -520,7 +520,7 @@ For a task that assigns one class to each pixel, the following formats apply whe
 
 </div>
 
-A **logit** is a model output score before conversion to a probability. Pass these scores directly into `CrossEntropyLoss`. When targets are supplied as class IDs, as they are here, there is no need to convert them to one-hot arrays. The target type `long` is PyTorch's 64-bit integer type.
+A <strong>logit</strong> is a model output score before conversion to a probability. Pass these scores directly into `CrossEntropyLoss`. When targets are supplied as class IDs, as they are here, there is no need to convert them to one-hot arrays. The target type `long` is PyTorch's 64-bit integer type.
 
 First, create tensors from the NumPy arrays. `torch.from_numpy` creates a CPU tensor that shares the array's data. `.float()` and `.long()` change the data type, while `.unsqueeze(0)` adds a leading batch axis of size 1. If later tensor edits could affect shared source data that you need to preserve, make a copy.[^fromnumpy]
 
@@ -609,7 +609,7 @@ The execution environment and actual output are recorded in [verification.txt](/
 
 The first practical skills to learn are inspecting image and mask structures, using indexing and `axis`, validating class IDs, applying spatial transformations jointly, and matching model input and output shapes. Use one-hot arrays, palettes, and connected components when a particular representation or processing task needs them. With real data, do not assume that a connected component always equals an object or that every loss function accepts the same target format.
 
-You have reached the goal of these basics when, on a new dataset, you can explain and verify **what each variable stores, what its axes mean, how the arrays correspond, and which relationships must survive a transformation**.
+You have reached the goal of these basics when, on a new dataset, you can explain and verify <strong>what each variable stores, what its axes mean, how the arrays correspond, and which relationships must survive a transformation</strong>.
 
 ## References
 
